@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國一上數學（康軒版）－重點與無限出題測驗</title>
+<style>
+  :root {
+    --primary: #1976D2;
+    --secondary: #FF9800;
+    --success: #2E7D32;
+    --danger: #C62828;
+    --bg: #F0F4F8;
+    --text: #263238;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Microsoft JhengHei', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 15px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+  }
+  .home-btn {
+    text-decoration: none;
+    background: #eceff1;
+    color: #37474f;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.2s;
+  }
+  .home-btn:hover { background: #cfd8dc; }
+  h1 { color: var(--primary); margin: 0; font-size: 24px; }
+
+  /* 範圍選擇區 */
+  .scope-box {
+    background: #E3F2FD;
+    border: 2px solid #90CAF9;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+  .scope-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .scope-title { font-weight: bold; font-size: 16px; color: #0D47A1; }
+  .preset-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .preset-btn {
+    background: #fff;
+    border: 1px solid #1976D2;
+    color: #1976D2;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .preset-btn:hover { background: #1976D2; color: #fff; }
+  .chapter-group {
+    margin-bottom: 10px;
+    background: rgba(255,255,255,0.7);
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+  .chapter-name {
+    font-weight: bold;
+    color: #1565C0;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+  .checkbox-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .chk-label {
+    background: #fff;
+    border: 1px solid #BBDEFB;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    user-select: none;
+  }
+  .chk-label input { transform: scale(1.15); accent-color: var(--primary); }
+
+  /* 分頁切換 */
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background: #e0e0e0;
+    color: #555;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(25,118,210,0.3);
+  }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* 重點整理卡片 */
+  .note-card {
+    border: 2px solid #E0E0E0;
+    border-left: 6px solid var(--primary);
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 16px;
+    background: #FAFAFA;
+  }
+  .note-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #0D47A1;
+    margin-bottom: 10px;
+  }
+  .note-list { margin: 0; padding-left: 20px; }
+  .note-list li { margin-bottom: 8px; font-size: 15px; }
+  .highlight {
+    background: #FFF9C4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #D84315;
+  }
+  .formula-box {
+    background: #E8F5E9;
+    border: 1px dashed #66BB6A;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: monospace, 'Microsoft JhengHei';
+    font-size: 15px;
+    margin: 6px 0;
+    color: #1B5E20;
+    font-weight: bold;
+  }
+
+  /* 測驗區 */
+  .quiz-container {
+    background: #FFFDE7;
+    border: 2px solid #FFE082;
+    border-radius: 14px;
+    padding: 25px;
+  }
+  .stats-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    background: #FFF8E1;
+    padding: 10px 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #E65100;
+  }
+  .q-tag {
+    display: inline-block;
+    background: var(--primary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 21px;
+    font-weight: bold;
+    color: #212121;
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  .options-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 600px) {
+    .options-list { grid-template-columns: 1fr; }
+  }
+  .opt-btn {
+    background: #fff;
+    border: 2px solid #CFD8DC;
+    border-radius: 10px;
+    padding: 14px 18px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .opt-btn:hover { border-color: var(--primary); background: #F5FAFF; }
+  .opt-btn.correct { background: #C8E6C9; border-color: var(--success); color: #1B5E20; }
+  .opt-btn.wrong { background: #FFCDD2; border-color: var(--danger); color: #B71C1C; }
+
+  .explain-box {
+    display: none;
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 10px;
+    background: #fff;
+    border-left: 6px solid var(--secondary);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .explain-title { font-weight: bold; font-size: 18px; margin-bottom: 8px; }
+  .explain-steps { font-size: 16px; color: #37474F; white-space: pre-line; }
+  .next-btn {
+    margin-top: 18px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    display: none;
+  }
+  .next-btn:hover { background: #1565C0; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <h1>📐 國一上數學（康軒版）複習館</h1>
+    <a href="index.html" class="home-btn">🏠 回全科總目錄</a>
+  </div>
+
+  <!-- 範圍勾選器 -->
+  <div class="scope-box">
+    <div class="scope-header">
+      <span class="scope-title">📌 勾選段考複習範圍（可複選）：</span>
+      <div class="preset-btns">
+        <button class="preset-btn" onclick="selectPreset([0,1,2,3])">一段 (第1章)</button>
+        <button class="preset-btn" onclick="selectPreset([4,5,6,7])">二段 (第2章)</button>
+        <button class="preset-btn" onclick="selectPreset([8,9,10])">三段 (第3章)</button>
+        <button class="preset-btn" onclick="selectAll(true)">全選</button>
+        <button class="preset-btn" onclick="selectAll(false)">清除</button>
+      </div>
+    </div>
+
+    <div class="chapter-group">
+      <div class="chapter-name">第 1 章：整數的運算</div>
+      <div class="checkbox-grid" id="grp-1"></div>
+    </div>
+    <div class="chapter-group">
+      <div class="chapter-name">第 2 章：分數的運算</div>
+      <div class="checkbox-grid" id="grp-2"></div>
+    </div>
+    <div class="chapter-group">
+      <div class="chapter-name">第 3 章：一元一次方程式</div>
+      <div class="checkbox-grid" id="grp-3"></div>
+    </div>
+  </div>
+
+  <!-- 分頁按鈕 -->
+  <div class="tabs">
+    <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點公式整理</button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 無限隨機出題測驗</button>
+  </div>
+
+  <!-- 分頁一：重點整理 -->
+  <div id="sec-notes" class="section active"></div>
+
+  <!-- 分頁二：無限出題 -->
+  <div id="sec-quiz" class="section">
+    <div class="quiz-container">
+      <div class="stats-bar">
+        <span>🏆 累計得分：<span id="score">0</span> 分</span>
+        <span>🔥 連續答對：<span id="streak">0</span> 題（連對5題算熟練！）</span>
+      </div>
+      <div id="quiz-body">
+        <span class="q-tag" id="q-unit">單元標籤</span>
+        <div class="q-text" id="q-question">題目載入中...</div>
+        <div class="options-list" id="q-options"></div>
+        <div class="explain-box" id="explain-box">
+          <div class="explain-title" id="explain-status"></div>
+          <div class="explain-steps" id="explain-text"></div>
+        </div>
+        <button class="next-btn" id="next-btn" onclick="generateQuestion()">下一題（換新數字）➡️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const units = [
+    {
+      id: 0, ch: 1, code: '1-1', name: '1-1 負數與數線',
+      notes: [
+        '<b>相反數</b>：數字相同、正負號相反的兩數（如 5 與 -5）。<span class="highlight">兩相反數相加必等於 0</span>；0 的相反數是 0。',
+        '<b>絕對值 |a|</b>：在數線上代表該點到原點 (0) 的「距離」，因此<span class="highlight">絕對值出來永遠大於或等於 0</span>（不可能是負數）。',
+        '<b>比大小口訣</b>：正數 > 0 > 負數；兩個負數比大小時，<span class="highlight">數字越大的反而越小</span>（例如 -8 < -3）。',
+        '<b>數線上兩點距離</b>：|A - B|，也就是「大數 − 小數」。'
+      ]
+    },
+    {
+      id: 1, ch: 1, code: '1-2', name: '1-2 整數的加減',
+      notes: [
+        '<b>同號數相加</b>：正＋正＝正，負＋負＝負（數字相加，前面掛共同的符號）。例如：(-4) + (-5) = -9。',
+        '<b>異號數相加</b>：看誰的數字（絕對值）比較大，結果就跟誰同號，再用「大減小」。例如：(-8) + 5 = -3。',
+        '<b>減法變加法口訣</b>：<span class="highlight">減去一個數 ＝ 加上它的相反數</span>。',
+        '<div class="formula-box">去括號口訣：＋(＋)得＋、＋(－)得－、－(＋)得－、－(－)得＋（負負得正）</div>'
+      ]
+    },
+    {
+      id: 2, ch: 1, code: '1-3', name: '1-3 整數的乘除與四則運算',
+      notes: [
+        '<b>正負號判斷（乘法與除法通用）</b>：<span class="highlight">同號得正、異號得負</span>。連乘時，數一數有幾個負號：<span class="highlight">奇數個負號為負、偶數個負號為正</span>。',
+        '<b>0 的除法陷阱</b>：0 除以任何非 0 的數都等於 0；但<span class="highlight">0 絕對不能當除數</span>（無意義）。',
+        '<b>四則運算順序</b>：先算括號內（小括號 ➔ 中括號）➔ 再算乘除 ➔ 最後算加減（由左而右）。',
+        '<div class="formula-box">分配律省時妙招：a × b + a × c = a × (b + c)</div>'
+      ]
+    },
+    {
+      id: 3, ch: 1, code: '1-4', name: '1-4 指數記法與科學記號',
+      notes: [
+        '<b>負數的次方大陷阱</b>：<span class="highlight">(-2)⁴ = (-2)×(-2)×(-2)×(-2) = +16</span>（有括號連負號一起乘）；但 <span class="highlight">-2⁴ = -(2×2×2×2) = -16</span>（沒括號負號在外面）。',
+        '<b>零次方規則</b>：任何非 0 的數，它的 0 次方都等於 1（例如 5⁰ = 1，(-3)⁰ = 1）。',
+        '<b>科學記號標準格式</b>：<span class="highlight">a × 10ⁿ</span>，其中 <span class="highlight">1 ≤ a < 10</span>（a 必須是 1 到 9 點多），n 為整數。',
+        '<b>位數判斷</b>：若科學記號為 a × 10ⁿ（n為正整數），展開後是 <span class="highlight">(n + 1) 位數</span>；若為 a × 10⁻ᵐ，則從小數點後第 m 位開始出現非 0 數字。'
+      ]
+    },
+    {
+      id: 4, ch: 2, code: '2-1', name: '2-1 因數與倍數',
+      notes: [
+        '<b>倍數判別法（必考）</b>：<br>• <b>2 的倍數</b>：個位數是偶數 (0, 2, 4, 6, 8)。<br>• <b>3 的倍數</b>：<span class="highlight">所有位數的數字和是 3 的倍數</span>。<br>• <b>5 的倍數</b>：個位數是 0 或 5。<br>• <b>9 的倍數</b>：<span class="highlight">所有位數的數字和是 9 的倍數</span>。<br>• <b>11 的倍數</b>：(奇數位數字和) − (偶數位數字和) ＝ 0 或 11 的倍數。',
+        '<b>質數與合數</b>：<span class="highlight">1 不是質數也不是合數</span>；<span class="highlight">2 是最小的質數，也是唯一的偶數質數</span>。100 以內共有 25 個質數。',
+        '<b>標準分解式</b>：將一個合數拆成質因數連乘積，底數由小到大排列，相同質因數寫成次方形式（如 12 = 2² × 3）。'
+      ]
+    },
+    {
+      id: 5, ch: 2, code: '2-2', name: '2-2 最大公因數與最小公倍數',
+      notes: [
+        '<b>互質</b>：兩數的最大公因數為 1（記作 (a, b) = 1），這兩數不一定都是質數（例如 8 和 9 互質）。',
+        '<b>標準分解式求法</b>：<br>• <b>最大公因數 (a, b)</b>：找<span class="highlight">共同底數</span>，次方取<span class="highlight">最小</span>。<br>• <b>最小公倍數 [a, b]</b>：找<span class="highlight">全部出現過的底數</span>，次方取<span class="highlight">最大</span>。',
+        '<b>應用題關鍵字</b>：看到「平分、裁成最大正方形、最多分給幾人」➔ 求<span class="highlight">最大公因數</span>；看到「同時出發下次再相遇、鋪成最小正方形、每幾個一數」➔ 求<span class="highlight">最小公倍數</span>。'
+      ]
+    },
+    {
+      id: 6, ch: 2, code: '2-3', name: '2-3 分數的四則運算',
+      notes: [
+        '<b>負分數寫法</b>：-(3/4) = (-3)/4 = 3/(-4)，整個分數只有一個負號就是負分數。',
+        '<b>帶分數陷阱</b>：<span class="highlight">-2又1/3 ＝ -2 − 1/3</span>（整數和分數部分都是負的！千萬不能算成 -2 + 1/3）。',
+        '<b>分數乘除法</b>：帶分數一定要先化成<span class="highlight">假分數</span>再約分；<span class="highlight">除以一個分數 ＝ 乘以它的倒數</span>。',
+        '<b>倒數</b>：兩數相乘等於 1，互為倒數（負數的倒數還是負數；0 沒有倒數）。'
+      ]
+    },
+    {
+      id: 7, ch: 2, code: '2-4', name: '2-4 指數律',
+      notes: [
+        '<div class="formula-box">1. 同底數相乘，指數相加：aᵐ × aⁿ = aᵐ⁺ⁿ<br>2. 同底數相除，指數相減：aᵐ ÷ aⁿ = aᵐ⁻ⁿ<br>3. 次方再次方，指數相乘：(aᵐ)ⁿ = aᵐˣⁿ<br>4. 括號內乘除次方分配：(a × b)ⁿ = aⁿ × bⁿ</div>',
+        '<b>負指數意義</b>：a⁻ⁿ = 1 / aⁿ（例如 2⁻³ = 1/2³ = 1/8，負次方代表倒數，不是負數！）。',
+        '<b>常考比較大小</b>：當底數不同、次方很大時（如 2³⁰、3²⁰、5¹⁰），把次方變成相同的最大公因數（都變成 10 次方）再比底數。'
+      ]
+    },
+    {
+      id: 8, ch: 3, code: '3-1', name: '3-1 代數式的化簡',
+      notes: [
+        '<b>文字符號簡記</b>：數字寫在文字前面，乘號省略（如 x × (-3) 寫成 -3x；1 × x 寫成 x；-1 × x 寫成 -x）。',
+        '<b>同類項合併</b>：文字部分完全相同的才能加減合併（如 5x - 8x = -3x）；<span class="highlight">有 x 的跟純數字絕對不能加在一起</span>（3x + 2 不能變成 5x）。',
+        '<b>去括號變號陷阱</b>：括號前面是「負號」或「負數」時，乘進去<span class="highlight">每一項都要變號</span>！例如：-2(3x - 4) = -6x + 8。'
+      ]
+    },
+    {
+      id: 9, ch: 3, code: '3-2', name: '3-2 一元一次方程式',
+      notes: [
+        '<b>移項法則口訣</b>：等號左邊移到右邊（或右移左），<span class="highlight">＋變－、－變＋、×變÷、÷變×</span>。',
+        '<b>分數方程式解法（去分母）</b>：等號兩邊同乘所有分母的「最小公倍數」，把分數變成整數再算。<span class="highlight">注意：沒分母的純整數項也要跟著乘！</span>',
+        '<b>解的意義</b>：若題目說「x = 3 是方程式的解」，直接把 x 用 3 代入算式，等號兩邊一定相等。'
+      ]
+    },
+    {
+      id: 10, ch: 3, code: '3-3', name: '3-3 應用問題',
+      notes: [
+        '<b>解題四步驟</b>：1. 假設未知數 x（通常問什麼就設什麼）➔ 2. 找等量關係列方程式 ➔ 3. 解出 x ➔ 4. 檢查是否合理（例如人數、數量不能是負數或分數）。',
+        '<b>常考四大題型公式</b>：<br>• <b>年齡問題</b>：不管過幾年，<span class="highlight">兩人的年齡差永遠不變</span>。<br>• <b>打折與成本</b>：定價打 x 折 ＝ 定價 × (x/10)；利潤 ＝ 售價 − 成本。<br>• <b>速率問題</b>：距離 ＝ 速率 × 時間。<br>• <b>分東西問題</b>：總物品數固定，用兩種分法列式相等。'
+      ]
+    }
+  ];
+
+  // 渲染勾選框與重點
+  const notesContainer = document.getElementById('sec-notes');
+  units.forEach(u => {
+    const grp = document.getElementById(`grp-${u.ch}`);
+    grp.innerHTML += `
+      <label class="chk-label">
+        <input type="checkbox" class="unit-chk" value="${u.id}" checked onchange="updateView()">
+        ${u.name}
+      </label>
+    `;
+
+    notesContainer.innerHTML += `
+      <div class="note-card" id="note-${u.id}">
+        <div class="note-title">📌 ${u.name}</div>
+        <ul class="note-list">
+          ${u.notes.map(n => `<li>${n}</li>`).join('')}
+        </ul>
+      </div>
+    `;
+  });
+
+  function getSelectedIds() {
+    return Array.from(document.querySelectorAll('.unit-chk:checked')).map(cb => parseInt(cb.value));
+  }
+
+  function selectPreset(ids) {
+    document.querySelectorAll('.unit-chk').forEach(cb => {
+      cb.checked = ids.includes(parseInt(cb.value));
+    });
+    updateView();
+  }
+
+  function selectAll(state) {
+    document.querySelectorAll('.unit-chk').forEach(cb => cb.checked = state);
+    updateView();
+  }
+
+  function updateView() {
+    const selected = getSelectedIds();
+    units.forEach(u => {
+      const card = document.getElementById(`note-${u.id}`);
+      card.style.display = selected.includes(u.id) ? 'block' : 'none';
+    });
+    if (document.getElementById('sec-quiz').classList.contains('active')) {
+      generateQuestion();
+    }
+  }
+
+  function switchTab(tab) {
+    document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+    document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
+    document.getElementById('sec-notes').classList.toggle('active', tab === 'notes');
+    document.getElementById('sec-quiz').classList.toggle('active', tab === 'quiz');
+    if (tab === 'quiz') generateQuestion();
+  }
+
+  // 亂數工具
+  function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  function randNonZero(min, max) {
+    let n = 0;
+    while (n === 0) n = rand(min, max);
+    return n;
+  }
+  function gcd(a, b) {
+    a = Math.abs(a); b = Math.abs(b);
+    while (b !== 0) { let t = b; b = a % b; a = t; }
+    return a;
+  }
+  function lcm(a, b) {
+    return Math.abs(a * b) / gcd(a, b);
+  }
+
+  // 各單元動態隨機出題引擎
+  const generators = {
+    0: () => { // 1-1 負數與數線
+      const a = rand(-15, -2);
+      const b = rand(2, 12);
+      const ans = Math.abs(a - b);
+      return {
+        unit: '1-1 負數與數線',
+        q: `數線上有 A(${a})、B(${b}) 兩點，請問 A、B 兩點之間的距離是多少？`,
+        ans: `${ans}`,
+        distractors: [`${Math.abs(a + b)}`, `${a - b}`, `${ans + 2}`],
+        steps: `【解題步驟】
+1. 數線上兩點距離公式 ＝ |A − B|（也就是「大數 − 小數」）。
+2. 比較大小：${b} > ${a}。
+3. 計算距離：${b} − (${a}) ＝ ${b} + ${Math.abs(a)} ＝ ${ans}。`
+      };
+    },
+    1: () => { // 1-2 整數的加減
+      const a = rand(-18, -3);
+      const b = rand(-15, -2);
+      const c = rand(4, 15);
+      const ans = a - b + c;
+      return {
+        unit: '1-2 整數的加減',
+        q: `計算 (${a}) − (${b}) + ${c} 的值為何？`,
+        ans: `${ans}`,
+        distractors: [`${a + b + c}`, `${-ans}`, `${ans - 4}`],
+        steps: `【解題步驟】
+1. 遇到「− (${b})」要用負負得正變成「+ ${Math.abs(b)}」。
+2. 原式改寫為：${a} + ${Math.abs(b)} + ${c}。
+3. 先算 ${a} + ${Math.abs(b)} = ${a - b}，再加上 ${c}，得到答案 ${ans}。`
+      };
+    },
+    2: () => { // 1-3 整數的四則運算
+      const a = rand(-6, -2);
+      const b = rand(3, 8);
+      const c = rand(-12, -2);
+      const d = rand(2, 4);
+      const ans = a * b - c / d;
+      // 確保 c 能被 d 整除
+      const cFixed = -d * rand(2, 6);
+      const ansFixed = a * b - (cFixed / d);
+      return {
+        unit: '1-3 整數的乘除與四則運算',
+        q: `計算 (${a}) × ${b} − (${cFixed}) ÷ ${d} ＝ ？`,
+        ans: `${ansFixed}`,
+        distractors: [`${a * b + (cFixed / d)}`, `${-ansFixed}`, `${ansFixed + 6}`],
+        steps: `【解題步驟】
+1. 先算乘除、後算加減：
+   • 前半段：(${a}) × ${b} ＝ ${a * b}（異號得負）
+   • 後半段：(${cFixed}) ÷ ${d} ＝ ${cFixed / d}
+2. 合併計算：(${a * b}) − (${cFixed / d}) ＝ ${a * b} + ${Math.abs(cFixed / d)} ＝ ${ansFixed}。`
+      };
+    },
+    3: () => { // 1-4 指數記法與科學記號
+      const base = rand(2, 4);
+      const exp = rand(2, 4);
+      const val = Math.pow(base, exp);
+      return {
+        unit: '1-4 指數記法與科學記號',
+        q: `請比較 (-${base})^${exp} 與 -${base}^${exp} 的計算結果，兩者相加等於多少？`,
+        ans: exp % 2 === 0 ? `0` : `${-2 * val}`,
+        distractors: exp % 2 === 0 ? [`${2 * val}`, `${-2 * val}`, `${val}`] : [`0`, `${2 * val}`, `${-val}`],
+        steps: `【解題步驟】
+1. (-${base})^${exp} 有括號，代表 (-${base}) 連乘 ${exp} 次，${exp % 2 === 0 ? '偶數次方為正' : '奇數次方為負'}，結果為 ${exp % 2 === 0 ? val : -val}。
+2. -${base}^${exp} 沒有括號，負號在外面，代表 -(${base}^${exp}) = -${val}。
+3. 兩者相加：(${exp % 2 === 0 ? val : -val}) + (-${val}) ＝ ${exp % 2 === 0 ? 0 : -2 * val}。`
+      };
+    },
+    4: () => { // 2-1 因數與倍數
+      const d1 = rand(1, 8);
+      const d2 = rand(1, 9);
+      const d4 = rand(1, 9);
+      // 找一個數字 x 讓 (d1 + d2 + x + d4) 是 9 的倍數
+      const sumOthers = d1 + d2 + d4;
+      let ans = (9 - (sumOthers % 9)) % 9;
+      if (ans === 0) ans = 9; // 避免 0 與 9 雙解，讓題目問「最小正整數」或限定非0
+      return {
+        unit: '2-1 因數與倍數',
+        q: `若四位數 ${d1}${d2}□${d4} 是 9 的倍數，且 □ 為 1 到 9 的數字，請問 □ 應該填入多少？`,
+        ans: `${ans}`,
+        distractors: [`${(ans + 3) % 9 || 1}`, `${(ans + 5) % 9 || 2}`, `${(ans + 7) % 9 || 4}`],
+        steps: `【解題步驟】
+1. 9 的倍數判別法：「所有位數的數字總和必須是 9 的倍數」。
+2. 把已知數字加起來：${d1} + ${d2} + ${d4} ＝ ${sumOthers}。
+3. 找比 ${sumOthers} 大的下一個 9 的倍數是 ${sumOthers + ans}。
+4. 所以 □ ＝ ${sumOthers + ans} − ${sumOthers} ＝ ${ans}。`
+      };
+    },
+    5: () => { // 2-2 最大公因數與最小公倍數
+      const k = rand(3, 8);
+      const m = rand(2, 5);
+      let n = rand(3, 7);
+      while (gcd(m, n) !== 1) n++;
+      const a = k * m;
+      const b = k * n;
+      const ansGcd = k;
+      const ansLcm = k * m * n;
+      return {
+        unit: '2-2 最大公因數與最小公倍數',
+        q: `已知甲數＝${a}，乙數＝${b}，請問 (甲, 乙) ＋ [甲, 乙] ＝ ？（最大公因數＋最小公倍數）`,
+        ans: `${ansGcd + ansLcm}`,
+        distractors: [`${ansLcm}`, `${ansLcm - ansGcd}`, `${ansGcd + ansLcm + k}`],
+        steps: `【解題步驟】
+1. 用短除法找出共同質因數，得出最大公因數 (${a}, ${b}) ＝ ${ansGcd}。
+2. 最小公倍數 [${a}, ${b}] ＝ ${ansGcd} × ${m} × ${n} ＝ ${ansLcm}。
+3. 題目問兩者相加：${ansGcd} + ${ansLcm} ＝ ${ansGcd + ansLcm}。`
+      };
+    },
+    6: () => { // 2-3 分數的四則運算
+      const whole = rand(2, 5);
+      const num = 1;
+      const den = rand(2, 4);
+      const addVal = rand(1, 3);
+      // 計算 (-whole又1/den) + addVal
+      // = -(whole*den + 1)/den + (addVal*den)/den
+      const top = -(whole * den + 1) + addVal * den;
+      const g = gcd(top, den);
+      const fTop = top / g;
+      const fDen = den / g;
+      const ansStr = fDen === 1 ? `${fTop}` : `${fTop}/${fDen}`;
+      const wrongTop = -(whole * den - 1) + addVal * den; // 常見錯誤：算成 -whole + 1/den
+      return {
+        unit: '2-3 分數的四則運算',
+        q: `計算 (-${whole}又${num}/${den}) ＋ ${addVal} 的結果（以最簡分數表示）為何？`,
+        ans: ansStr,
+        distractors: [`${wrongTop}/${den}`, `${Math.abs(fTop)}/${fDen}`, `${fTop - 1}/${fDen}`],
+        steps: `【解題步驟】
+1. 負帶分數大陷阱：-${whole}又${num}/${den} 代表「-${whole} − ${num}/${den}」，先化成假分數為 -${whole * den + 1}/${den}。
+2. 把整數 ${addVal} 通分變成 ${addVal * den}/${den}。
+3. 分子相加：(-${whole * den + 1}) + ${addVal * den} ＝ ${top}，所以答案為 ${ansStr}。`
+      };
+    },
+    7: () => { // 2-4 指數律
+      const base = rand(2, 5);
+      const m = rand(4, 8);
+      const n = rand(2, 5);
+      const k = rand(3, 7);
+      const ansExp = m + n - k;
+      return {
+        unit: '2-4 指數律',
+        q: `化簡 ${base}^${m} × ${base}^${n} ÷ ${base}^${k} ＝ ${base}^□，請問 □ 應該是多少？`,
+        ans: `${ansExp}`,
+        distractors: [`${m * n - k}`, `${m + n + k}`, `${ansExp + 2}`],
+        steps: `【解題步驟】
+1. 指數律口訣：「同底數相乘，指數相加；同底數相除，指數相減」。
+2. 所以次方部分計算為：${m} + ${n} − ${k} ＝ ${ansExp}。`
+      };
+    },
+    8: () => { // 3-1 代數式的化簡
+      const a = rand(2, 5);
+      const b = rand(1, 6);
+      const c = rand(2, 4);
+      const d = rand(1, 5);
+      // a(x + b) - c(x - d) = (a-c)x + (ab + cd)
+      const coefX = a - c;
+      const constTerm = a * b + c * d;
+      const xStr = coefX === 0 ? '' : (coefX === 1 ? 'x' : (coefX === -1 ? '-x' : `${coefX}x`));
+      const cStr = constTerm >= 0 ? (xStr ? ` + ${constTerm}` : `${constTerm}`) : ` - ${Math.abs(constTerm)}`;
+      const ans = `${xStr}${cStr}`;
+      const wrongConst = a * b - c * d; // 忘記負負得正
+      return {
+        unit: '3-1 代數式的化簡',
+        q: `化簡代數式 ${a}(x + ${b}) − ${c}(x − ${d}) 的結果為何？`,
+        ans: ans,
+        distractors: [`${coefX}x + ${wrongConst}`, `${a + c}x + ${constTerm}`, `${coefX}x - ${constTerm}`],
+        steps: `【解題步驟】
+1. 展開第一個括號：${a}x + ${a * b}。
+2. 展開第二個括號（注意負負得正！）：-${c}x + ${c * d}。
+3. 同類項合併：(${a}x − ${c}x) + (${a * b} + ${c * d}) ＝ ${ans}。`
+      };
+    },
+    9: () => { // 3-2 一元一次方程式
+      const xAns = rand(-5, 6);
+      const a = rand(3, 7);
+      const c = rand(1, 2);
+      const b = rand(-8, 8);
+      // 設計方程式: a*x + b = c*x + d  => d = (a-c)*xAns + b
+      const d = (a - c) * xAns + b;
+      const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+      const dStr = d >= 0 ? `+ ${d}` : `- ${Math.abs(d)}`;
+      return {
+        unit: '3-2 一元一次方程式',
+        q: `解一元一次方程式：${a}x ${bStr} ＝ ${c === 1 ? '' : c}x ${dStr}，請問 x ＝ ？`,
+        ans: `${xAns}`,
+        distractors: [`${-xAns}`, `${xAns + 2}`, `${xAns - 2}`],
+        steps: `【解題步驟】
+1. 移項法則（把含 x 的移到左邊，純數字移到右邊，記得變號）：
+   ${a}x − ${c === 1 ? '' : c}x ＝ ${d} − (${b})
+2. 化簡兩邊：${a - c}x ＝ ${d - b}
+3. 兩邊同除以 ${a - c}，得出 x ＝ ${xAns}。`
+      };
+    },
+    10: () => { // 3-3 應用問題
+      const diff = rand(22, 32);
+      const mult = rand(3, 5);
+      const sonAge = rand(8, 14);
+      // 爸爸今年 sonAge + diff 歲，幾年後爸爸是兒子的 mult 倍？
+      // (sonAge + diff + x) = mult * (sonAge + x) => diff = (mult-1)*sonAge + (mult-1)*x
+      // 反向設計：先決定幾年後的兒子年齡 targetSon，反推今年兒子年齡
+      const yearsLater = rand(2, 6);
+      const targetSon = rand(12, 16);
+      const dadTarget = targetSon * mult;
+      const nowSon = targetSon - yearsLater;
+      const nowDad = dadTarget - yearsLater;
+      return {
+        unit: '3-3 應用問題',
+        q: `爸爸今年 ${nowDad} 歲，兒子今年 ${nowSon} 歲，請問「幾年後」爸爸的年齡剛好是兒子的 ${mult} 倍？`,
+        ans: `${yearsLater} 年後`,
+        distractors: [`${yearsLater + 2} 年後`, `${yearsLater + 4} 年後`, `${Math.max(1, yearsLater - 1)} 年後`],
+        steps: `【解題步驟】
+1. 假設 x 年後爸爸年齡是兒子的 ${mult} 倍。
+2. 列出方程式：${nowDad} + x ＝ ${mult}(${nowSon} + x)
+3. 展開右邊：${nowDad} + x ＝ ${mult * nowSon} + ${mult}x
+4. 移項化簡：${nowDad - mult * nowSon} ＝ ${mult - 1}x ➔ x ＝ ${yearsLater}（年後）。`
+      };
+    }
+  };
+
+  let score = 0;
+  let streak = 0;
+  let currentQ = null;
+  let answered = false;
+
+  function generateQuestion() {
+    const selected = getSelectedIds();
+    const qBox = document.getElementById('quiz-body');
+    if (selected.length === 0) {
+      document.getElementById('q-question').innerText = '⚠️ 請先在上方勾選至少一個要練習的單元喔！';
+      document.getElementById('q-options').innerHTML = '';
+      document.getElementById('explain-box').style.display = 'none';
+      document.getElementById('next-btn').style.display = 'none';
+      return;
+    }
+
+    answered = false;
+    document.getElementById('explain-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+
+    const randomId = selected[Math.floor(Math.random() * selected.length)];
+    currentQ = generators[randomId]();
+
+    document.getElementById('q-unit').innerText = currentQ.unit;
+    document.getElementById('q-question').innerText = currentQ.q;
+
+    // 組合正確答案與干擾選項並去重
+    let opts = [currentQ.ans, ...currentQ.distractors];
+    opts = [...new Set(opts)];
+    while (opts.length < 4) {
+      opts.push(`${rand(-20, 30)}`);
+      opts = [...new Set(opts)];
+    }
+    opts.sort(() => Math.random() - 0.5);
+
+    const optContainer = document.getElementById('q-options');
+    optContainer.innerHTML = '';
+    const labels = ['(A)', '(B)', '(C)', '(D)'];
+    opts.forEach((opt, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn';
+      btn.innerText = `${labels[idx]} ${opt}`;
+      btn.dataset.val = opt;
+      btn.onclick = () => checkAnswer(btn, opt);
+      optContainer.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(btn, chosen) {
+    if (answered) return;
+    answered = true;
+
+    const expBox = document.getElementById('explain-box');
+    const expStatus = document.getElementById('explain-status');
+    const expText = document.getElementById('explain-text');
+
+    if (chosen === currentQ.ans) {
+      btn.classList.add('correct');
+      score += 10;
+      streak += 1;
+      expStatus.style.color = 'var(--success)';
+      expStatus.innerText = '🎉 答對了！觀念非常清楚！';
+    } else {
+      btn.classList.add('wrong');
+      streak = 0;
+      expStatus.style.color = 'var(--danger)';
+      expStatus.innerText = `💡 答錯沒關係，正確答案是【${currentQ.ans}】，看下面步驟拆解：`;
+      document.querySelectorAll('.opt-btn').forEach(b => {
+        if (b.dataset.val === currentQ.ans) b.classList.add('correct');
+      });
+    }
+
+    document.getElementById('score').innerText = score;
+    document.getElementById('streak').innerText = streak;
+    expText.innerText = currentQ.steps;
+    expBox.style.display = 'block';
+    document.getElementById('next-btn').style.display = 'inline-block';
+  }
+</script>
+</body>
+</html>

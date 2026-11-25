@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國一上 國文科段考複習與測驗（翰林版）</title>
+<style>
+  :root { --primary: #2e7d32; --secondary: #f57c00; --bg: #f1f8e9; --text: #2c3e50; }
+  body { font-family: -apple-system, 'Microsoft JhengHei', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; line-height: 1.6; }
+  .container { max-width: 960px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 12px; margin-bottom: 15px; }
+  .home-btn { background: #607d8b; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+  h1 { color: var(--primary); margin: 0; font-size: 24px; }
+  .scope-box { background: #fff8e1; border: 2px solid #ffe082; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+  .scope-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .scope-title { font-weight: bold; color: #e65100; font-size: 16px; }
+  .quick-btns button { background: white; border: 1px solid #ffb74d; color: #e65100; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 4px; font-weight: bold; }
+  .quick-btns button:hover { background: #ffe0b2; }
+  .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
+  .lesson-label { display: flex; align-items: center; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 14px; font-weight: 500; }
+  .lesson-label input { margin-right: 8px; transform: scale(1.2); accent-color: var(--primary); }
+  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+  .tab-btn { flex: 1; max-width: 250px; padding: 12px; font-size: 17px; border: none; border-radius: 10px; background: #e0e0e0; cursor: pointer; font-weight: bold; transition: 0.2s; }
+  .tab-btn.active { background: var(--primary); color: white; }
+  .section { display: none; }
+  .section.active { display: block; }
+  
+  /* 重點整理卡片 */
+  .note-card { border: 1px solid #c8e6c9; border-left: 6px solid var(--primary); border-radius: 10px; padding: 16px; margin-bottom: 16px; background: #fafafa; }
+  .note-title { font-size: 19px; font-weight: bold; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .note-tag { font-size: 13px; background: #e8f5e9; color: #2e7d32; padding: 2px 10px; border-radius: 12px; }
+  .note-list { margin: 0; padding-left: 20px; }
+  .note-list li { margin-bottom: 6px; font-size: 15px; }
+  .highlight { color: #d84315; font-weight: bold; }
+
+  /* 測驗區 */
+  .quiz-box { background: #f9fbe7; border: 2px solid #c5e1a5; border-radius: 14px; padding: 25px 20px; max-width: 720px; margin: 0 auto; }
+  .score-bar { display: flex; justify-content: space-between; font-weight: bold; color: #33691e; margin-bottom: 15px; font-size: 16px; background: #e8f5e9; padding: 10px 15px; border-radius: 8px; }
+  .q-tag { display: inline-block; background: var(--secondary); color: white; padding: 3px 10px; border-radius: 12px; font-size: 13px; margin-bottom: 10px; font-weight: bold; }
+  .q-text { font-size: 19px; font-weight: bold; margin-bottom: 18px; color: #1b5e20; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn { text-align: left; padding: 12px 16px; font-size: 16px; border: 2px solid #ccc; background: white; border-radius: 10px; cursor: pointer; transition: 0.15s; font-weight: 500; }
+  .opt-btn:hover { border-color: var(--primary); background: #f1f8e9; }
+  .opt-btn.correct { background: #c8e6c9; border-color: #2e7d32; color: #1b5e20; font-weight: bold; }
+  .opt-btn.wrong { background: #ffcdd2; border-color: #c62828; color: #b71c1c; }
+  .exp-box { margin-top: 18px; padding: 15px; background: #fff3e0; border-left: 5px solid #ff9800; border-radius: 8px; display: none; font-size: 15px; }
+  .next-btn { background: var(--primary); color: white; border: none; padding: 12px 28px; font-size: 17px; border-radius: 25px; cursor: pointer; margin-top: 15px; font-weight: bold; display: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <h1>📖 國一上 國文科（翰林版）</h1>
+    <a href="index.html" class="home-btn">🏠 回大廳選科目</a>
+  </div>
+
+  <!-- 範圍勾選器 -->
+  <div class="scope-box">
+    <div class="scope-header">
+      <span class="scope-title">📌 勾選本次段考範圍（考哪幾課就勾哪幾課）：</span>
+      <div class="quick-btns">
+        <button onclick="selectRange([1,2,3,'c1'])">一段(1~3課)</button>
+        <button onclick="selectRange([4,5,6,'c2'])">二段(4~6課)</button>
+        <button onclick="selectRange([7,8,9,10])">三段(7~10課)</button>
+        <button onclick="selectAll(true)">全選</button>
+      </div>
+    </div>
+    <div class="lesson-grid" id="lesson-checkboxes"></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('notes')">📚 考前重點速覽</button>
+    <button class="tab-btn" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
+  </div>
+
+  <!-- 重點整理分頁 -->
+  <div id="sec-notes" class="section active"></div>
+
+  <!-- 測驗分頁 -->
+  <div id="sec-quiz" class="section">
+    <div class="quiz-box">
+      <div class="score-bar">
+        <span>✅ 已答對：<span id="correct-cnt">0</span> 題</span>
+        <span>🔥 連續答對：<span id="streak-cnt">0</span> 題</span>
+      </div>
+      <div id="quiz-area">
+        <span class="q-tag" id="q-lesson-tag">第一課</span>
+        <div class="q-text" id="q-text">題目載入中...</div>
+        <div class="options" id="q-options"></div>
+        <div class="exp-box" id="q-exp"></div>
+        <div style="text-align:center;">
+          <button class="next-btn" id="next-btn" onclick="loadNextQuestion()">下一題 ➡️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const lessons = [
+  { id: 1, name: '第1課：夏夜' },
+  { id: 2, name: '第2課：無心的錯誤' },
+  { id: 3, name: '第3課：母親的教誨' },
+  { id: 'c1', name: '語文常識一：標點符號' },
+  { id: 4, name: '第4課：論語選' },
+  { id: 5, name: '第5課：背影' },
+  { id: 6, name: '第6課：心囚' },
+  { id: 'c2', name: '語文常識二：閱讀導航' },
+  { id: 7, name: '第7課：兒時記趣' },
+  { id: 8, name: '第8課：朋友相交' },
+  { id: 9, name: '第9課：音樂家與職籃巨星' },
+  { id: 10, name: '第10課：玫瑰淚' }
+];
+
+const notesData = {
+  1: {
+    title: '第一課：夏夜（楊喚）',
+    tag: '新詩・擬人法',
+    points: [
+      '<b>文體與背景</b>：現代詩（童詩）。作者楊喚，善於用充滿童心的想像力描寫自然萬物。',
+      '<b>核心作法（擬人化）</b>：將大自然的事物當作人來寫，例如「撒了滿天的珍珠和一枚又大又亮的銀幣」（珍珠＝星星，銀幣＝月亮，此處為<span class="highlight">譬喻法</span>）、「風來了，輕輕地吹著」。',
+      '<b>段考必考字音字形</b>：<span class="highlight">撒</span>（ㄙㄚˇ）滿、銀<span class="highlight">幣</span>（ㄅㄧˋ）、<span class="highlight">朦朧</span>（ㄇㄥˊ ㄌㄨㄥˊ）、<span class="highlight">哄</span>（ㄏㄨㄥˇ）騙、火<span class="highlight">炬</span>（ㄐㄩˋ）。',
+      '<b>詩意轉折</b>：前半段寫夏夜來臨時的熱鬧與期待，後半段寫萬物入睡後的寧靜與溫馨（只有小河、風、螢火蟲還在陪伴夏夜）。'
+    ]
+  },
+  2: {
+    title: '第二課：無心的錯誤（劉墉）',
+    tag: '記敘兼論說・處世智慧',
+    points: [
+      '<b>主旨</b>：透過生活事例說明「無心的過失」有時比有意的傷害更難彌補，強調<span class="highlight">三思而後行</span>的重要性。',
+      '<b>關鍵事例</b>：1. 拿錯藥瓶給親友導致悲劇；2. 好心幫人整理桌面卻把重要文件當垃圾丟掉；3. 隨口一句無心之言傷了別人的自尊。',
+      '<b>必考字音字形</b>：<span class="highlight">肇</span>（ㄓㄠˋ）禍、一<span class="highlight">蹶</span>（ㄐㄩㄝˊ）不振、<span class="highlight">懺</span>（ㄔㄢˋ）悔、彌<span class="highlight">補</span>（ㄅㄨˇ）、不<span class="highlight">經</span>（ㄐㄧㄥ）意。',
+      '<b>成語累積</b>：覆水難收、防微杜漸、三思而後行、言者無心，聽者有意。'
+    ]
+  },
+  3: {
+    title: '第三課：母親的教誨（胡適）',
+    tag: '人物傳記・對比映襯',
+    points: [
+      '<b>作者與出處</b>：選自《四十自述》，作者胡適（字適之，提倡白話文運動的領袖）。',
+      '<b>人物形象</b>：母親兼任「嚴父」與「慈母」雙重角色。管教極嚴（天剛亮就叫起床、犯錯絕不當人面罵，而是夜深關門罰跪或擰肉），但<span class="highlight">從不罵一句「沒爹娘教訓」</span>，且對待家族大嫂、二嫂極為寬容忍讓。',
+      '<b>必考字音字形</b>：<span class="highlight">誨</span>（ㄏㄨㄟˋ）人不倦、管<span class="highlight">束</span>（ㄕㄨˋ）、<span class="highlight">擰</span>（ㄋㄧㄥˊ）肉、眼<span class="highlight">翳</span>（ㄧˋ）病、寬<span class="highlight">恕</span>（ㄕㄨˋ）。',
+      '<b>名言金句</b>：「如果我學得了一絲一毫的好脾氣，如果我學得了一點點待人接物的和氣，如果我能寬恕人，體諒人——我都得感謝我的慈母。」'
+    ]
+  },
+  'c1': {
+    title: '語文常識一：標點符號使用法',
+    tag: '基礎語文常識',
+    points: [
+      '<b>頓號（、）vs. 逗號（，）</b>：並列「詞語」之間用頓號（如：蘋果、香蕉、橘子）；並列「短句」之間用逗號。注意：相鄰數字表示「約數」時<span class="highlight">不用頓號</span>（如：三五成群、七八歲）。',
+      '<b>分號（；）</b>：用在並列的複句之間，常見於排比句或對比句（如：白天，他努力工作；晚上，他認真讀書）。',
+      '<b>冒號（：）</b>：用在總起下文或引出說話內容前。若說話內容在冒號後，需搭配引號（如：老師說：「明天要考試。」）。',
+      '<b>破折號（——）vs. 刪節號（……）</b>：兩者皆佔<span class="highlight">兩格</span>。破折號表語意轉變或補充說明；刪節號表語句未完或省略。',
+      '<b>書名號（《》〈〉）</b>：書名、報刊名用《》；篇名、歌曲名用〈〉（如：《論語》〈學而〉篇）。'
+    ]
+  },
+  4: {
+    title: '第四課：論語選',
+    tag: '文言文・語錄體',
+    points: [
+      '<b>《論語》常識</b>：記錄孔子及其弟子言行的<span class="highlight">語錄體</span>散文，由孔子弟子及再傳弟子編纂，非孔子本人所著。為儒家重要經典。',
+      '<b>第一則（學而篇）</b>：「學而時習之，不亦說乎？」——<span class="highlight">說</span>通「悅」（喜悅）。強調學習後要按時溫習實踐，並以君子「人不知而不慍（生氣）」為修養。',
+      '<b>第二則（為政篇）</b>：「溫故而知新，可以為師矣。」——溫習舊知識並能領悟新道理，就能當別人的老師。',
+      '<b>第三則（述而篇）</b>：「三人行，必有我師焉。擇其善者而從之，其不善者而改之。」——強調隨時隨地向他人學習，見賢思齊，見不賢而內自省。',
+      '<b>第四則（子罕篇）</b>：「譬如為山，未成一簣，止，吾止也；譬如平地，雖覆一簣，進，吾往也。」——用堆土成山比喻<span class="highlight">為學貴在持之以恆</span>，成敗全在於自己。'
+    ]
+  },
+  5: {
+    title: '第五課：背影（朱自清）',
+    tag: '抒情散文・以小見大',
+    points: [
+      '<b>情感脈絡</b>：作者對父親的情感變化是「不以為然（嫌父親迂腐、囉嗦） ➔ 感動流淚（看見父親胖胖身軀攀爬月台買橘子） ➔ 思念愧疚」。',
+      '<b>四次流淚</b>：1. 到徐州見父親與祖母喪事（悲哀之淚）；2. 望父親爬月台買橘子（感動之淚）；3. 父親背影混入人群（惜別之淚）；4. 讀父親來信說「大去之期不遠」（思念愧疚之淚）。',
+      '<b>必考字音字形</b>：<span class="highlight">差</span>（ㄔㄞ）使、狼<span class="highlight">藉</span>（ㄐㄧˊ）、<span class="highlight">簌簌</span>（ㄙㄨˋ）、<span class="highlight">迂</span>（ㄩ）腐、柵<span class="highlight">欄</span>（ㄌㄢˊ）、<span class="highlight">蹣跚</span>（ㄆㄢˊ ㄕㄢ）、<span class="highlight">箸</span>（ㄓㄨˋ，筷子）。'
+    ]
+  },
+  6: {
+    title: '第六課：心囚（杏林子）',
+    tag: '論說散文・對比手法',
+    points: [
+      '<b>作者簡介</b>：杏林子（本名劉俠），十二歲罹患「類風濕性關節炎」，全身關節損壞，但仍堅持寫作，創辦伊甸社會福利基金會。',
+      '<b>核心主旨</b>：「身體的殘障並不可怕，可怕的是<span class="highlight">心靈的殘障</span>（自怨自艾、畫地自限）」。',
+      '<b>對比事例</b>：舉「心靈正常卻自我放棄的年輕人（心囚）」與「身患重病卻樂觀助人的病友（心靈自由）」作強烈對比。',
+      '<b>必考字音字形</b>：自怨自<span class="highlight">艾</span>（ㄧˋ）、畫地自<span class="highlight">限</span>（ㄒㄧㄢˋ）、<span class="highlight">枷</span>（ㄐㄧㄚ）鎖、禁<span class="highlight">錮</span>（ㄍㄨˋ）。'
+    ]
+  },
+  'c2': {
+    title: '語文常識二：閱讀導航——策略運用與資訊檢索',
+    tag: '閱讀理解策略',
+    points: [
+      '<b>閱讀三步驟</b>：1. <b>瀏覽（Skimming）</b>：先看標題、副標、圖表，掌握文章大意；2. <b>掃描（Scanning）</b>：帶著問題找關鍵字、數字或專有名詞；3. <b>精讀</b>：分析段落結構與作者觀點。',
+      '<b>圖表判讀重點</b>：看清楚橫軸、縱軸單位、圖例說明，區分「事實陳述（有數據支持）」與「個人意見（主觀推測）」。'
+    ]
+  },
+  7: {
+    title: '第七課：兒時記趣（沈復）',
+    tag: '文言文・物外之趣',
+    points: [
+      '<b>作者與出處</b>：選自《浮生六記》〈閒情記趣〉，作者沈復（清代文學家）。',
+      '<b>核心精神</b>：「<span class="highlight">物外之趣</span>」——透過細心觀察與豐富想像力，從平凡事物中獲得超越物質本身的樂趣。',
+      '<b>三件趣事</b>：1. <b>觀蚊如鶴</b>（夏蚊成雷，私擬作群鶴舞空）；2. <b>神遊山林</b>（以叢草為林，蟲蟻為獸，土礫凸者為丘，凹者為壑）；3. <b>鞭打蛤蟆</b>（龐然大物拔山倒樹而來，蓋一癩蝦蟆也，捉蝦蟆鞭數十，驅之別院）。',
+      '<b>必考文言字詞</b>：<span class="highlight">明察秋毫</span>（視力極佳）、<span class="highlight">項</span>（脖子）為之強（通「僵」，僵硬）、<span class="highlight">怡然</span>（安適自得）稱快、<span class="highlight">龐然大物</span>（體積巨大的東西，此指癩蝦蟆）。'
+    ]
+  },
+  8: {
+    title: '第八課：朋友相交（宋晶宜）',
+    tag: '論說散文・引用修辭',
+    points: [
+      '<b>主旨</b>：探討交友之道，強調真正的朋友貴在「真誠相待、互相切磋、雪中送炭」，而非酒肉應酬。',
+      '<b>必考交友名言引用</b>：',
+      '1. 孔子：「益者三友：<span class="highlight">友直（正直）、友諒（誠信）、友多聞（見識廣博）</span>」。',
+      '2. 《禮記》：「獨學而無友，則孤陋而寡聞」（強調朋友切磋的重要）。',
+      '3. 「君子之交淡如水，小人之交甘若醴」（君子交往重道義不重利，平淡卻長久）。',
+      '4. 管鮑之交（管仲與鮑叔牙）：形容深厚且彼此體諒的友情。'
+    ]
+  },
+  9: {
+    title: '第九課：音樂家與職籃巨星（王溢嘉）',
+    tag: '論說散文・成功關鍵',
+    points: [
+      '<b>兩位主角</b>：鋼琴大師<span class="highlight">魯賓斯坦</span>（一天不練琴自己知道，兩天不練樂評家知道，三天不練聽眾都知道）與職籃巨星<span class="highlight">麥可・喬丹</span>（高中曾被校隊刷掉，靠著比別人更早到球場苦練投籃成為傳奇）。',
+      '<b>核心觀點</b>：天分只是起點，真正決定成就高度的是「<span class="highlight">苦練與堅持（九十九分的努力）</span>」。',
+      '<b>必考字音字形</b>：得天獨<span class="highlight">厚</span>（ㄏㄡˋ）、<span class="highlight">璀璨</span>（ㄘㄨㄟˇ ㄘㄢˋ）、<span class="highlight">淬</span>（ㄘㄨㄟˋ）鍊、如出一<span class="highlight">轍</span>（ㄔㄜˋ）。'
+    ]
+  },
+  10: {
+    title: '第十課：玫瑰淚（陳幸蕙）',
+    tag: '記敘抒情・人間情誼',
+    points: [
+      '<b>情節與伏筆</b>：作者在花店遇到一位衣著樸素、神情落寞的老先生買一朵紅玫瑰，原以為是浪漫故事，最後才揭曉老先生是為了悼念亡妻（或探望生病老伴），展現深沉感人的情誼。',
+      '<b>寫作手法</b>：善用<span class="highlight">懸疑與伏筆</span>（如老先生仔細挑選花朵、神情專注卻帶著哀傷），最後點出真相時格外動人。',
+      '<b>必考字音字形</b>：<span class="highlight">佇</span>（ㄓㄨˋ）立、神情<span class="highlight">落寞</span>（ㄌㄨㄛˋ ㄇㄛˋ）、<span class="highlight">婉</span>（ㄨㄢˇ）轉、眼眶泛<span class="highlight">紅</span>。'
+    ]
+  }
+};
+
+const quizBank = [
+  // 第1課
+  { l: 1, q: '〈夏夜〉一詩中，「撒了滿天的珍珠和一枚又大又亮的銀幣」運用了哪兩種修辭法？', opts: ['譬喻、轉化（擬人）', '誇飾、排比', '設問、借代', '映襯、雙關'], ans: 0, exp: '把星星比喻成「珍珠」、月亮比喻成「銀幣」（譬喻），且用「撒」這個動作賦予夏夜人的行為（轉化/擬人）。' },
+  { l: 1, q: '下列關於〈夏夜〉的敘述，何者正確？', opts: ['全詩氣氛從熱鬧溫馨轉為靜謐安詳', '作者描寫的是冬天夜晚的蕭瑟景象', '「銀幣」在詩中指的是天上的星星', '這是一首嚴肅說理的古典七言律詩'], ans: 0, exp: '〈夏夜〉是現代童詩，前半段寫夏夜來臨的熱鬧，後半段萬物入睡後轉為寧靜；「銀幣」是指又大又亮的月亮。' },
+  { l: 1, q: '下列「」中的字音，何者完全正確？', opts: ['「撒」滿（ㄙㄚˇ）／火「炬」（ㄐㄩˋ）', '「撒」滿（ㄙㄚ）／火「炬」（ㄐㄩˇ）', '「哄」騙（ㄏㄨㄥ）／「朦」朧（ㄇㄥˊ）', '銀「幣」（ㄅㄧˋ）／火「炬」（ㄐㄩˇ）'], ans: 0, exp: '「撒」表分散落下時讀ㄙㄚˇ；火「炬」讀ㄐㄩˋ；「哄」騙讀ㄏㄨㄥˇ。' },
+  // 第2課
+  { l: 2, q: '劉墉在〈無心的錯誤〉中，主要想告訴讀者什麼道理？', opts: ['無心的過失有時比有意的傷害更難彌補，做事應三思而後行', '只要不是故意的，做錯事就不需要向別人道歉', '人非聖賢，犯錯時應該盡快找藉口推卸責任', '只有重大的犯罪才需要反省，生活小事不必在意'], ans: 0, exp: '文章透過拿錯藥、誤丟文件等事例，提醒我們「無心之過」也可能造成無法挽回的後果，應謹言慎行。' },
+  { l: 2, q: '下列成語的用字，何者完全正確？', opts: ['一蹶不振／防微杜漸', '一厥不振／防微杜漸', '一蹶不振／防微杜見', '一獗不振／防微肚漸'], ans: 0, exp: '一「蹶」（ㄐㄩㄝˊ）不振，指跌倒後就再也爬不起來；防微杜「漸」，指在錯誤剛萌芽時就加以制止。' },
+  // 第3課
+  { l: 3, q: '關於胡適〈母親的教誨〉一文，下列敘述何者「錯誤」？', opts: ['母親為了樹立威嚴，常在眾人面前大聲責罵胡適', '母親身兼嚴父與慈母的角色，對胡適管教極嚴', '胡適認為自己待人接物的和氣與寬恕，全得自慈母的身教', '本文選自胡適的自傳《四十自述》'], ans: 0, exp: '胡適的母親從不在別人面前罵他一句，而是等到夜深人靜關上房門才教訓他，極力維護孩子的自尊心。' },
+  { l: 3, q: '「如果我學得了一絲一毫的好脾氣……我都得感謝我的慈母。」這段話表現出作者何種情懷？', opts: ['對母親深切的感激與思念', '對童年嚴格管教的抱怨', '對自己成就的驕傲自滿', '對家族長輩的無奈妥協'], ans: 0, exp: '胡適在文章結尾以排比句真摯表達對母親身教與言教的感恩之情。' },
+  // 語文常識一
+  { l: 'c1', q: '下列文句中的標點符號，何者使用「完全正確」？', opts: ['公園裡有七八個小朋友正在玩耍。', '公園裡有七、八個小朋友正在玩耍。', '我最喜歡讀《論語》〈學而〉篇。', '老師說：「明天要考國文」，請大家準備。'], ans: 0, exp: '相鄰兩個數字表示「約數」（七八個）時，中間不可加頓號！D選項句號應在引號內：老師說：「明天要考國文。」' },
+  { l: 'c1', q: '在直式或橫式稿紙中，「破折號（——）」和「刪節號（……）」各佔幾格？', opts: ['皆佔兩格', '皆佔一格', '破折號佔兩格，刪節號佔一格', '破折號佔一格，刪節號佔兩格'], ans: 0, exp: '破折號（——）與刪節號（……）在標準標點符號規範中，都是佔「兩格」。' },
+  // 第4課
+  { l: 4, q: '「學而時習之，不亦說乎？」句中的「說」字，意思為何？', opts: ['通「悅」，喜悅、快樂的意思', '說話、表達意見', '勸說、說服他人', '學說、理論'], ans: 0, exp: '此處「說」為通假字，通「悅」（ㄩㄝˋ），指學習後按時溫習實踐，心中感到非常喜悅。' },
+  { l: 4, q: '孔子說：「譬如為山，未成一簣，止，吾止也。」這句話主要在勉勵我們什麼？', opts: ['為學與做事貴在持之以恆，不可半途而廢', '堆土成山是非常困難的體力勞動', '遇到困難時應該立刻停止，重新尋找目標', '做任何事只要靠運氣就能水到渠成'], ans: 0, exp: '差最後一筐土就堆成山卻停下來，是自己放棄的；比喻做學問必須堅持到底，不能功虧一簣。' },
+  { l: 4, q: '關於《論語》一書的敘述，何者正確？', opts: ['由孔子弟子及再傳弟子記錄孔子與弟子言行而成，為語錄體', '是孔子晚年親筆撰寫的自傳', '屬於道家學派最重要的經典著作', '全書皆為長篇大論的議論文，沒有對話'], ans: 0, exp: '《論語》是儒家經典，由孔子的弟子及再傳弟子編纂而成，屬於「語錄體」散文。' },
+  // 第5課
+  { l: 5, q: '朱自清在〈背影〉中，總共寫了四次流淚。當他看見父親「肥胖的青布棉袍黑布馬褂的背影」攀爬月台買橘子時，流下的是哪種眼淚？', opts: ['體會父愛後的感動之淚', '喪失親人的悲哀之淚', '抱怨父親太囉嗦的委屈之淚', '害怕趕不上火車的焦急之淚'], ans: 0, exp: '看到行動不便的父親為了幫自己買橘子而費力攀爬月台，作者深深體會到深沉的父愛，流下感動的眼淚。' },
+  { l: 5, q: '下列〈背影〉中的詞語解釋，何者「錯誤」？', opts: ['「迂」腐：形容思想非常新潮前衛', '狼「藉」：亂七八糟、雜亂不堪的樣子', '「蹣跚」：走路緩慢搖擺的樣子', '「箸」：筷子'], ans: 0, exp: '「迂」腐是指言行陳舊、不合時宜、固執不知變通，並非新潮前衛。' },
+  // 第6課
+  { l: 6, q: '杏林子在〈心囚〉一文中指出，真正的「心囚」是指什麼樣的人？', opts: ['心靈自我封閉、自怨自艾、畫地自限的人', '因為犯罪而被關進監獄的囚犯', '身體有殘障但心靈樂觀開朗的人', '每天忙於工作沒有時間休息的人'], ans: 0, exp: '作者認為身體的殘缺並不可怕，心靈若被悲觀與自我放棄困住，才是真正的「心囚」。' },
+  // 語文常識二
+  { l: 'c2', q: '當我們在閱讀長篇文章或說明書，想要「快速找到某個特定年代或關鍵數字」時，最適合使用哪種閱讀策略？', opts: ['掃描（Scanning）', '逐字大聲朗讀', '背誦全文', '只看封面插圖'], ans: 0, exp: '「掃描（Scanning）」是帶著明確目標，快速移動視線尋找特定關鍵字或數據的閱讀技巧。' },
+  // 第7課
+  { l: 7, q: '沈復在〈兒時記趣〉中，能夠感受到「物外之趣」的最主要原因為何？', opts: ['具備細心的觀察力與豐富的想像力', '家裡非常有錢，買了許多昂貴玩具', '經常跟著大人到各地名勝古蹟旅遊', '從小就讀過非常多自然科學百科全書'], ans: 0, exp: '第一段即點明「余憶童稚時，能張目對日，明察秋毫，見藐小微物，必細察其紋理，故時有物外之趣」，關鍵在於觀察力與想像力。' },
+  { l: 7, q: '〈兒時記趣〉中，「龐然大物，拔山倒樹而來，蓋一癩蝦蟆也」的「蓋」字意思為何？', opts: ['原來是', '遮蓋、覆蓋', '蓋子', '大概、大約'], ans: 0, exp: '此處「蓋」作發語詞，解釋為「原來是」。' },
+  // 第8課
+  { l: 8, q: '孔子所說的「益者三友」是指哪三種朋友？', opts: ['友直、友諒、友多聞', '友便辟、友善柔、友便佞', '有錢、有權、有名氣', '陪吃、陪喝、陪玩樂'], ans: 0, exp: '益者三友：友直（正直的朋友）、友諒（誠信的朋友）、友多聞（見識廣博的朋友）。' },
+  { l: 8, q: '《禮記》說：「獨學而無友，則孤陋而寡聞。」這句話強調交友的哪一項好處？', opts: ['彼此切磋琢磨，增廣見聞', '遇到困難時有人幫忙出錢', '在團體中比較不會被欺負', '可以一起抄作業節省時間'], ans: 0, exp: '一個人獨自學習而沒有朋友互相討論切磋，就會學識淺薄、見聞不廣。' },
+  // 第9課
+  { l: 9, q: '王溢嘉在〈音樂家與職籃巨星〉中，舉鋼琴大師魯賓斯坦與喬丹為例，主要想論證什麼道理？', opts: ['天分只是起點，持續不懈的苦練才是成功的關鍵', '只要有過人的天分，完全不需要練習也能成功', '音樂家比運動員更需要從小開始培養興趣', '成功完全取決於遇到一位好教練'], ans: 0, exp: '兩位大師都擁有天分，但更令人敬佩的是他們日復一日、比常人更嚴格的苦練精神。' },
+  // 第10課
+  { l: 10, q: '〈玫瑰淚〉一文中，作者透過花店老先生買一朵紅玫瑰的故事，展現了什麼樣的情感？', opts: ['對伴侶深沉真摯、令人動容的愛與思念', '對花店老闆服務態度的不滿', '年輕人追求流行浪漫的衝動', '對金錢浪費的惋惜之情'], ans: 0, exp: '老先生買一朵紅玫瑰是為了紀念與老伴的深厚感情，故事以伏筆鋪陳，展現溫暖深摯的人間情誼。' }
+];
+
+let selectedLessons = new Set([1, 2, 3, 'c1']);
+let correctCount = 0;
+let streakCount = 0;
+let currentQ = null;
+let answered = false;
+
+function initCheckboxes() {
+  const grid = document.getElementById('lesson-checkboxes');
+  lessons.forEach(l => {
+    const label = document.createElement('label');
+    label.className = 'lesson-label';
+    const checked = selectedLessons.has(l.id) ? 'checked' : '';
+    label.innerHTML = `<input type="checkbox" value="${l.id}" ${checked} onchange="toggleLesson('${l.id}')"> ${l.name}`;
+    grid.appendChild(label);
+  });
+  renderNotes();
+}
+
+function toggleLesson(id) {
+  const key = isNaN(id) ? id : Number(id);
+  if (selectedLessons.has(key)) selectedLessons.delete(key);
+  else selectedLessons.add(key);
+  renderNotes();
+  if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
+}
+
+function selectRange(arr) {
+  selectedLessons = new Set(arr);
+  updateCheckboxesUI();
+  renderNotes();
+  if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
+}
+
+function selectAll(flag) {
+  selectedLessons = flag ? new Set(lessons.map(l => l.id)) : new Set();
+  updateCheckboxesUI();
+  renderNotes();
+  if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
+}
+
+function updateCheckboxesUI() {
+  document.querySelectorAll('#lesson-checkboxes input').forEach(cb => {
+    const key = isNaN(cb.value) ? cb.value : Number(cb.value);
+    cb.checked = selectedLessons.has(key);
+  });
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b, i) => {
+    b.classList.toggle('active', (tab === 'notes' && i === 0) || (tab === 'quiz' && i === 1));
+  });
+  document.getElementById('sec-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('sec-quiz').classList.toggle('active', tab === 'quiz');
+  if (tab === 'quiz') loadNextQuestion();
+}
+
+function renderNotes() {
+  const container = document.getElementById('sec-notes');
+  if (selectedLessons.size === 0) {
+    container.innerHTML = '<p style="text-align:center; color:#888; padding:30px;">請先在上方勾選至少一個課次範圍喔！</p>';
+    return;
+  }
+  let html = '';
+  lessons.forEach(l => {
+    if (selectedLessons.has(l.id) && notesData[l.id]) {
+      const n = notesData[l.id];
+      const lis = n.points.map(p => `<li>${p}</li>`).join('');
+      html += `<div class="note-card">
+        <div class="note-title"><span>${n.title}</span><span class="note-tag">${n.tag}</span></div>
+        <ul class="note-list">${lis}</ul>
+      </div>`;
+    }
+  });
+  container.innerHTML = html;
+}
+
+function loadNextQuestion() {
+  answered = false;
+  document.getElementById('q-exp').style.display = 'none';
+  document.getElementById('next-btn').style.display = 'none';
+  
+  const pool = quizBank.filter(item => selectedLessons.has(item.l));
+  if (pool.length === 0) {
+    document.getElementById('q-text').innerText = '請先在上方勾選至少一個課次範圍，才能開始出題喔！';
+    document.getElementById('q-options').innerHTML = '';
+    return;
+  }
+
+  let nextQ;
+  do {
+    nextQ = pool[Math.floor(Math.random() * pool.length)];
+  } while (pool.length > 1 && currentQ && nextQ.q === currentQ.q);
+  currentQ = nextQ;
+
+  const lessonObj = lessons.find(x => x.id === currentQ.l);
+  document.getElementById('q-lesson-tag').innerText = lessonObj ? lessonObj.name : '綜合題';
+  document.getElementById('q-text').innerText = currentQ.q;
+
+  const optsWithIdx = currentQ.opts.map((text, idx) => ({ text, isAns: idx === currentQ.ans }));
+  optsWithIdx.sort(() => Math.random() - 0.5);
+
+  const optContainer = document.getElementById('q-options');
+  optContainer.innerHTML = '';
+  optsWithIdx.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerText = o.text;
+    btn.onclick = () => checkAnswer(btn, o.isAns, optsWithIdx);
+    optContainer.appendChild(btn);
+  });
+}
+
+function checkAnswer(btn, isAns, allOpts) {
+  if (answered) return;
+  answered = true;
+  const btns = document.querySelectorAll('.opt-btn');
+  if (isAns) {
+    btn.classList.add('correct');
+    correctCount++;
+    streakCount++;
+  } else {
+    btn.classList.add('wrong');
+    streakCount = 0;
+    btns.forEach((b, i) => {
+      if (allOpts[i].isAns) b.classList.add('correct');
+    });
+  }
+  document.getElementById('correct-cnt').innerText = correctCount;
+  document.getElementById('streak-cnt').innerText = streakCount;
+  
+  const expBox = document.getElementById('q-exp');
+  expBox.innerHTML = `<b>${isAns ? '🎉 答對了！' : '💡 觀念解析：'}</b>${currentQ.exp}`;
+  expBox.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+
+initCheckboxes();
+</script>
+</body>
+</html>

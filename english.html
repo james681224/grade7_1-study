@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>國一上英語（佳音翰林版）- 重點與段考無限題庫</title>
+<style>
+  :root {
+    --primary: #2563EB;
+    --primary-light: #EFF6FF;
+    --secondary: #F59E0B;
+    --success: #10B981;
+    --danger: #EF4444;
+    --bg: #F3F4F6;
+    --card: #FFFFFF;
+    --text: #1F2937;
+    --muted: #6B7280;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 16px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 2px solid #E5E7EB;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+  .home-btn {
+    text-decoration: none;
+    background: #E5E7EB;
+    color: var(--text);
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 15px;
+    transition: 0.2s;
+  }
+  .home-btn:hover { background: #D1D5DB; }
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--primary);
+  }
+  .scope-box {
+    background: var(--primary-light);
+    border: 2px solid #BFDBFE;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .scope-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .scope-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #1E40AF;
+  }
+  .quick-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .quick-btn {
+    background: white;
+    border: 1px solid #93C5FD;
+    color: #1D4ED8;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .quick-btn:hover { background: #DBEAFE; }
+  .unit-checks {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+  }
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #DBEAFE;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .check-label input {
+    width: 17px;
+    height: 17px;
+    accent-color: var(--primary);
+  }
+  .mode-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 14px;
+    font-size: 17px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: #E5E7EB;
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* 重點整理卡片 */
+  .note-card {
+    border: 1px solid #E5E7EB;
+    border-left: 6px solid var(--primary);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    background: #FAFAFA;
+  }
+  .note-unit-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #1E3A8A;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .grammar-list {
+    margin: 0 0 12px 0;
+    padding-left: 20px;
+  }
+  .grammar-list li { margin-bottom: 6px; }
+  .vocab-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .vocab-chip {
+    background: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.15s;
+  }
+  .vocab-chip:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .vocab-en { font-weight: bold; color: #111827; }
+  .vocab-kk { color: #6B7280; font-size: 13px; }
+  .vocab-zh { color: #059669; font-weight: 500; }
+
+  /* 測驗區 */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #FEF3C7;
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    font-weight: bold;
+    color: #92400E;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .q-card {
+    border: 2px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 22px;
+    background: white;
+  }
+  .q-tag {
+    display: inline-block;
+    background: #DBEAFE;
+    color: #1E40AF;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 14px;
+    color: #111827;
+  }
+  .speak-q-btn {
+    background: #F59E0B;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  @media (min-width: 600px) {
+    .options { grid-template-columns: 1fr 1fr; }
+  }
+  .opt-btn {
+    text-align: left;
+    padding: 14px 16px;
+    font-size: 17px;
+    font-weight: 600;
+    border: 2px solid #D1D5DB;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .opt-btn.correct {
+    background: #D1FAE5;
+    border-color: var(--success);
+    color: #065F46;
+  }
+  .opt-btn.wrong {
+    background: #FEE2E2;
+    border-color: var(--danger);
+    color: #991B1B;
+  }
+  .explain-box {
+    display: none;
+    margin-top: 18px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #FFFBEB;
+    border: 1px solid #FCD34D;
+    color: #78350F;
+    font-size: 16px;
+  }
+  .next-btn {
+    display: none;
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .next-btn:hover { background: #1D4ED8; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <a href="index.html" class="home-btn">🏠 回全科總目錄</a>
+    <h1>🔤 國一上英語（佳音翰林版）</h1>
+    <div style="font-size:14px; color:var(--muted);">點擊單字卡可聽美式發音 🔊</div>
+  </div>
+
+  <!-- 範圍選擇器 -->
+  <div class="scope-box">
+    <div class="scope-header">
+      <span class="scope-title">📌 勾選段考複習範圍：</span>
+      <div class="quick-btns">
+        <button class="quick-btn" onclick="selectPreset([0,1,2])">一段 (Starter~U2)</button>
+        <button class="quick-btn" onclick="selectPreset([3,4])">二段 (U3~U4)</button>
+        <button class="quick-btn" onclick="selectPreset([5,6])">三段 (U5~U6)</button>
+        <button class="quick-btn" onclick="selectAll(true)">全選</button>
+      </div>
+    </div>
+    <div class="unit-checks" id="unit-checkboxes"></div>
+  </div>
+
+  <!-- 模式切換 -->
+  <div class="mode-tabs">
+    <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點與單字發音</button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
+  </div>
+
+  <!-- 分頁1：重點整理 -->
+  <div id="panel-notes" class="panel active"></div>
+
+  <!-- 分頁2：測驗區 -->
+  <div id="panel-quiz" class="panel">
+    <div class="quiz-header">
+      <span>🎯 已練習：<span id="q-count">0</span> 題</span>
+      <span>✅ 答對：<span id="q-correct">0</span> 題</span>
+      <span>🔥 連勝：<span id="q-streak">0</span> 題</span>
+    </div>
+    <div class="q-card">
+      <div class="q-tag" id="q-unit-tag">單元標籤</div>
+      <div class="q-text" id="q-question">題目載入中...</div>
+      <button class="speak-q-btn" id="q-speak-btn" onclick="speakCurrentQ()">🔊 朗讀英文題目 / 單字</button>
+      <div class="options" id="q-options"></div>
+      <div class="explain-box" id="q-explain"></div>
+      <button class="next-btn" id="q-next-btn" onclick="generateQuestion()">下一題 ➡️</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const unitsData = [
+  {
+    id: 0,
+    code: "Starter",
+    title: "Starter Unit（字母、問候與教室用語）",
+    grammar: [
+      "<b>人稱代名詞與 be 動詞搭配口訣：</b>I am (I'm)、You are (You're)、He/She/It is (He's/She's/It's)。",
+      "<b>常見問候語：</b>Nice to meet you.（很高興認識你）→ 回應：Nice to meet you, too.",
+      "<b>詢問名字與拼法：</b>What's your name? / How do you spell your name?",
+      "<b>教室常用祈使句：</b>Open your book.（打開課本）、Stand up.（起立）、Sit down.（坐下）、Look at the whiteboard.（看白板）。"
+    ],
+    vocab: [
+      { en: "student", kk: "[ˋstjudənt]", zh: "學生" },
+      { en: "teacher", kk: "[ˋtitʃɚ]", zh: "老師" },
+      { en: "classmate", kk: "[ˋklæs͵met]", zh: "同班同學" },
+      { en: "morning", kk: "[ˋmɔrnɪŋ]", zh: "早上" },
+      { en: "afternoon", kk: "[͵æftɚˋnun]", zh: "下午" },
+      { en: "evening", kk: "[ˋivnɪŋ]", zh: "傍晚" },
+      { en: "spell", kk: "[spɛl]", zh: "拼寫" },
+      { en: "whiteboard", kk: "[ˋhwaɪt͵bord]", zh: "白板" }
+    ]
+  },
+  {
+    id: 1,
+    code: "Unit 1",
+    title: "Unit 1 — Who's That Handsome Boy?（be動詞與所有格）",
+    grammar: [
+      "<b>Who 疑問句（詢問身分）：</b>Who is that boy? → He is my brother.（主詞為單數人名或 he/she 時，be 動詞用 <b>is</b>）。",
+      "<b>所有格用法（後面一定要加名詞）：</b>my（我的）、your（你的）、his（他的）、her（她的）、its（它的）、our（我們的）、their（他們的）。⚠️ 所有格前面<b>不可以</b>加 a/an/the！",
+      "<b>Yes/No 疑問句與簡答：</b>Is he a doctor? → 肯定簡答：Yes, he is.（⚠️ 肯定簡答<b>不可縮寫</b>為 Yes, he's）；否定簡答：No, he isn't. (No, he's not.)",
+      "<b>稱謂與職業：</b>doctor（醫生）、nurse（護士）、cook（廚師）、police officer（警察）、writer（作家）。"
+    ],
+    vocab: [
+      { en: "handsome", kk: "[ˋhænsəm]", zh: "英俊的" },
+      { en: "beautiful", kk: "[ˋbjutəfəl]", zh: "美麗的" },
+      { en: "young", kk: "[jʌŋ]", zh: "年輕的" },
+      { en: "husband", kk: "[ˋhʌzbənd]", zh: "丈夫" },
+      { en: "wife", kk: "[waɪf]", zh: "妻子" },
+      { en: "daughter", kk: "[ˋdɔtɚ]", zh: "女兒" },
+      { en: "son", kk: "[sʌn]", zh: "兒子" },
+      { en: "police officer", kk: "[pəˋlis ˋɔfɪsɚ]", zh: "警察" },
+      { en: "cousin", kk: "[ˋkʌzn]", zh: "堂/表兄弟姊妹" },
+      { en: "family", kk: "[ˋfæməlɪ]", zh: "家庭；家人" }
+    ]
+  },
+  {
+    id: 2,
+    code: "Unit 2",
+    title: "Unit 2 — Where Are My Pencils?（複數名詞與地方介系詞）",
+    grammar: [
+      "<b>指示代名詞單複數：</b>單數用 this（這個）/ that（那個）+ is；複數用 <b>these（這些）/ those（那些）+ are</b>。",
+      "<b>名詞複數變化規則：</b>一般加 -s（books）；字尾為 s, x, z, ch, sh 加 -es（boxes, watches）；「子音+y」去 y 加 -ies（dictionaries）；不規則變化（man→men, woman→women, child→children）。",
+      "<b>Where 疑問句（詢問地點）：</b>Where is my pencil case? → It is on the desk. / Where are the glasses? → They are in the bag.（glasses 眼鏡、shorts 短褲恆為複數，be 動詞用 <b>are</b>）。",
+      "<b>常用地方介系詞：</b>in（在…裡面）、on（在…上面）、under（在…下面）、in front of（在…前面）、behind（在…後面）、next to（在…旁邊）、between A and B（在 A 和 B 之間）。"
+    ],
+    vocab: [
+      { en: "pencil case", kk: "[ˋpɛnsl ͵kes]", zh: "鉛筆盒" },
+      { en: "dictionary", kk: "[ˋdɪkʃən͵ɛrɪ]", zh: "字典" },
+      { en: "glasses", kk: "[ˋglæsɪz]", zh: "眼鏡（複數）" },
+      { en: "umbrella", kk: "[ʌmˋbrɛlə]", zh: "雨傘" },
+      { en: "between", kk: "[bɪˋtwin]", zh: "在…之間" },
+      { en: "behind", kk: "[bɪˋhaɪnd]", zh: "在…後面" },
+      { en: "in front of", kk: "[ɪn frʌnt əv]", zh: "在…前面" },
+      { en: "next to", kk: "[nɛkst tu]", zh: "在…旁邊" },
+      { en: "living room", kk: "[ˋlɪvɪŋ rum]", zh: "客廳" },
+      { en: "kitchen", kk: "[ˋkɪtʃɪn]", zh: "廚房" }
+    ]
+  },
+  {
+    id: 3,
+    code: "Unit 3",
+    title: "Unit 3 — Open the Magic Door（祈使句與 let's 用法）",
+    grammar: [
+      "<b>祈使句核心規則：</b>省略主詞 you，句首直接用<b>原形動詞</b>！例如：Open the door.（打開門）、Be quiet.（安靜，be 動詞原形為 Be）。",
+      "<b>否定祈使句：</b>在原形動詞前面直接加 <b>Don't</b>（= Do not）。例如：Don't run in the classroom.（不要在教室奔跑）、Don't be late.（不要遲到）。",
+      "<b>禮貌用語 please 位置：</b>放句首直接加逗號或省略（Please sit down.）；放句尾時前面<b>一定要加逗號</b>（Sit down, please.）。",
+      "<b>邀約句型 Let's：</b>Let's + 原形動詞（讓我們一起…吧），否定為 <b>Let's not + 原形動詞</b>（讓我們不要…吧）。"
+    ],
+    vocab: [
+      { en: "magic", kk: "[ˋmædʒɪk]", zh: "魔法的" },
+      { en: "quiet", kk: "[ˋkwaɪət]", zh: "安靜的" },
+      { en: "careful", kk: "[ˋkɛrfəl]", zh: "小心的" },
+      { en: "hurry up", kk: "[ˋhɝɪ ʌp]", zh: "趕快" },
+      { en: "wait", kk: "[wet]", zh: "等待" },
+      { en: "follow", kk: "[ˋfɑlo]", zh: "跟隨；遵守" },
+      { en: "rule", kk: "[rul]", zh: "規則" },
+      { en: "museum", kk: "[mjuˋzɪəm]", zh: "博物館" },
+      { en: "touch", kk: "[tʌtʃ]", zh: "觸摸" },
+      { en: "shout", kk: "[ʃaʊt]", zh: "大喊" }
+    ]
+  },
+  {
+    id: 4,
+    code: "Unit 4",
+    title: "Unit 4 — What Time Is the Concert?（時間、星期與現在進行式）",
+    grammar: [
+      "<b>詢問時間與星期：</b>What time is it? → It's seven thirty.（幾點幾分用介系詞 <b>at</b>，如 at 7:00）；What day is today? → It's Monday.（星期幾前面用介系詞 <b>on</b>，且星期字首<b>必須大寫</b>）。",
+      "<b>現在進行式句型：</b>主詞 + <b>be 動詞 (am/is/are) + V-ing</b>（表示「正在…」）。",
+      "<b>動詞加 -ing 變化規則：</b>一般直接加 -ing（singing）；字尾為不發音 e 時，去 e 加 -ing（write → writing, dance → dancing）；「短母音+單子音」重複字尾加 -ing（run → running, swim → swimming）。"
+    ],
+    vocab: [
+      { en: "concert", kk: "[ˋkɑnsɚt]", zh: "演唱會；音樂會" },
+      { en: "weekend", kk: "[ˋwik͵ɛnd]", zh: "週末" },
+      { en: "Wednesday", kk: "[ˋwɛnzde]", zh: "星期三" },
+      { en: "Thursday", kk: "[ˋθɝzde]", zh: "星期四" },
+      { en: "Saturday", kk: "[ˋsætɚde]", zh: "星期六" },
+      { en: "ready", kk: "[ˋrɛdɪ]", zh: "準備好的" },
+      { en: "dance", kk: "[dæns]", zh: "跳舞" },
+      { en: "study", kk: "[ˋstʌdɪ]", zh: "研讀；學習" },
+      { en: "report", kk: "[rɪˋport]", zh: "報告" },
+      { en: "popular", kk: "[ˋpɑpjəlɚ]", zh: "受歡迎的" }
+    ]
+  },
+  {
+    id: 5,
+    code: "Unit 5",
+    title: "Unit 5 — What's the Date?（日期、月份、序數與介系詞）",
+    grammar: [
+      "<b>詢問日期句型：</b>What's the date today?（今天幾月幾號？）→ It's November twenty-fifth.（美式寫法：<b>月份 + 序數</b>，唸法要唸成序數）。",
+      "<b>時間介系詞黃金口訣（in / on / at）：</b><b>in</b> 加大時間（年份、季節、月份，如 in May）；<b>on</b> 加特定某一天（日期、星期、節日當天，如 on May 10, on Mother's Day）；<b>at</b> 加時間點（at 8:30）。",
+      "<b>常考序數拼法陷阱：</b>first (1st)、second (2nd)、third (3rd)、fifth (5th，去ve改f加th)、eighth (8th，只加h)、ninth (9th，去e加th)、twelfth (12th，去ve改f加th)、twentieth (20th，去y改ie加th)。"
+    ],
+    vocab: [
+      { en: "January", kk: "[ˋdʒænjʊ͵ɛrɪ]", zh: "一月" },
+      { en: "February", kk: "[ˋfɛbrʊ͵ɛrɪ]", zh: "二月" },
+      { en: "August", kk: "[ˋɔgəst]", zh: "八月" },
+      { en: "September", kk: "[sɛpˋtɛmbɚ]", zh: "九月" },
+      { en: "October", kk: "[ɑkˋtobɚ]", zh: "十月" },
+      { en: "November", kk: "[noˋvɛmbɚ]", zh: "十一月" },
+      { en: "December", kk: "[dɪˋsɛmbɚ]", zh: "十二月" },
+      { en: "holiday", kk: "[ˋhɑlə͵de]", zh: "假日；節日" },
+      { en: "important", kk: "[ɪmˋpɔrtnt]", zh: "重要的" },
+      { en: "birthday", kk: "[ˋbɝθ͵de]", zh: "生日" }
+    ]
+  },
+  {
+    id: 6,
+    code: "Unit 6",
+    title: "Unit 6 — There Are Some Elephants Over There（There is/are 與數量）",
+    grammar: [
+      "<b>There is / There are 句型（表示「某處有某物」）：</b>後面接單數名詞或不可數名詞用 <b>There is</b>；接複數名詞用 <b>There are</b>（就近原則：看離 be 動詞最近的那個名詞決定單複數）。",
+      "<b>some 與 any 的區別：</b><b>some</b> 用於肯定句（There are some zebras.）；<b>any</b> 用於否定句與疑問句（Are there any lions? / There aren't any bears.）。",
+      "<b>常見動物與自然名詞：</b>elephant（大象）、zebra（斑馬）、giraffe（長頸鹿）、monkey（猴子）、lion（獅子）、tiger（老虎）、hippo（河馬）、king（國王）。"
+    ],
+    vocab: [
+      { en: "elephant", kk: "[ˋɛləfənt]", zh: "大象" },
+      { en: "zebra", kk: "[ˋzibrə]", zh: "斑馬" },
+      { en: "giraffe", kk: "[dʒəˋræf]", zh: "長頸鹿" },
+      { en: "hippo", kk: "[ˋhɪpo]", zh: "河馬" },
+      { en: "monkey", kk: "[ˋmʌŋkɪ]", zh: "猴子" },
+      { en: "around", kk: "[əˋraʊnd]", zh: "在…周圍；大約" },
+      { en: "example", kk: "[ɪgˋzæmpl]", zh: "例子" },
+      { en: "world", kk: "[wɝld]", zh: "世界" },
+      { en: "clean", kk: "[klin]", zh: "乾淨的；清理" },
+      { en: "full", kk: "[fʊl]", zh: "滿的；飽的" }
+    ]
+  }
+];
+
+// 題庫設計（涵蓋文法、單字拼寫、介系詞、句型）
+const staticQuestions = [
+  // Starter
+  { u: 0, q: "A: Nice to meet you.  B: ____________", speak: "Nice to meet you.", opts: ["Nice to meet you, too.", "I'm fine, thank you.", "Good morning.", "You're welcome."], ans: "Nice to meet you, too.", exp: "初次見面打招呼說 Nice to meet you.（很高興認識你），標準回應為 Nice to meet you, too.（我也很高興認識你）。" },
+  { u: 0, q: "A: ______ do you spell your name?  B: E-M-M-A, Emma.", speak: "How do you spell your name?", opts: ["How", "What", "Who", "Where"], ans: "How", exp: "詢問「如何拼寫」名字，疑問詞要用 How（How do you spell...?）。" },
+  { u: 0, q: "Look ______ the whiteboard, everyone.", speak: "Look at the whiteboard, everyone.", opts: ["at", "in", "on", "to"], ans: "at", exp: "「看著某物」的固定片語是 look at（例如 look at the whiteboard）。" },
+
+  // Unit 1
+  { u: 1, q: "A: ______ is that handsome boy?  B: He is my cousin, Leo.", speak: "Who is that handsome boy?", opts: ["Who", "What", "Where", "How"], ans: "Who", exp: "答句回答「他是我表哥（身分）」，因此問句要用詢問人的疑問詞 Who（誰）。" },
+  { u: 1, q: "A: Is Mr. Lin your English teacher?  B: Yes, ______.", speak: "Is Mr. Lin your English teacher?", opts: ["he is", "he's", "Mr. Lin is", "she is"], ans: "he is", exp: "Yes/No 疑問句的「肯定簡答」必須用代名詞（Mr. Lin 男生用 he），且肯定簡答「絕對不能縮寫」，所以選 he is。" },
+  { u: 1, q: "This is ______ new bike. It is very cool.", speak: "This is my new bike.", opts: ["my", "a my", "the my", "I"], ans: "my", exp: "所有格（my 我的）後面直接加名詞，前面「不可以」再加冠詞 a 或 the！" },
+  { u: 1, q: "My father's brother is my ______, and his son is my ______.", speak: "My father's brother is my uncle, and his son is my cousin.", opts: ["uncle; cousin", "aunt; brother", "uncle; nephew", "grandfather; cousin"], ans: "uncle; cousin", exp: "爸爸的兄弟是「叔叔/伯伯 (uncle)」，叔叔的兒子是「堂兄弟 (cousin)」。" },
+  { u: 1, q: "選出單字「警察」的正確英文：", speak: "police officer", opts: ["police officer", "office worker", "writer", "housewife"], ans: "police officer", exp: "警察的英文是 police officer；writer 是作家，housewife 是家庭主婦。" },
+
+  // Unit 2
+  { u: 2, q: "A: Where ______ my glasses?  B: ______ on the sofa.", speak: "Where are my glasses? They are on the sofa.", opts: ["are; They're", "is; It's", "are; It's", "is; They're"], ans: "are; They're", exp: "glasses（眼鏡）有兩個鏡片，在英文裡恆為「複數名詞」，因此 be 動詞用 are，代名詞用 They're。" },
+  { u: 2, q: "______ are my comic books, and ______ is my pencil case.", speak: "These are my comic books, and that is my pencil case.", opts: ["These; that", "This; those", "That; these", "This; that"], ans: "These; that", exp: "第一格後面 be 動詞是 are（複數），要選複數指示代名詞 These；第二格後面是 is（單數），要選單數 that。" },
+  { u: 2, q: "The bank is ______ the park and the school.", speak: "The bank is between the park and the school.", opts: ["between", "in front of", "next to", "under"], ans: "between", exp: "看到關鍵字「A and B」，表示「在 A 和 B 之間」，固定搭配介系詞 between（between A and B）。" },
+  { u: 2, q: "選出「dictionary（字典）」正確的複數拼法：", speak: "dictionaries", opts: ["dictionaries", "dictionarys", "dictionaryes", "dictionaris"], ans: "dictionaries", exp: "dictionary 字尾是「子音 r + y」，變複數時要去 y 加上 -ies，變成 dictionaries。" },
+  { u: 2, q: "There are two ______ and three ______ in the room.", speak: "There are two women and three children in the room.", opts: ["women; children", "womans; childs", "woman; child", "womens; childrens"], ans: "women; children", exp: "不規則複數變化：woman（女人）→ women；child（小孩）→ children。" },
+
+  // Unit 3
+  { u: 3, q: "______ quiet in the library, please.", speak: "Be quiet in the library, please.", opts: ["Be", "Are", "Is", "Do"], ans: "Be", exp: "祈使句句首要用「原形動詞」，quiet（安靜的）是形容詞，前面必須放原形 be 動詞「Be」。" },
+  { u: 3, q: "______ run or shout in the museum!", speak: "Don't run or shout in the museum!", opts: ["Don't", "Not", "No", "Aren't"], ans: "Don't", exp: "否定祈使句（叫別人不要做某事），在原形動詞 run 前面直接加 Don't。" },
+  { u: 3, q: "It's raining outside. Let's ______ to the park today.", speak: "It's raining outside. Let's not go to the park today.", opts: ["not go", "don't go", "no go", "not to go"], ans: "not go", exp: "Let's（讓我們）的否定句型是「Let's not + 原形動詞」，不可用 Let's don't。" },
+  { u: 3, q: "Open the magic door, ______.", speak: "Open the magic door, please.", opts: ["please", "let's", "follow", "wait"], ans: "please", exp: "please 放在祈使句的句尾時，前面加逗號（, please）表示禮貌「請」。" },
+
+  // Unit 4
+  { u: 4, q: "A: ______ is the concert?  B: It's at seven thirty.", speak: "What time is the concert? It's at seven thirty.", opts: ["What time", "What day", "What date", "Where"], ans: "What time", exp: "答句回答「七點半（具體幾點幾分）」，問句要用 What time（幾點）。" },
+  { u: 4, q: "My sister is ______ in the swimming pool now.", speak: "My sister is swimming in the swimming pool now.", opts: ["swimming", "swiming", "swim", "swims"], ans: "swimming", exp: "關鍵字 now（現在）表示現在進行式（is + V-ing）。swim 為「短母音 i + 單子音 m」，要重複字尾 m 再加 -ing → swimming。" },
+  { u: 4, q: "The big game is ______ Saturday afternoon.", speak: "The big game is on Saturday afternoon.", opts: ["on", "in", "at", "under"], ans: "on", exp: "只要出現「星期幾」（Saturday），不管後面有沒有加 afternoon，介系詞一律用 on！" },
+  { u: 4, q: "Look! The students ______ English songs in the classroom.", speak: "Look! The students are singing English songs in the classroom.", opts: ["are singing", "is singing", "sing", "singing"], ans: "are singing", exp: "句首有 Look!（看！）提示動作正在發生，主詞 The students 是複數，現在進行式要寫成 are singing。" },
+  { u: 4, q: "選出「星期三」的正確英文拼法：", speak: "Wednesday", opts: ["Wednesday", "Wensday", "Wednsday", "Tuesday"], ans: "Wednesday", exp: "星期三拼法是 W-e-d-n-e-s-d-a-y（注意中間有一個不發音的 d），且星期字首必須大寫。" },
+
+  // Unit 5
+  { u: 5, q: "A: ______ is the date today?  B: It's October tenth.", speak: "What is the date today? It's October tenth.", opts: ["What", "When", "Who", "How"], ans: "What", exp: "詢問日期的固定句型是「What is the date today?」（今天是幾月幾號？）。" },
+  { u: 5, q: "Teacher's Day in Taiwan is ______ September 28.", speak: "Teacher's Day in Taiwan is on September twenty-eighth.", opts: ["on", "in", "at", "for"], ans: "on", exp: "只要明確寫出「幾月幾號」（特定某一天），時間介系詞就要用 on！只有單獨寫月份（in September）才用 in。" },
+  { u: 5, q: "Mother's Day is ______ the second Sunday ______ May.", speak: "Mother's Day is on the second Sunday of May.", opts: ["on; of", "in; on", "at; in", "on; at"], ans: "on; of", exp: "特定的某個星期日（the second Sunday）用 on；五月的第二個星期日，所屬關係用 of。" },
+  { u: 5, q: "選出序數「第十二 (12th)」的正確拼法：", speak: "twelfth", opts: ["twelfth", "twelveth", "twentyth", "twelve"], ans: "twelfth", exp: "twelve 變序數時，要把字尾的 ve 改成 f，再加上 th → twelfth（第五 fifth 也是同樣規則）。" },
+  { u: 5, q: "選出序數「第九 (9th)」的正確拼法：", speak: "ninth", opts: ["ninth", "nineth", "nine", "ninety"], ans: "ninth", exp: "nine 變序數時，要「去掉字尾不發音的 e」再加 th → ninth。" },
+
+  // Unit 6
+  { u: 6, q: "______ some elephants and a lion over there.", speak: "There are some elephants and a lion over there.", opts: ["There are", "There is", "They are", "Have"], ans: "There are", exp: "There is/are 採取「就近原則」，離空格最近的名詞是 some elephants（複數），所以要用 There are！" },
+  { u: 6, q: "Are there ______ zebras in the zoo?", speak: "Are there any zebras in the zoo?", opts: ["any", "some", "a", "an"], ans: "any", exp: "在「疑問句」和「否定句」中表示「一些」，要用 any；some 通常只用在肯定句。" },
+  { u: 6, q: "There ______ any water in the bottle.", speak: "There isn't any water in the bottle.", opts: ["isn't", "aren't", "is", "are"], ans: "isn't", exp: "water（水）是不可數名詞，視為單數；加上後面有 any（否定句線索），因此選 isn't。" },
+  { u: 6, q: "選出單字「長頸鹿」的正確英文：", speak: "giraffe", opts: ["giraffe", "zebra", "hippo", "elephant"], ans: "giraffe", exp: "giraffe 是長頸鹿；zebra 是斑馬；hippo 是河馬；elephant 是大象。" }
+];
+
+let selectedUnits = [0, 1, 2, 3, 4, 5, 6];
+let qCount = 0, qCorrect = 0, qStreak = 0;
+let currentQObj = null;
+let answered = false;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+function initCheckboxes() {
+  const box = document.getElementById('unit-checkboxes');
+  box.innerHTML = '';
+  unitsData.forEach(u => {
+    const checked = selectedUnits.includes(u.id) ? 'checked' : '';
+    box.innerHTML += `
+      <label class="check-label">
+        <input type="checkbox" value="${u.id}" ${checked} onchange="onScopeChange()">
+        <span>${u.code}</span>
+      </label>
+    `;
+  });
+}
+
+function selectPreset(ids) {
+  selectedUnits = [...ids];
+  initCheckboxes();
+  renderNotes();
+  if (document.getElementById('panel-quiz').classList.contains('active')) {
+    generateQuestion();
+  }
+}
+
+function selectAll(flag) {
+  selectedUnits = flag ? unitsData.map(u => u.id) : [];
+  initCheckboxes();
+  renderNotes();
+  if (flag && document.getElementById('panel-quiz').classList.contains('active')) {
+    generateQuestion();
+  }
+}
+
+function onScopeChange() {
+  const inputs = document.querySelectorAll('#unit-checkboxes input:checked');
+  selectedUnits = Array.from(inputs).map(el => parseInt(el.value));
+  renderNotes();
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
+  document.getElementById('panel-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('panel-quiz').classList.toggle('active', tab === 'quiz');
+  if (tab === 'quiz') {
+    generateQuestion();
+  }
+}
+
+function renderNotes() {
+  const container = document.getElementById('panel-notes');
+  if (selectedUnits.length === 0) {
+    container.innerHTML = '<div class="note-card">請在上方至少勾選一個單元喔！</div>';
+    return;
+  }
+  let html = '';
+  unitsData.filter(u => selectedUnits.includes(u.id)).forEach(u => {
+    const grammarHtml = u.grammar.map(g => `<li>${g}</li>`).join('');
+    const vocabHtml = u.vocab.map(v => `
+      <div class="vocab-chip" onclick="speak('${v.en.replace(/'/g, "\'")}')">
+        <span>🔊</span>
+        <span class="vocab-en">${v.en}</span>
+        <span class="vocab-kk">${v.kk}</span>
+        <span class="vocab-zh">${v.zh}</span>
+      </div>
+    `).join('');
+    html += `
+      <div class="note-card">
+        <div class="note-unit-title">${u.title}</div>
+        <div style="font-weight:bold; color:#374151; margin-bottom:6px;">📌 必考文法與句型重點：</div>
+        <ul class="grammar-list">${grammarHtml}</ul>
+        <div style="font-weight:bold; color:#374151; margin-top:10px;">🔤 核心單字（點擊可聽發音）：</div>
+        <div class="vocab-grid">${vocabHtml}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+// 動態生成單字中英互考題 + 靜態文法題混合
+function buildQuestionPool() {
+  let pool = staticQuestions.filter(q => selectedUnits.includes(q.u));
+  const activeUnits = unitsData.filter(u => selectedUnits.includes(u.id));
+  const allVocab = unitsData.flatMap(u => u.vocab);
+
+  activeUnits.forEach(u => {
+    u.vocab.forEach(v => {
+      // 隨機抽3個干擾中文選項
+      const otherZh = allVocab.filter(x => x.en !== v.en).sort(() => Math.random() - 0.5).slice(0, 3).map(x => x.zh);
+      pool.push({
+        u: u.id,
+        q: `單字測驗：請問「${v.en}」的中文意思是？`,
+        speak: v.en,
+        opts: [v.zh, ...otherZh],
+        ans: v.zh,
+        exp: `單字「${v.en}」${v.kk} 的意思是「${v.zh}」（出自 ${u.code}）。`
+      });
+    });
+  });
+  return pool;
+}
+
+function generateQuestion() {
+  if (selectedUnits.length === 0) {
+    document.getElementById('q-question').innerText = '請先在上方勾選至少一個複習單元！';
+    document.getElementById('q-options').innerHTML = '';
+    document.getElementById('q-explain').style.display = 'none';
+    document.getElementById('q-next-btn').style.display = 'none';
+    return;
+  }
+  const pool = buildQuestionPool();
+  let nextQ;
+  do {
+    nextQ = pool[Math.floor(Math.random() * pool.length)];
+  } while (currentQObj && pool.length > 1 && nextQ.q === currentQObj.q);
+
+  currentQObj = nextQ;
+  answered = false;
+
+  const uInfo = unitsData.find(u => u.id === currentQObj.u);
+  document.getElementById('q-unit-tag').innerText = uInfo ? uInfo.code : '綜合題';
+  document.getElementById('q-question').innerText = currentQObj.q;
+  document.getElementById('q-explain').style.display = 'none';
+  document.getElementById('q-next-btn').style.display = 'none';
+
+  const shuffledOpts = [...currentQObj.opts].sort(() => Math.random() - 0.5);
+  const optBox = document.getElementById('q-options');
+  optBox.innerHTML = '';
+  shuffledOpts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt);
+    optBox.appendChild(btn);
+  });
+}
+
+function speakCurrentQ() {
+  if (currentQObj && currentQObj.speak) {
+    speak(currentQObj.speak);
+  }
+}
+
+function checkAnswer(btn, chosen) {
+  if (answered) return;
+  answered = true;
+  qCount++;
+
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const expBox = document.getElementById('q-explain');
+  if (chosen === currentQObj.ans) {
+    btn.classList.add('correct');
+    qCorrect++;
+    qStreak++;
+    expBox.innerHTML = `✅ <b>答對了！</b><br>${currentQObj.exp}`;
+  } else {
+    btn.classList.add('wrong');
+    qStreak = 0;
+    allBtns.forEach(b => {
+      if (b.innerText === currentQObj.ans) b.classList.add('correct');
+    });
+    expBox.innerHTML = `❌ <b>答錯囉！正確答案是「${currentQObj.ans}」</b><br>💡 <b>觀念解析：</b>${currentQObj.exp}`;
+  }
+
+  document.getElementById('q-count').innerText = qCount;
+  document.getElementById('q-correct').innerText = qCorrect;
+  document.getElementById('q-streak').innerText = qStreak;
+  expBox.style.display = 'block';
+  document.getElementById('q-next-btn').style.display = 'block';
+}
+
+initCheckboxes();
+renderNotes();
+</script>
+</body>
+</html>
