@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上英語（佳音翰林版）- 重點與段考無限題庫</title>
+<title>國一上英語（佳音翰林版）- 重點、互動文法與段考無限題庫</title>
 <style>
   :root {
     --primary: #2563EB;
     --primary-light: #EFF6FF;
     --secondary: #F59E0B;
+    --accent: #0D9488;
     --success: #10B981;
     --danger: #EF4444;
     --bg: #F3F4F6;
@@ -97,7 +98,7 @@
   .quick-btn:hover { background: #DBEAFE; }
   .unit-checks {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 8px;
   }
   .check-label {
@@ -121,9 +122,11 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
   .tab-btn {
     flex: 1;
+    min-width: 160px;
     padding: 14px;
     font-size: 17px;
     font-weight: bold;
@@ -138,6 +141,10 @@
     background: var(--primary);
     color: white;
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  }
+  .tab-btn#tab-anim.active {
+    background: var(--accent);
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
   }
   .panel { display: none; }
   .panel.active { display: block; }
@@ -192,6 +199,91 @@
   .vocab-en { font-weight: bold; color: #111827; }
   .vocab-kk { color: #6B7280; font-size: 13px; }
   .vocab-zh { color: #059669; font-weight: 500; }
+
+  /* 互動文法視覺動畫卡片 */
+  .anim-card {
+    border: 2px solid #99F6E4;
+    border-left: 6px solid var(--accent);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #FFFFFF;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+  }
+  .anim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .anim-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #0F766E;
+  }
+  .anim-badge {
+    background: #CCFBF1;
+    color: #0F766E;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .svg-stage {
+    width: 100%;
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .svg-stage svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #F1F5F9;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .ctrl-btn {
+    background: #FFFFFF;
+    border: 2px solid var(--accent);
+    color: #0F766E;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--accent);
+    color: #FFFFFF;
+  }
+  .concept-callout {
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+    border-left: 5px solid #F59E0B;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 15px;
+    color: #78350F;
+    line-height: 1.6;
+  }
+  .concept-callout b { color: #B45309; }
 
   /* 測驗區 */
   .quiz-header {
@@ -325,13 +417,17 @@
   <!-- 模式切換 -->
   <div class="mode-tabs">
     <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點與單字發音</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab('anim')">🎬 互動文法與句型動畫</button>
     <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
   </div>
 
   <!-- 分頁1：重點整理 -->
   <div id="panel-notes" class="panel active"></div>
 
-  <!-- 分頁2：測驗區 -->
+  <!-- 分頁2：互動動畫 -->
+  <div id="panel-anim" class="panel"></div>
+
+  <!-- 分頁3：測驗區 -->
   <div id="panel-quiz" class="panel">
     <div class="quiz-header">
       <span>🎯 已練習：<span id="q-count">0</span> 題</span>
@@ -509,242 +605,324 @@ const unitsData = [
   }
 ];
 
-// 題庫設計（涵蓋文法、單字拼寫、介系詞、句型）
+const animData = {
+  0: {
+    title: 'Starter 互動拼字與問候發音台',
+    badge: '點擊聽發音',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#F8FAFC"/>
+          <rect x="70" y="25" width="540" height="135" rx="14" fill="#EFF6FF" stroke="#2563EB" stroke-width="2.5"/>
+          <text id="en0-phrase" x="340" y="72" text-anchor="middle" font-size="24" font-weight="bold" fill="#1E3A8A">Nice to meet you!</text>
+          <text id="en0-zh" x="340" y="108" text-anchor="middle" font-size="18" font-weight="bold" fill="#059669">很高興認識你！（回應：Nice to meet you, too.）</text>
+          <text id="en0-tip2" x="340" y="140" text-anchor="middle" font-size="14" fill="#4B5563">點擊下方按鈕切換例句並自動朗讀美式發音 🔊</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn0(0, this)">👋 Nice to meet you</button>
+        <button class="ctrl-btn" onclick="setEn0(1, this)">🔤 How do you spell...?</button>
+        <button class="ctrl-btn" onclick="setEn0(2, this)">📖 Look at the whiteboard</button>
+      </div>
+      <div class="concept-callout" id="en0-tip"></div>
+    `
+  },
+  1: {
+    title: 'Unit 1 be動詞變身與所有格陷阱偵測器',
+    badge: '主詞切換互動',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="65" y="26" width="550" height="138" rx="14" fill="#F0FDF4" stroke="#16A34A" stroke-width="2.5"/>
+          <text id="en1-sent" x="340" y="70" text-anchor="middle" font-size="22" font-weight="bold" fill="#14532D">Who is that boy? ➔ He is my cousin.</text>
+          <text id="en1-rule" x="340" y="106" text-anchor="middle" font-size="16" font-weight="bold" fill="#D97706">肯定簡答：Yes, he is.（⚠️ 不可縮寫成 Yes, he's！）</text>
+          <text id="en1-pos" x="340" y="138" text-anchor="middle" font-size="15" fill="#374151">所有格 my 後面直接加名詞 cousin，前面不可再加 a / the！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn1(0, this)">👨 單數男生 (He / is)</button>
+        <button class="ctrl-btn" onclick="setEn1(1, this)">👩 單數女生 (She / is)</button>
+        <button class="ctrl-btn" onclick="setEn1(2, this)">⚠️ 肯定簡答縮寫陷阱</button>
+      </div>
+      <div class="concept-callout" id="en1-tip"></div>
+    `
+  },
+  2: {
+    title: 'Unit 2 地方介系詞方位雷達（in / on / under / between）',
+    badge: '點擊切換位置',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 205">
+          <rect x="0" y="0" width="680" height="205" fill="#F8FAFC"/>
+          <rect x="130" y="105" width="75" height="45" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+          <text x="167" y="133" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E40AF">Book A</text>
+          <rect id="en2-box" x="295" y="100" width="90" height="50" rx="8" fill="#FEF3C7" stroke="#D97706" stroke-width="2.5"/>
+          <text x="340" y="130" text-anchor="middle" font-size="15" font-weight="bold" fill="#92400E">Desk</text>
+          <rect x="475" y="105" width="75" height="45" rx="6" fill="#DBEAFE" stroke="#2563EB" stroke-width="2"/>
+          <text x="512" y="133" text-anchor="middle" font-size="14" font-weight="bold" fill="#1E40AF">Book B</text>
+          <g id="en2-pencil" transform="translate(340, 72)">
+            <rect x="-32" y="-12" width="64" height="22" rx="6" fill="#EF4444"/>
+            <text x="0" y="3" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFFFFF">Pencil</text>
+          </g>
+          <text id="en2-label" x="340" y="184" text-anchor="middle" font-size="17" font-weight="bold" fill="#0F766E">The pencil is ON the desk.（在桌子上面）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn2('on', this)">⬆️ on（在…上面）</button>
+        <button class="ctrl-btn" onclick="setEn2('under', this)">⬇️ under（在…下面）</button>
+        <button class="ctrl-btn" onclick="setEn2('between', this)">↔️ between（在兩者之間）</button>
+        <button class="ctrl-btn" onclick="setEn2('next', this)">👉 next to（在旁邊）</button>
+      </div>
+      <div class="concept-callout" id="en2-tip"></div>
+    `
+  },
+  3: {
+    title: 'Unit 3 祈使句與 Let\'s 句型變身器',
+    badge: '肯定 / 否定切換',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#F8FAFC"/>
+          <rect x="65" y="25" width="550" height="135" rx="14" fill="#FFF7ED" stroke="#EA580C" stroke-width="2.5"/>
+          <text id="en3-imp" x="340" y="72" text-anchor="middle" font-size="23" font-weight="bold" fill="#9A3412">Be quiet in the library, please.</text>
+          <text id="en3-lets" x="340" y="110" text-anchor="middle" font-size="18" font-weight="bold" fill="#0F766E">邀約句型：Let's read books together.</text>
+          <text id="en3-sub" x="340" y="140" text-anchor="middle" font-size="14" fill="#4B5563">祈使句句首用原形動詞（quiet 前面用原形 Be）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn3(0, this)">✅ 肯定祈使句 (Be quiet)</button>
+        <button class="ctrl-btn" onclick="setEn3(1, this)">🚫 否定祈使句 (Don't run)</button>
+        <button class="ctrl-btn" onclick="setEn3(2, this)">🙅 Let's 否定 (Let's not go)</button>
+      </div>
+      <div class="concept-callout" id="en3-tip"></div>
+    `
+  },
+  4: {
+    title: 'Unit 4 現在進行式（be + V-ing）拼法實驗室',
+    badge: '動詞變化規則',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="65" y="25" width="550" height="140" rx="14" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2.5"/>
+          <text id="en4-verb" x="340" y="72" text-anchor="middle" font-size="24" font-weight="bold" fill="#312E81">swim ➔ is swimming（重複字尾 m + ing）</text>
+          <text id="en4-ex" x="340" y="110" text-anchor="middle" font-size="17" font-weight="bold" fill="#059669">例句：Look! She is swimming in the pool now.</text>
+          <text id="en4-rule" x="340" y="142" text-anchor="middle" font-size="14" fill="#4B5563">規則：短母音 i + 單子音 m，字尾要重複再加 -ing！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn4(0, this)">🏊 短母音+單子音 (swim)</button>
+        <button class="ctrl-btn" onclick="setEn4(1, this)">✍️ 去 e 加 ing (dance)</button>
+        <button class="ctrl-btn" onclick="setEn4(2, this)">🎤 直接加 ing (sing)</button>
+      </div>
+      <div class="concept-callout" id="en4-tip"></div>
+    `
+  },
+  5: {
+    title: 'Unit 5 時間介系詞（in / on / at）與序數拼法',
+    badge: '時間層級互動',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 195">
+          <rect x="0" y="0" width="680" height="195" fill="#F8FAFC"/>
+          <rect x="65" y="25" width="550" height="145" rx="14" fill="#FEFCE8" stroke="#CA8A04" stroke-width="2.5"/>
+          <text id="en5-prep" x="340" y="68" text-anchor="middle" font-size="23" font-weight="bold" fill="#854D0E">ON + 特定某一天（日期 / 星期）</text>
+          <text id="en5-ex" x="340" y="106" text-anchor="middle" font-size="18" font-weight="bold" fill="#1E3A8A">例句：My birthday is on October tenth.</text>
+          <text id="en5-ord" x="340" y="142" text-anchor="middle" font-size="15" fill="#B91C1C">序數拼法提醒：twelfth（去 ve 改 f + th）、ninth（去 e + th）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn5('on', this)">📅 on（特定某一天）</button>
+        <button class="ctrl-btn" onclick="setEn5('in', this)">🗓️ in（月份 / 年份 / 季節）</button>
+        <button class="ctrl-btn" onclick="setEn5('at', this)">⏰ at（幾點幾分）</button>
+      </div>
+      <div class="concept-callout" id="en5-tip"></div>
+    `
+  },
+  6: {
+    title: 'Unit 6 There is / There are 就近原則與 some / any',
+    badge: '句型切換互動',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="65" y="25" width="550" height="140" rx="14" fill="#ECFDF5" stroke="#059669" stroke-width="2.5"/>
+          <text id="en6-sent" x="340" y="72" text-anchor="middle" font-size="21" font-weight="bold" fill="#064E3B">There ARE some elephants and a lion.</text>
+          <text id="en6-rule" x="340" y="108" text-anchor="middle" font-size="16" font-weight="bold" fill="#D97706">就近原則：看離 be 動詞最近的「some elephants（複數）」！</text>
+          <text id="en6-some" x="340" y="140" text-anchor="middle" font-size="14" fill="#374151">肯定句用 some；否定句與疑問句用 any（Are there any zebras?）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setEn6(0, this)">🐘 就近原則：複數在前 (There are)</button>
+        <button class="ctrl-btn" onclick="setEn6(1, this)">🦁 就近原則：單數在前 (There is)</button>
+        <button class="ctrl-btn" onclick="setEn6(2, this)">❓ 疑問/否定句用 any</button>
+      </div>
+      <div class="concept-callout" id="en6-tip"></div>
+    `
+  }
+};
+
+function toggleActiveBtn(btn) {
+  if (!btn) return;
+  btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setEn0(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { p: 'Nice to meet you!', zh: '很高興認識你！（回應：Nice to meet you, too.）', sp: 'Nice to meet you. Nice to meet you, too.', tip: '👋 <b>打招呼必背</b>：聽到 Nice to meet you，句尾加上 too 就變成「我也很高興認識你」。' },
+    { p: 'How do you spell your name?', zh: '你的名字怎麼拼？', sp: 'How do you spell your name?', tip: '🔤 <b>拼字問句</b>：看到拼字題或字母聽力，問句開頭一定是 How do you spell...?' },
+    { p: 'Look at the whiteboard, please.', zh: '請看白板。', sp: 'Look at the whiteboard, please.', tip: '📖 <b>教室片語</b>：look at 後面接觀看的目標（白板 whiteboard、課本 book）。' }
+  ];
+  const a = arr[mode];
+  document.getElementById('en0-phrase').textContent = a.p;
+  document.getElementById('en0-zh').textContent = a.zh;
+  document.getElementById('en0-tip').innerHTML = a.tip;
+  speak(a.sp);
+}
+
+function setEn1(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { s: 'Who is that boy? ➔ He is my cousin.', r: '肯定簡答：Yes, he is. ｜ 否定：No, he isn\'t.', p: '所有格 my 後面直接加名詞 cousin，前面不可加 a / the！', sp: 'Who is that boy? He is my cousin. Yes, he is.', tip: '👨 <b>單數男生</b>：問身分用 Who，男生主詞用 He，be 動詞用 is。' },
+    { s: 'Who is that girl? ➔ She is my sister.', r: '肯定簡答：Yes, she is. ｜ 否定：No, she isn\'t.', p: '所有格 her 後面直接加名詞 sister，前面不可加 a / the！', sp: 'Who is that girl? She is my sister. Yes, she is.', tip: '👩 <b>單數女生</b>：女生主詞用 She，她的所有格是 her。' },
+    { s: '❌ 錯誤：Yes, he\'s.  ➔  ✅ 正確：Yes, he is.', r: '段考最高頻陷阱：肯定簡答「絕對不能縮寫」！', p: '只有「否定簡答」可以縮寫成 No, he isn\'t. / No, he\'s not.', sp: 'Yes, he is. No, he isn\'t.', tip: '⚠️ <b>段考送分/扣分關鍵</b>：看到 Yes, he is. / Yes, she is. / Yes, it is. 千萬不要選縮寫！' }
+  ];
+  const a = arr[mode];
+  document.getElementById('en1-sent').textContent = a.s;
+  document.getElementById('en1-rule').textContent = a.r;
+  document.getElementById('en1-pos').textContent = a.p;
+  document.getElementById('en1-tip').innerHTML = a.tip;
+  speak(a.sp);
+}
+
+function setEn2(pos, btn) {
+  toggleActiveBtn(btn);
+  const p = document.getElementById('en2-pencil');
+  const lbl = document.getElementById('en2-label');
+  const tip = document.getElementById('en2-tip');
+  if (pos === 'on') {
+    p.setAttribute('transform', 'translate(340, 86)');
+    lbl.textContent = 'The pencil is ON the desk.（在桌子上面）';
+    tip.innerHTML = '⬆️ <b>on</b>：物體表面與另一個表面「有接觸」的上面，例如 on the desk（在書桌上）。';
+    speak('The pencil is on the desk.');
+  } else if (pos === 'under') {
+    p.setAttribute('transform', 'translate(340, 160)');
+    lbl.textContent = 'The pencil is UNDER the desk.（在桌子下面）';
+    tip.innerHTML = '⬇️ <b>under</b>：在某物的正下方，例如 under the desk / under the chair。';
+    speak('The pencil is under the desk.');
+  } else if (pos === 'between') {
+    p.setAttribute('transform', 'translate(242, 128)');
+    lbl.textContent = 'The pencil is BETWEEN Book A and Desk.';
+    tip.innerHTML = '↔️ <b>between A and B</b>：在兩者之間，看到空格後面有「A and B」，優先選 between！';
+    speak('The pencil is between Book A and the desk.');
+  } else {
+    p.setAttribute('transform', 'translate(432, 128)');
+    lbl.textContent = 'The pencil is NEXT TO the desk.（在桌子旁邊）';
+    tip.innerHTML = '👉 <b>next to</b>：緊鄰在旁邊，相當於 beside。';
+    speak('The pencil is next to the desk.');
+  }
+}
+
+function setEn3(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { imp: 'Be quiet in the library, please.', lets: '邀約句型：Let\'s read books together.', sub: '祈使句句首用原形動詞（quiet 前面用原形 Be）', sp: 'Be quiet in the library, please. Let\'s read books together.', tip: '✅ <b>肯定祈使句</b>：形容詞 quiet 前面一定要放原形 be 動詞「Be」，不能直接寫 Quiet!（當句首命令時）。' },
+    { imp: 'Don\'t run or shout in the museum!', lets: '否定祈使句：Don\'t be late for school.', sub: '在原形動詞前面直接加 Don\'t', sp: 'Don\'t run or shout in the museum!', tip: '🚫 <b>否定祈使句</b>：叫人不要做某事，一律在原形動詞前面加 Don\'t。' },
+    { imp: 'Let\'s not go to the park today.', lets: '否定邀約：Let\'s not watch TV now.', sub: 'Let\'s 的否定是「Let\'s not + 原形動詞」', sp: 'Let\'s not go to the park today.', tip: '🙅 <b>Let\'s 否定陷阱</b>：不要寫成 Let\'s don\'t go，正確是 Let\'s not go！' }
+  ];
+  const a = arr[mode];
+  document.getElementById('en3-imp').textContent = a.imp;
+  document.getElementById('en3-lets').textContent = a.lets;
+  document.getElementById('en3-sub').textContent = a.sub;
+  document.getElementById('en3-tip').innerHTML = a.tip;
+  speak(a.sp);
+}
+
+function setEn4(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { v: 'swim ➔ is swimming（重複字尾 m + ing）', ex: '例句：Look! She is swimming in the pool now.', r: '規則：短母音 i + 單子音 m，字尾要重複再加 -ing！', sp: 'Look! She is swimming in the pool now.', tip: '🏊 <b>重複字尾常考字</b>：swim → swimming、run → running、sit → sitting。' },
+    { v: 'dance ➔ is dancing（去 e + ing）', ex: '例句：Listen! They are dancing in the room.', r: '規則：字尾有不發音的 e，去 e 再加 -ing！', sp: 'Listen! They are dancing in the room.', tip: '✍️ <b>去 e 加 ing 常考字</b>：dance → dancing、write → writing、make → making。' },
+    { v: 'sing ➔ is singing（直接加 ing）', ex: '例句：The girl is singing a song now.', r: '規則：一般動詞直接加上 -ing！', sp: 'The girl is singing a song now.', tip: '🎤 <b>現在進行式公式</b>：主詞 + am / is / are + V-ing，常見提示詞有 Look!、Listen!、now。' }
+  ];
+  const a = arr[mode];
+  document.getElementById('en4-verb').textContent = a.v;
+  document.getElementById('en4-ex').textContent = a.ex;
+  document.getElementById('en4-rule').textContent = a.r;
+  document.getElementById('en4-tip').innerHTML = a.tip;
+  speak(a.sp);
+}
+
+function setEn5(prep, btn) {
+  toggleActiveBtn(btn);
+  if (prep === 'on') {
+    document.getElementById('en5-prep').textContent = 'ON + 特定某一天（日期 / 星期）';
+    document.getElementById('en5-ex').textContent = '例句：My birthday is on October tenth.';
+    document.getElementById('en5-ord').textContent = '序數拼法提醒：twelfth（去 ve 改 f + th）、ninth（去 e + th）';
+    document.getElementById('en5-tip').innerHTML = '📅 <b>on 的用法</b>：只要寫出「幾月幾號」或「星期幾」，介系詞就選 <b>on</b>！';
+    speak('My birthday is on October tenth.');
+  } else if (prep === 'in') {
+    document.getElementById('en5-prep').textContent = 'IN + 較長時間（月份 / 年份 / 季節）';
+    document.getElementById('en5-ex').textContent = '例句：Teachers\' Day is in September.';
+    document.getElementById('en5-ord').textContent = '對比：單寫「九月」用 in September；寫出「九月二十八日」用 on September 28！';
+    document.getElementById('en5-tip').innerHTML = '🗓️ <b>in 的用法</b>：月份、年份、季節前面用 <b>in</b>。';
+    speak('Teachers\' Day is in September.');
+  } else {
+    document.getElementById('en5-prep').textContent = 'AT + 具體時間點（幾點幾分）';
+    document.getElementById('en5-ex').textContent = '例句：The concert starts at seven thirty.';
+    document.getElementById('en5-ord').textContent = '看到「at + 數字時間」（如 at 8:00, at noon）直接選 at！';
+    document.getElementById('en5-tip').innerHTML = '⏰ <b>at 的用法</b>：幾點幾分或中午 at noon 前面用 <b>at</b>。';
+    speak('The concert starts at seven thirty.');
+  }
+}
+
+function setEn6(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { s: 'There ARE some elephants and a lion.', r: '就近原則：看離 be 動詞最近的「some elephants（複數）」！', so: '肯定句用 some；否定句與疑問句用 any（Are there any zebras?）', sp: 'There are some elephants and a lion.', tip: '🐘 <b>就近原則</b>：即便後面有單數的 a lion，但最靠近 be 動詞的是複數 some elephants，所以用 There are。' },
+    { s: 'There IS a lion and some elephants.', r: '就近原則：看離 be 動詞最近的「a lion（單數）」！', so: '最靠近 be 動詞的是單數名詞，因此用 There is。', sp: 'There is a lion and some elephants.', tip: '🦁 <b>就近原則反例</b>：把 a lion 放到最前面，be 動詞就變成 There is！' },
+    { s: 'Are there ANY giraffes? / There AREN\'T any.', r: '疑問句與否定句中表示「一些」，要用 any！', so: '肯定句用 some；否定句/疑問句用 any。', sp: 'Are there any giraffes? There aren\'t any giraffes.', tip: '❓ <b>some vs. any</b>：看到問號或 aren\'t / isn\'t，表示「一些」時優先選 any。' }
+  ];
+  const a = arr[mode];
+  document.getElementById('en6-sent').textContent = a.s;
+  document.getElementById('en6-rule').textContent = a.r;
+  document.getElementById('en6-some').textContent = a.so;
+  document.getElementById('en6-tip').innerHTML = a.tip;
+  speak(a.sp);
+}
+
 const staticQuestions = [
-  // Starter
   { u: 0, q: "A: Nice to meet you.  B: ____________", speak: "Nice to meet you.", opts: ["Nice to meet you, too.", "I'm fine, thank you.", "Good morning.", "You're welcome."], ans: "Nice to meet you, too.", exp: "初次見面打招呼說 Nice to meet you.（很高興認識你），標準回應為 Nice to meet you, too.（我也很高興認識你）。" },
   { u: 0, q: "A: ______ do you spell your name?  B: E-M-M-A, Emma.", speak: "How do you spell your name?", opts: ["How", "What", "Who", "Where"], ans: "How", exp: "詢問「如何拼寫」名字，疑問詞要用 How（How do you spell...?）。" },
   { u: 0, q: "Look ______ the whiteboard, everyone.", speak: "Look at the whiteboard, everyone.", opts: ["at", "in", "on", "to"], ans: "at", exp: "「看著某物」的固定片語是 look at（例如 look at the whiteboard）。" },
 
-  // Unit 1
   { u: 1, q: "A: ______ is that handsome boy?  B: He is my cousin, Leo.", speak: "Who is that handsome boy?", opts: ["Who", "What", "Where", "How"], ans: "Who", exp: "答句回答「他是我表哥（身分）」，因此問句要用詢問人的疑問詞 Who（誰）。" },
   { u: 1, q: "A: Is Mr. Lin your English teacher?  B: Yes, ______.", speak: "Is Mr. Lin your English teacher?", opts: ["he is", "he's", "Mr. Lin is", "she is"], ans: "he is", exp: "Yes/No 疑問句的「肯定簡答」必須用代名詞（Mr. Lin 男生用 he），且肯定簡答「絕對不能縮寫」，所以選 he is。" },
   { u: 1, q: "This is ______ new bike. It is very cool.", speak: "This is my new bike.", opts: ["my", "a my", "the my", "I"], ans: "my", exp: "所有格（my 我的）後面直接加名詞，前面「不可以」再加冠詞 a 或 the！" },
   { u: 1, q: "My father's brother is my ______, and his son is my ______.", speak: "My father's brother is my uncle, and his son is my cousin.", opts: ["uncle; cousin", "aunt; brother", "uncle; nephew", "grandfather; cousin"], ans: "uncle; cousin", exp: "爸爸的兄弟是「叔叔/伯伯 (uncle)」，叔叔的兒子是「堂兄弟 (cousin)」。" },
   { u: 1, q: "選出單字「警察」的正確英文：", speak: "police officer", opts: ["police officer", "office worker", "writer", "housewife"], ans: "police officer", exp: "警察的英文是 police officer；writer 是作家，housewife 是家庭主婦。" },
 
-  // Unit 2
   { u: 2, q: "A: Where ______ my glasses?  B: ______ on the sofa.", speak: "Where are my glasses? They are on the sofa.", opts: ["are; They're", "is; It's", "are; It's", "is; They're"], ans: "are; They're", exp: "glasses（眼鏡）有兩個鏡片，在英文裡恆為「複數名詞」，因此 be 動詞用 are，代名詞用 They're。" },
   { u: 2, q: "______ are my comic books, and ______ is my pencil case.", speak: "These are my comic books, and that is my pencil case.", opts: ["These; that", "This; those", "That; these", "This; that"], ans: "These; that", exp: "第一格後面 be 動詞是 are（複數），要選複數指示代名詞 These；第二格後面是 is（單數），要選單數 that。" },
   { u: 2, q: "The bank is ______ the park and the school.", speak: "The bank is between the park and the school.", opts: ["between", "in front of", "next to", "under"], ans: "between", exp: "看到關鍵字「A and B」，表示「在 A 和 B 之間」，固定搭配介系詞 between（between A and B）。" },
   { u: 2, q: "選出「dictionary（字典）」正確的複數拼法：", speak: "dictionaries", opts: ["dictionaries", "dictionarys", "dictionaryes", "dictionaris"], ans: "dictionaries", exp: "dictionary 字尾是「子音 r + y」，變複數時要去 y 加上 -ies，變成 dictionaries。" },
   { u: 2, q: "There are two ______ and three ______ in the room.", speak: "There are two women and three children in the room.", opts: ["women; children", "womans; childs", "woman; child", "womens; childrens"], ans: "women; children", exp: "不規則複數變化：woman（女人）→ women；child（小孩）→ children。" },
 
-  // Unit 3
   { u: 3, q: "______ quiet in the library, please.", speak: "Be quiet in the library, please.", opts: ["Be", "Are", "Is", "Do"], ans: "Be", exp: "祈使句句首要用「原形動詞」，quiet（安靜的）是形容詞，前面必須放原形 be 動詞「Be」。" },
   { u: 3, q: "______ run or shout in the museum!", speak: "Don't run or shout in the museum!", opts: ["Don't", "Not", "No", "Aren't"], ans: "Don't", exp: "否定祈使句（叫別人不要做某事），在原形動詞 run 前面直接加 Don't。" },
   { u: 3, q: "It's raining outside. Let's ______ to the park today.", speak: "It's raining outside. Let's not go to the park today.", opts: ["not go", "don't go", "no go", "not to go"], ans: "not go", exp: "Let's（讓我們）的否定句型是「Let's not + 原形動詞」，不可用 Let's don't。" },
   { u: 3, q: "Open the magic door, ______.", speak: "Open the magic door, please.", opts: ["please", "let's", "follow", "wait"], ans: "please", exp: "please 放在祈使句的句尾時，前面加逗號（, please）表示禮貌「請」。" },
 
-  // Unit 4
   { u: 4, q: "A: ______ is the concert?  B: It's at seven thirty.", speak: "What time is the concert? It's at seven thirty.", opts: ["What time", "What day", "What date", "Where"], ans: "What time", exp: "答句回答「七點半（具體幾點幾分）」，問句要用 What time（幾點）。" },
   { u: 4, q: "My sister is ______ in the swimming pool now.", speak: "My sister is swimming in the swimming pool now.", opts: ["swimming", "swiming", "swim", "swims"], ans: "swimming", exp: "關鍵字 now（現在）表示現在進行式（is + V-ing）。swim 為「短母音 i + 單子音 m」，要重複字尾 m 再加 -ing → swimming。" },
   { u: 4, q: "The big game is ______ Saturday afternoon.", speak: "The big game is on Saturday afternoon.", opts: ["on", "in", "at", "under"], ans: "on", exp: "只要出現「星期幾」（Saturday），不管後面有沒有加 afternoon，介系詞一律用 on！" },
   { u: 4, q: "Look! The students ______ English songs in the classroom.", speak: "Look! The students are singing English songs in the classroom.", opts: ["are singing", "is singing", "sing", "singing"], ans: "are singing", exp: "句首有 Look!（看！）提示動作正在發生，主詞 The students 是複數，現在進行式要寫成 are singing。" },
   { u: 4, q: "選出「星期三」的正確英文拼法：", speak: "Wednesday", opts: ["Wednesday", "Wensday", "Wednsday", "Tuesday"], ans: "Wednesday", exp: "星期三拼法是 W-e-d-n-e-s-d-a-y（注意中間有一個不發音的 d），且星期字首必須大寫。" },
 
-  // Unit 5
   { u: 5, q: "A: ______ is the date today?  B: It's October tenth.", speak: "What is the date today? It's October tenth.", opts: ["What", "When", "Who", "How"], ans: "What", exp: "詢問日期的固定句型是「What is the date today?」（今天是幾月幾號？）。" },
   { u: 5, q: "Teacher's Day in Taiwan is ______ September 28.", speak: "Teacher's Day in Taiwan is on September twenty-eighth.", opts: ["on", "in", "at", "for"], ans: "on", exp: "只要明確寫出「幾月幾號」（特定某一天），時間介系詞就要用 on！只有單獨寫月份（in September）才用 in。" },
   { u: 5, q: "Mother's Day is ______ the second Sunday ______ May.", speak: "Mother's Day is on the second Sunday of May.", opts: ["on; of", "in; on", "at; in", "on; at"], ans: "on; of", exp: "特定的某個星期日（the second Sunday）用 on；五月的第二個星期日，所屬關係用 of。" },
-  { u: 5, q: "選出序數「第十二 (12th)」的正確拼法：", speak: "twelfth", opts: ["twelfth", "twelveth", "twentyth", "twelve"], ans: "twelfth", exp: "twelve 變序數時，要把字尾的 ve 改成 f，再加上 th → twelfth（第五 fifth 也是同樣規則）。" },
-  { u: 5, q: "選出序數「第九 (9th)」的正確拼法：", speak: "ninth", opts: ["ninth", "nineth", "nine", "ninety"], ans: "ninth", exp: "nine 變序數時，要「去掉字尾不發音的 e」再加 th → ninth。" },
-
-  // Unit 6
-  { u: 6, q: "______ some elephants and a lion over there.", speak: "There are some elephants and a lion over there.", opts: ["There are", "There is", "They are", "Have"], ans: "There are", exp: "There is/are 採取「就近原則」，離空格最近的名詞是 some elephants（複數），所以要用 There are！" },
-  { u: 6, q: "Are there ______ zebras in the zoo?", speak: "Are there any zebras in the zoo?", opts: ["any", "some", "a", "an"], ans: "any", exp: "在「疑問句」和「否定句」中表示「一些」，要用 any；some 通常只用在肯定句。" },
-  { u: 6, q: "There ______ any water in the bottle.", speak: "There isn't any water in the bottle.", opts: ["isn't", "aren't", "is", "are"], ans: "isn't", exp: "water（水）是不可數名詞，視為單數；加上後面有 any（否定句線索），因此選 isn't。" },
-  { u: 6, q: "選出單字「長頸鹿」的正確英文：", speak: "giraffe", opts: ["giraffe", "zebra", "hippo", "elephant"], ans: "giraffe", exp: "giraffe 是長頸鹿；zebra 是斑馬；hippo 是河馬；elephant 是大象。" }
-];
-
-let selectedUnits = [0, 1, 2, 3, 4, 5, 6];
-let qCount = 0, qCorrect = 0, qStreak = 0;
-let currentQObj = null;
-let answered = false;
-
-function speak(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = 'en-US';
-  u.rate = 0.9;
-  window.speechSynthesis.speak(u);
-}
-
-function initCheckboxes() {
-  const box = document.getElementById('unit-checkboxes');
-  box.innerHTML = '';
-  unitsData.forEach(u => {
-    const checked = selectedUnits.includes(u.id) ? 'checked' : '';
-    box.innerHTML += `
-      <label class="check-label">
-        <input type="checkbox" value="${u.id}" ${checked} onchange="onScopeChange()">
-        <span>${u.code}</span>
-      </label>
-    `;
-  });
-}
-
-function selectPreset(ids) {
-  selectedUnits = [...ids];
-  initCheckboxes();
-  renderNotes();
-  if (document.getElementById('panel-quiz').classList.contains('active')) {
-    generateQuestion();
-  }
-}
-
-function selectAll(flag) {
-  selectedUnits = flag ? unitsData.map(u => u.id) : [];
-  initCheckboxes();
-  renderNotes();
-  if (flag && document.getElementById('panel-quiz').classList.contains('active')) {
-    generateQuestion();
-  }
-}
-
-function onScopeChange() {
-  const inputs = document.querySelectorAll('#unit-checkboxes input:checked');
-  selectedUnits = Array.from(inputs).map(el => parseInt(el.value));
-  renderNotes();
-}
-
-function switchTab(tab) {
-  document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
-  document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
-  document.getElementById('panel-notes').classList.toggle('active', tab === 'notes');
-  document.getElementById('panel-quiz').classList.toggle('active', tab === 'quiz');
-  if (tab === 'quiz') {
-    generateQuestion();
-  }
-}
-
-function renderNotes() {
-  const container = document.getElementById('panel-notes');
-  if (selectedUnits.length === 0) {
-    container.innerHTML = '<div class="note-card">請在上方至少勾選一個單元喔！</div>';
-    return;
-  }
-  let html = '';
-  unitsData.filter(u => selectedUnits.includes(u.id)).forEach(u => {
-    const grammarHtml = u.grammar.map(g => `<li>${g}</li>`).join('');
-    const vocabHtml = u.vocab.map(v => `
-      <div class="vocab-chip" onclick="speak('${v.en.replace(/'/g, "\'")}')">
-        <span>🔊</span>
-        <span class="vocab-en">${v.en}</span>
-        <span class="vocab-kk">${v.kk}</span>
-        <span class="vocab-zh">${v.zh}</span>
-      </div>
-    `).join('');
-    html += `
-      <div class="note-card">
-        <div class="note-unit-title">${u.title}</div>
-        <div style="font-weight:bold; color:#374151; margin-bottom:6px;">📌 必考文法與句型重點：</div>
-        <ul class="grammar-list">${grammarHtml}</ul>
-        <div style="font-weight:bold; color:#374151; margin-top:10px;">🔤 核心單字（點擊可聽發音）：</div>
-        <div class="vocab-grid">${vocabHtml}</div>
-      </div>
-    `;
-  });
-  container.innerHTML = html;
-}
-
-// 動態生成單字中英互考題 + 靜態文法題混合
-function buildQuestionPool() {
-  let pool = staticQuestions.filter(q => selectedUnits.includes(q.u));
-  const activeUnits = unitsData.filter(u => selectedUnits.includes(u.id));
-  const allVocab = unitsData.flatMap(u => u.vocab);
-
-  activeUnits.forEach(u => {
-    u.vocab.forEach(v => {
-      // 隨機抽3個干擾中文選項
-      const otherZh = allVocab.filter(x => x.en !== v.en).sort(() => Math.random() - 0.5).slice(0, 3).map(x => x.zh);
-      pool.push({
-        u: u.id,
-        q: `單字測驗：請問「${v.en}」的中文意思是？`,
-        speak: v.en,
-        opts: [v.zh, ...otherZh],
-        ans: v.zh,
-        exp: `單字「${v.en}」${v.kk} 的意思是「${v.zh}」（出自 ${u.code}）。`
-      });
-    });
-  });
-  return pool;
-}
-
-function generateQuestion() {
-  if (selectedUnits.length === 0) {
-    document.getElementById('q-question').innerText = '請先在上方勾選至少一個複習單元！';
-    document.getElementById('q-options').innerHTML = '';
-    document.getElementById('q-explain').style.display = 'none';
-    document.getElementById('q-next-btn').style.display = 'none';
-    return;
-  }
-  const pool = buildQuestionPool();
-  let nextQ;
-  do {
-    nextQ = pool[Math.floor(Math.random() * pool.length)];
-  } while (currentQObj && pool.length > 1 && nextQ.q === currentQObj.q);
-
-  currentQObj = nextQ;
-  answered = false;
-
-  const uInfo = unitsData.find(u => u.id === currentQObj.u);
-  document.getElementById('q-unit-tag').innerText = uInfo ? uInfo.code : '綜合題';
-  document.getElementById('q-question').innerText = currentQObj.q;
-  document.getElementById('q-explain').style.display = 'none';
-  document.getElementById('q-next-btn').style.display = 'none';
-
-  const shuffledOpts = [...currentQObj.opts].sort(() => Math.random() - 0.5);
-  const optBox = document.getElementById('q-options');
-  optBox.innerHTML = '';
-  shuffledOpts.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.innerText = opt;
-    btn.onclick = () => checkAnswer(btn, opt);
-    optBox.appendChild(btn);
-  });
-}
-
-function speakCurrentQ() {
-  if (currentQObj && currentQObj.speak) {
-    speak(currentQObj.speak);
-  }
-}
-
-function checkAnswer(btn, chosen) {
-  if (answered) return;
-  answered = true;
-  qCount++;
-
-  const allBtns = document.querySelectorAll('.opt-btn');
-  allBtns.forEach(b => b.disabled = true);
-
-  const expBox = document.getElementById('q-explain');
-  if (chosen === currentQObj.ans) {
-    btn.classList.add('correct');
-    qCorrect++;
-    qStreak++;
-    expBox.innerHTML = `✅ <b>答對了！</b><br>${currentQObj.exp}`;
-  } else {
-    btn.classList.add('wrong');
-    qStreak = 0;
-    allBtns.forEach(b => {
-      if (b.innerText === currentQObj.ans) b.classList.add('correct');
-    });
-    expBox.innerHTML = `❌ <b>答錯囉！正確答案是「${currentQObj.ans}」</b><br>💡 <b>觀念解析：</b>${currentQObj.exp}`;
-  }
-
-  document.getElementById('q-count').innerText = qCount;
-  document.getElementById('q-correct').innerText = qCorrect;
-  document.getElementById('q-streak').innerText = qStreak;
-  expBox.style.display = 'block';
-  document.getElementById('q-next-btn').style.display = 'block';
-}
-
-initCheckboxes();
-renderNotes();
-</script>
-</body>
-</html>
+  { u: 5, q: "選出序數「第十二 (12th)」的正確拼法：", speak: "twelfth", opts: ["twelfth", "twelveth", "twentyth", "twelve
