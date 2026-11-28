@@ -3,13 +3,20 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上 國文科段考複習與測驗（翰林版）</title>
+<title>國一上 國文科段考複習、互動圖解與測驗（翰林版）</title>
 <style>
-  :root { --primary: #2e7d32; --secondary: #f57c00; --bg: #f1f8e9; --text: #2c3e50; }
+  :root {
+    --primary: #2e7d32;
+    --secondary: #f57c00;
+    --accent: #00897b;
+    --bg: #f1f8e9;
+    --text: #2c3e50;
+  }
   body { font-family: -apple-system, 'Microsoft JhengHei', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; line-height: 1.6; }
   .container { max-width: 960px; margin: 0 auto; background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
   .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #e0e0e0; padding-bottom: 12px; margin-bottom: 15px; }
-  .home-btn { background: #607d8b; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+  .home-btn { background: #607d8b; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; transition: 0.2s; }
+  .home-btn:hover { background: #455a64; }
   h1 { color: var(--primary); margin: 0; font-size: 24px; }
   .scope-box { background: #fff8e1; border: 2px solid #ffe082; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
   .scope-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
@@ -17,21 +24,113 @@
   .quick-btns button { background: white; border: 1px solid #ffb74d; color: #e65100; padding: 4px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; margin-left: 4px; font-weight: bold; }
   .quick-btns button:hover { background: #ffe0b2; }
   .lesson-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 8px; }
-  .lesson-label { display: flex; align-items: center; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 14px; font-weight: 500; }
+  .lesson-label { display: flex; align-items: center; background: white; padding: 8px 10px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; font-size: 14px; font-weight: 500; user-select: none; }
   .lesson-label input { margin-right: 8px; transform: scale(1.2); accent-color: var(--primary); }
-  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-  .tab-btn { flex: 1; max-width: 250px; padding: 12px; font-size: 17px; border: none; border-radius: 10px; background: #e0e0e0; cursor: pointer; font-weight: bold; transition: 0.2s; }
-  .tab-btn.active { background: var(--primary); color: white; }
+  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn { flex: 1; min-width: 150px; padding: 12px 10px; font-size: 17px; border: none; border-radius: 10px; background: #e0e0e0; color: #555; cursor: pointer; font-weight: bold; transition: 0.2s; }
+  .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 3px 10px rgba(46,125,50,0.25); }
+  .tab-btn#tab-anim.active { background: var(--accent); box-shadow: 0 3px 10px rgba(0,137,123,0.25); }
   .section { display: none; }
   .section.active { display: block; }
   
   /* 重點整理卡片 */
   .note-card { border: 1px solid #c8e6c9; border-left: 6px solid var(--primary); border-radius: 10px; padding: 16px; margin-bottom: 16px; background: #fafafa; }
-  .note-title { font-size: 19px; font-weight: bold; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; }
+  .note-title { font-size: 19px; font-weight: bold; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
   .note-tag { font-size: 13px; background: #e8f5e9; color: #2e7d32; padding: 2px 10px; border-radius: 12px; }
   .note-list { margin: 0; padding-left: 20px; }
   .note-list li { margin-bottom: 6px; font-size: 15px; }
   .highlight { color: #d84315; font-weight: bold; }
+
+  /* 互動視覺動畫卡片 */
+  .anim-card {
+    border: 2px solid #b2dfdb;
+    border-left: 6px solid var(--accent);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+  }
+  .anim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .anim-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #00695c;
+  }
+  .anim-badge {
+    background: #e0f2f1;
+    color: #00695c;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .svg-stage {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #cfd8dc;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .svg-stage svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #eceff1;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .ctrl-btn {
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: #00695c;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .concept-callout {
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    border-left: 5px solid #ffa000;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 15px;
+    color: #4e342e;
+    line-height: 1.6;
+  }
+  .concept-callout b { color: #e65100; }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.35; transform: scale(0.85); }
+  }
+  .star-twinkle { animation: twinkle 2s infinite ease-in-out; transform-origin: center; }
 
   /* 測驗區 */
   .quiz-box { background: #f9fbe7; border: 2px solid #c5e1a5; border-radius: 14px; padding: 25px 20px; max-width: 720px; margin: 0 auto; }
@@ -70,12 +169,16 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('notes')">📚 考前重點速覽</button>
-    <button class="tab-btn" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
+    <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📚 考前重點速覽</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab('anim')">🎬 互動圖解與文意動畫</button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
   </div>
 
   <!-- 重點整理分頁 -->
   <div id="sec-notes" class="section active"></div>
+
+  <!-- 互動動畫分頁 -->
+  <div id="sec-anim" class="section"></div>
 
   <!-- 測驗分頁 -->
   <div id="sec-quiz" class="section">
@@ -235,6 +338,517 @@ const notesData = {
   }
 };
 
+/* =========================================================
+   國文全 12 課互動視覺圖解與文意動畫引擎
+========================================================= */
+const animData = {
+  1: {
+    title: '第1課〈夏夜〉詩意轉折與意象變身鏡',
+    badge: '氣氛切換 + 意象點擊',
+    html: `
+      <div class="svg-stage">
+        <svg id="cn-svg-1" viewBox="0 0 680 215">
+          <rect id="cn1-sky" x="0" y="0" width="680" height="215" fill="#1A237E"/>
+          <!-- 月亮(銀幣) -->
+          <circle id="cn1-moon" cx="560" cy="58" r="28" fill="#FFF59D" stroke="#FBC02D" stroke-width="3"/>
+          <text id="cn1-moonTxt" x="560" y="102" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF59D">銀幣（月亮）</text>
+          <!-- 星星(珍珠) -->
+          <g id="cn1-stars">
+            <circle cx="120" cy="45" r="4" fill="#FFF9C4" class="star-twinkle"/>
+            <circle cx="230" cy="35" r="5" fill="#FFF9C4" class="star-twinkle"/>
+            <circle cx="350" cy="55" r="4" fill="#FFF9C4" class="star-twinkle"/>
+            <circle cx="450" cy="38" r="4.5" fill="#FFF9C4" class="star-twinkle"/>
+            <text x="230" y="62" text-anchor="middle" font-size="13" font-weight="bold" fill="#FFF9C4">撒了滿天的珍珠（星星）</text>
+          </g>
+          <!-- 山坡與小河 -->
+          <path d="M 0 165 Q 180 120 360 160 T 680 150 L 680 215 L 0 215 Z" fill="#2E7D32"/>
+          <path d="M 0 185 Q 250 175 450 195 T 680 185 L 680 215 L 0 215 Z" fill="#1565C0"/>
+          <!-- 螢火蟲 -->
+          <circle id="cn1-firefly" cx="420" cy="145" r="6" fill="#C6FF00" class="star-twinkle"/>
+          <text id="cn1-sceneTxt" x="340" y="125" text-anchor="middle" font-size="18" font-weight="bold" fill="#FFFFFF">前半段：夏夜來了！街燈亮起、孩子們期待著夜的熱鬧</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn1(0, this)">🌆 前半段：熱鬧與期待</button>
+        <button class="ctrl-btn" onclick="setCn1(1, this)">🌙 後半段：萬物入睡的寧靜</button>
+        <button class="ctrl-btn" onclick="setCn1(2, this)">✨ 拆解修辭：珍珠與銀幣</button>
+      </div>
+      <div class="concept-callout" id="cn1-tip"></div>
+    `
+  },
+  2: {
+    title: '第2課〈無心的錯誤〉蝴蝶效應模擬器',
+    badge: '因果推進',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 195">
+          <rect x="0" y="0" width="680" height="195" fill="#F8FAFC"/>
+          <rect x="30" y="45" width="180" height="90" rx="12" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+          <text x="120" y="80" text-anchor="middle" font-size="16" font-weight="bold" fill="#0D47A1">1. 行為起點</text>
+          <text id="cn2-s1" x="120" y="108" text-anchor="middle" font-size="14" fill="#37474F">沒看清楚標籤拿錯藥</text>
+
+          <line x1="215" y1="90" x2="245" y2="90" stroke="#FF9800" stroke-width="4"/>
+          <polygon points="250,90 240,84 240,96" fill="#FF9800"/>
+
+          <rect x="250" y="45" width="180" height="90" rx="12" fill="#FFF3E0" stroke="#F57C00" stroke-width="2"/>
+          <text x="340" y="80" text-anchor="middle" font-size="16" font-weight="bold" fill="#E65100">2. 當時心態</text>
+          <text id="cn2-s2" x="340" y="108" text-anchor="middle" font-size="14" fill="#37474F">「我又不是故意的！」</text>
+
+          <line x1="435" y1="90" x2="465" y2="90" stroke="#E53935" stroke-width="4"/>
+          <polygon points="470,90 460,84 460,96" fill="#E53935"/>
+
+          <rect x="470" y="45" width="180" height="90" rx="12" fill="#FFEBEE" stroke="#C62828" stroke-width="2"/>
+          <text x="560" y="80" text-anchor="middle" font-size="16" font-weight="bold" fill="#B71C1C">3. 造成的後果</text>
+          <text id="cn2-s3" x="560" y="108" text-anchor="middle" font-size="14" fill="#37474F">親友誤食重傷無法挽回</text>
+
+          <text x="340" y="170" text-anchor="middle" font-size="16" font-weight="bold" fill="#D84315">結論：「無心」不能當作免責藉口，做事必須三思而後行！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn2(0, this)">事例1：拿錯藥瓶</button>
+        <button class="ctrl-btn" onclick="setCn2(1, this)">事例2：好心亂丟文件</button>
+        <button class="ctrl-btn" onclick="setCn2(2, this)">事例3：隨口傷人自尊</button>
+      </div>
+      <div class="concept-callout" id="cn2-tip"></div>
+    `
+  },
+  3: {
+    title: '第3課〈母親的教誨〉雙面角色對比鏡',
+    badge: '人物形象分析',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 195">
+          <rect x="0" y="0" width="680" height="195" fill="#F8FAFC"/>
+          <rect x="35" y="25" width="290" height="145" rx="14" fill="#FFEBEE" stroke="#E53935" stroke-width="2.5"/>
+          <text x="180" y="58" text-anchor="middle" font-size="19" font-weight="bold" fill="#B71C1C">⚡ 嚴父的一面（對兒子）</text>
+          <text id="cn3-L1" x="180" y="92" text-anchor="middle" font-size="15" fill="#37474F">• 天剛亮就催促起床讀書</text>
+          <text id="cn3-L2" x="180" y="120" text-anchor="middle" font-size="15" fill="#37474F">• 夜深關門罰跪、擰肉管教</text>
+          <text id="cn3-L3" x="180" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#C62828">• 卻絕不在外人面前罵孩子！</text>
+
+          <rect x="355" y="25" width="290" height="145" rx="14" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2.5"/>
+          <text x="500" y="58" text-anchor="middle" font-size="19" font-weight="bold" fill="#1B5E20">🌸 慈母的一面（對他人與自尊）</text>
+          <text id="cn3-R1" x="500" y="92" text-anchor="middle" font-size="15" fill="#37474F">• 絕不罵「沒爹娘教訓」（護夫名聲）</text>
+          <text id="cn3-R2" x="500" y="120" text-anchor="middle" font-size="15" fill="#37474F">• 對大嫂、二嫂的無理極為忍讓</text>
+          <text id="cn3-R3" x="500" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#2E7D32">• 身教培養胡適寬恕與好脾氣</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn3(0, this)">看「嚴格管教」細節</button>
+        <button class="ctrl-btn" onclick="setCn3(1, this)">看「保護自尊」細節</button>
+        <button class="ctrl-btn" onclick="setCn3(2, this)">看「寬容待人」身教</button>
+      </div>
+      <div class="concept-callout" id="cn3-tip"></div>
+    `
+  },
+  'c1': {
+    title: '語文常識一：標點符號診斷儀（段考最愛考）',
+    badge: '正誤對照互動',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="40" y="25" width="600" height="58" rx="10" fill="#FFEBEE" stroke="#E53935" stroke-width="2"/>
+          <text id="cnc1-bad" x="340" y="60" text-anchor="middle" font-size="18" font-weight="bold" fill="#C62828">❌ 錯誤寫法：公園裡有七、八個小朋友在玩耍。</text>
+
+          <rect x="40" y="102" width="600" height="58" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+          <text id="cnc1-good" x="340" y="137" text-anchor="middle" font-size="18" font-weight="bold" fill="#1B5E20">✅ 正確寫法：公園裡有七八個小朋友在玩耍。</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCnc1(0, this)">考點1：約數不用頓號</button>
+        <button class="ctrl-btn" onclick="setCnc1(1, this)">考點2：引號與句號位置</button>
+        <button class="ctrl-btn" onclick="setCnc1(2, this)">考點3：書名號《》vs 篇名號〈〉</button>
+      </div>
+      <div class="concept-callout" id="cnc1-tip"></div>
+    `
+  },
+  4: {
+    title: '第4課〈論語選〉為學堆山進度條（子罕篇）',
+    badge: '互動按鈕',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 210">
+          <rect x="0" y="0" width="680" height="210" fill="#F8FAFC"/>
+          <text x="340" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0D47A1">「譬如為山，未成一簣，止，吾止也；譬如平地，雖覆一簣，進，吾往也。」</text>
+          <!-- 目標山頂虛線 -->
+          <polygon points="340,55 200,175 480,175" fill="none" stroke="#90A4AE" stroke-width="2" stroke-dasharray="6,4"/>
+          <text x="340" y="50" text-anchor="middle" font-size="13" font-weight="bold" fill="#546E7A">目標山頂（10 簣土）</text>
+          <!-- 已堆積的土山 -->
+          <polygon id="cn4-mound" points="340,163 326,175 354,175" fill="#8D6E63"/>
+          <text id="cn4-status" x="340" y="198" text-anchor="middle" font-size="16" font-weight="bold" fill="#4E342E">目前進度：剛倒下第 1 簣土（雖覆一簣，進，吾往也！）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn" onclick="stepCn4(-1)">⬅️ 退後一簣</button>
+        <button class="ctrl-btn active" onclick="stepCn4(1)">🧺 再倒一簣土（前進）</button>
+        <button class="ctrl-btn" onclick="setCn4(9)">⚠️ 停在 9 簣（未成一簣）</button>
+      </div>
+      <div class="concept-callout" id="cn4-tip"></div>
+    `
+  },
+  5: {
+    title: '第5課〈背影〉情感溫度計與四次流淚圖譜',
+    badge: '情感曲線互動',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 205">
+          <rect x="0" y="0" width="680" height="205" fill="#F8FAFC"/>
+          <polyline points="90,145 255,125 425,45 590,65" fill="none" stroke="#1976D2" stroke-width="4"/>
+          <g id="cn5-nodes"></g>
+          <text id="cn5-desc" x="340" y="185" text-anchor="middle" font-size="16" font-weight="bold" fill="#0D47A1">階段1：徐州奔喪見父親，家境慘淡 ➔ 悲哀之淚</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn5(0, this)">1️⃣ 徐州奔喪（悲哀）</button>
+        <button class="ctrl-btn" onclick="setCn5(1, this)">2️⃣ 嫌父迂腐（不耐煩）</button>
+        <button class="ctrl-btn" onclick="setCn5(2, this)">3️⃣ 攀月台買橘（感動最高點）</button>
+        <button class="ctrl-btn" onclick="setCn5(3, this)">4️⃣ 讀家書思念（愧疚思念）</button>
+      </div>
+      <div class="concept-callout" id="cn5-tip"></div>
+    `
+  },
+  6: {
+    title: '第6課〈心囚〉身體限制 vs. 心靈自由對比',
+    badge: '對比切換',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 195">
+          <rect x="0" y="0" width="680" height="195" fill="#F8FAFC"/>
+          <rect id="cn6-box" x="110" y="25" width="460" height="145" rx="16" fill="#FFEBEE" stroke="#C62828" stroke-width="3"/>
+          <text id="cn6-who" x="340" y="62" text-anchor="middle" font-size="20" font-weight="bold" fill="#B71C1C">角色一：四肢健全卻自我放棄的年輕人</text>
+          <text id="cn6-body" x="340" y="98" text-anchor="middle" font-size="16" fill="#37474F">身體狀態：健康無缺 ｜ 心靈狀態：自怨自艾、畫地自限</text>
+          <text id="cn6-verdict" x="340" y="138" text-anchor="middle" font-size="18" font-weight="bold" fill="#D84315">結果：為自己打造無形牢籠 ➔ 真正的「心囚」！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn6(0, this)">🔒 對比A：四肢健全的「心囚」</button>
+        <button class="ctrl-btn" onclick="setCn6(1, this)">🕊️ 對比B：身患重病卻心靈自由的病友</button>
+      </div>
+      <div class="concept-callout" id="cn6-tip"></div>
+    `
+  },
+  'c2': {
+    title: '語文常識二：閱讀三步驟選擇器',
+    badge: '策略配對',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#F8FAFC"/>
+          <rect x="60" y="30" width="560" height="125" rx="14" fill="#E0F2F1" stroke="#00897B" stroke-width="2.5"/>
+          <text id="cnc2-title" x="340" y="68" text-anchor="middle" font-size="20" font-weight="bold" fill="#00695C">步驟一：瀏覽（Skimming）</text>
+          <text id="cnc2-how" x="340" y="102" text-anchor="middle" font-size="16" fill="#37474F">做法：先看大標題、小標題、首尾段與圖表名稱</text>
+          <text id="cnc2-goal" x="340" y="134" text-anchor="middle" font-size="16" font-weight="bold" fill="#E65100">目的：在 30 秒內快速掌握整篇文章的主旨大意！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCnc2(0, this)">1️⃣ 瀏覽 (Skimming)</button>
+        <button class="ctrl-btn" onclick="setCnc2(1, this)">2️⃣ 掃描 (Scanning)</button>
+        <button class="ctrl-btn" onclick="setCnc2(2, this)">3️⃣ 精讀分析</button>
+      </div>
+      <div class="concept-callout" id="cnc2-tip"></div>
+    `
+  },
+  7: {
+    title: '第7課〈兒時記趣〉想像力放大鏡（物外之趣）',
+    badge: '現實 vs 想像切換',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 200">
+          <rect x="0" y="0" width="680" height="200" fill="#F8FAFC"/>
+          <!-- 左框：現實眼睛所見 -->
+          <rect x="35" y="30" width="275" height="140" rx="12" fill="#ECEFF1" stroke="#607D8B" stroke-width="2"/>
+          <text x="172" y="62" text-anchor="middle" font-size="16" font-weight="bold" fill="#455A64">👀 現實中的平凡事物</text>
+          <text id="cn7-real" x="172" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#263238">蚊帳裡的幾隻蚊子</text>
+          <text id="cn7-realSub" x="172" y="140" text-anchor="middle" font-size="14" fill="#546E7A">（一般人覺得很煩）</text>
+
+          <text x="340" y="108" text-anchor="middle" font-size="26" font-weight="bold" fill="#FF9800">➔</text>
+
+          <!-- 右框：沈復想像力 -->
+          <rect x="370" y="30" width="275" height="140" rx="12" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2.5"/>
+          <text x="507" y="62" text-anchor="middle" font-size="16" font-weight="bold" fill="#1B5E20">✨ 沈復腦中的「物外之趣」</text>
+          <text id="cn7-imag" x="507" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#D84315">群鶴舞空、鶴唳雲端！</text>
+          <text id="cn7-imagSub" x="507" y="140" text-anchor="middle" font-size="14" fill="#2E7D32">（看得脖子都僵硬還樂在其中）</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn7(0, this)">趣事1：觀蚊如鶴</button>
+        <button class="ctrl-btn" onclick="setCn7(1, this)">趣事2：神遊山林</button>
+        <button class="ctrl-btn" onclick="setCn7(2, this)">趣事3：鞭打蛤蟆</button>
+      </div>
+      <div class="concept-callout" id="cn7-tip"></div>
+    `
+  },
+  8: {
+    title: '第8課〈朋友相交〉益者三友分類配對機',
+    badge: '點擊解鎖',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="70" y="28" width="540" height="134" rx="14" fill="#E3F2FD" stroke="#1976D2" stroke-width="2.5"/>
+          <text id="cn8-term" x="340" y="66" text-anchor="middle" font-size="22" font-weight="bold" fill="#0D47A1">孔子益者三友之一：【友直】</text>
+          <text id="cn8-mean" x="340" y="102" text-anchor="middle" font-size="17" font-weight="bold" fill="#D84315">意思：結交「正直、敢直接指出你缺點」的朋友</text>
+          <text id="cn8-ex" x="340" y="136" text-anchor="middle" font-size="15" fill="#37474F">生活例子：你考試作弊或偷懶時，會嚴肅勸阻你回頭的人。</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn8(0, this)">1. 友直</button>
+        <button class="ctrl-btn" onclick="setCn8(1, this)">2. 友諒</button>
+        <button class="ctrl-btn" onclick="setCn8(2, this)">3. 友多聞</button>
+        <button class="ctrl-btn" onclick="setCn8(3, this)">4. 君子之交淡如水</button>
+      </div>
+      <div class="concept-callout" id="cn8-tip"></div>
+    `
+  },
+  9: {
+    title: '第9課〈音樂家與職籃巨星〉成功冰山圖',
+    badge: '點擊揭開水下真相',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 215">
+          <rect x="0" y="0" width="680" height="215" fill="#E1F5FE"/>
+          <!-- 海平面 -->
+          <rect x="0" y="85" width="680" height="130" fill="#0277BD"/>
+          <line x1="0" y1="85" x2="680" y2="85" stroke="#01579B" stroke-width="3"/>
+          <!-- 冰山 -->
+          <polygon points="340,22 285,85 395,85" fill="#FFFFFF"/>
+          <polygon points="285,85 200,195 480,195 395,85" fill="#B3E5FC"/>
+          <text x="340" y="68" text-anchor="middle" font-size="15" font-weight="bold" fill="#01579B">1% 天分與光環</text>
+          <text id="cn9-sub1" x="340" y="125" text-anchor="middle" font-size="17" font-weight="bold" fill="#01579B">水下 99% 看不見的苦練：</text>
+          <text id="cn9-sub2" x="340" y="156" text-anchor="middle" font-size="16" font-weight="bold" fill="#D84315">鋼琴大師魯賓斯坦：每天堅持練琴 6～8 小時！</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn9(0, this)">🎹 主角1：魯賓斯坦的苦練名言</button>
+        <button class="ctrl-btn" onclick="setCn9(1, this)">🏀 主角2：喬丹被校隊刷掉後的逆襲</button>
+      </div>
+      <div class="concept-callout" id="cn9-tip"></div>
+    `
+  },
+  10: {
+    title: '第10課〈玫瑰淚〉伏筆與真相揭曉',
+    badge: '故事脈絡切換',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#F8FAFC"/>
+          <rect x="55" y="25" width="570" height="140" rx="14" fill="#FCE4EC" stroke="#C2185B" stroke-width="2.5"/>
+          <text id="cn10-stage" x="340" y="62" text-anchor="middle" font-size="19" font-weight="bold" fill="#880E4F">第一幕（懸疑伏筆）：花店裡的奇怪客人</text>
+          <text id="cn10-detail" x="340" y="98" text-anchor="middle" font-size="16" fill="#37474F">衣著樸素、神情落寞的老先生，只買「一朵」紅玫瑰卻挑得極為仔細。</text>
+          <text id="cn10-feel" x="340" y="134" text-anchor="middle" font-size="16" font-weight="bold" fill="#AD1457">作者猜測：是送給年輕情人的嗎？為什麼神情帶著哀傷？</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setCn10(0, this)">1️⃣ 設下伏筆（初見老先生）</button>
+        <button class="ctrl-btn" onclick="setCn10(1, this)">2️⃣ 揭曉真相（玫瑰淚的由來）</button>
+      </div>
+      <div class="concept-callout" id="cn10-tip"></div>
+    `
+  }
+};
+
+/* --- 各課動畫控制函式 --- */
+function toggleActiveBtn(btn) {
+  if (!btn) return;
+  btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setCn1(mode, btn) {
+  toggleActiveBtn(btn);
+  const sky = document.getElementById('cn1-sky');
+  const txt = document.getElementById('cn1-sceneTxt');
+  const tip = document.getElementById('cn1-tip');
+  if (mode === 0) {
+    sky.setAttribute('fill', '#283593');
+    txt.textContent = '前半段：夏夜來了！街燈亮起、孩子們期待著夜的熱鬧';
+    tip.innerHTML = '🌆 <b>前半段氣氛（熱鬧、充滿生機）</b>：太陽下山後，夏夜悄悄走來，撒滿星星與月亮，大家從屋裡走出來乘涼、聊天，充滿期待。';
+  } else if (mode === 1) {
+    sky.setAttribute('fill', '#0D1333');
+    txt.textContent = '後半段：大地睡著了！只有小河、風與螢火蟲還在陪伴';
+    tip.innerHTML = '🌙 <b>後半段氣氛（靜謐、溫馨）</b>：這就是段考最愛考的「詩意轉折」！後半段山、樹、孩子都睡著了，作者用會唱歌的小河、輕吹的風與提燈籠的螢火蟲反襯夜晚的安靜。';
+  } else {
+    sky.setAttribute('fill', '#1A237E');
+    txt.textContent = '修辭拆解：「珍珠」＝星星、「銀幣」＝月亮（譬喻法）';
+    tip.innerHTML = '✨ <b>必考修辭陷阱</b>：「撒了滿天的珍珠和一枚又大又亮的銀幣」中，用珍珠比喻星星、銀幣比喻月亮是<b>譬喻法（借喻）</b>；而把夏夜寫成會「撒」東西的人則是<b>擬人法</b>！';
+  }
+}
+
+function setCn2(mode, btn) {
+  toggleActiveBtn(btn);
+  const data = [
+    { s1: '沒看清楚標籤拿錯藥', s2: '「我又不是故意的！」', s3: '親友誤食重傷無法挽回', tip: '💊 <b>事例一警示</b>：拿錯藥瓶雖然不是蓄意害人，但結果卻是無法挽回的悲劇，說明「無心之過」造成的傷害有時比有心更嚴重。' },
+    { s1: '好心幫朋友整理書桌', s2: '「以為那是廢紙就丟了」', s3: '毀掉別人珍貴的手稿文件', tip: '📄 <b>事例二警示</b>：未經同意隨便動別人物品，即使出發點是好意，也可能把別人最重要的心血當垃圾丟掉。' },
+    { s1: '跟朋友開玩笑口無遮攔', s2: '「隨口說說別太在意啦」', s3: '深深刺傷別人的自尊心', tip: '💬 <b>事例三警示</b>：「言者無心，聽者有意」，講話前多想三秒鐘，才不會用無心的話在別人心中留下傷痕。' }
+  ];
+  const d = data[mode];
+  document.getElementById('cn2-s1').textContent = d.s1;
+  document.getElementById('cn2-s2').textContent = d.s2;
+  document.getElementById('cn2-s3').textContent = d.s3;
+  document.getElementById('cn2-tip').innerHTML = d.tip;
+}
+
+function setCn3(mode, btn) {
+  toggleActiveBtn(btn);
+  const tips = [
+    '⚡ <b>嚴父的管教</b>：胡適的父親很早就過世，母親為了不讓兒子學壞，天還沒亮就把他叫醒，催他讀書，管教非常嚴格。',
+    '🛡️ <b>保護孩子的自尊</b>：母親管教雖嚴，但從不當著外人的面罵胡適一句，總是等到夜深人靜、關上房門才罰跪或擰肉；而且絕對不罵「沒爹娘教訓」，既維護孩子自尊也尊重亡夫。',
+    '🌸 <b>寬容忍讓的身教</b>：面對家族裡大嫂、二嫂的無理取鬧，母親總是忍氣吞聲、以德報怨，這種氣度深深影響了胡適一生的待人處事。'
+  ];
+  document.getElementById('cn3-tip').innerHTML = tips[mode];
+}
+
+function setCnc1(mode, btn) {
+  toggleActiveBtn(btn);
+  const cases = [
+    { bad: '❌ 錯誤寫法：公園裡有七、八個小朋友在玩耍。', good: '✅ 正確寫法：公園裡有七八個小朋友在玩耍。', tip: '📌 <b>必考規則</b>：相鄰兩個數字合起來表示「大約的數量」（如：三五成群、七八歲、一兩天）時，中間<b>絕對不能加頓號</b>！' },
+    { bad: '❌ 錯誤寫法：老師說：「明天要考國文」，請準備。', good: '✅ 正確寫法：老師說：「明天要考國文。」', tip: '📌 <b>引號與句號位置</b>：凡是完整引用別人的話，句尾的句號、問號或驚嘆號必須放在<b>下引號「」的裡面</b>！' },
+    { bad: '❌ 錯誤寫法：我最喜歡讀〈論語〉《學而》篇。', good: '✅ 正確寫法：我最喜歡讀《論語》〈學而〉篇。', tip: '📌 <b>書名號大小口訣</b>：大書、報刊用雙尖括號《》；裡面的單篇文章或歌曲用單尖括號〈〉，千萬別寫反！' }
+  ];
+  const c = cases[mode];
+  document.getElementById('cnc1-bad').textContent = c.bad;
+  document.getElementById('cnc1-good').textContent = c.good;
+  document.getElementById('cnc1-tip').innerHTML = c.tip;
+}
+
+let cn4Step = 1;
+function stepCn4(delta) {
+  cn4Step = Math.max(1, Math.min(10, cn4Step + delta));
+  setCn4(cn4Step);
+}
+function setCn4(val) {
+  cn4Step = val;
+  const h = val * 12;
+  const w = val * 14;
+  const topY = 175 - h;
+  document.getElementById('cn4-mound').setAttribute('points', `340,${topY} ${340 - w},175 ${340 + w},175`);
+  const st = document.getElementById('cn4-status');
+  const tip = document.getElementById('cn4-tip');
+  if (val === 10) {
+    st.textContent = '🎉 堆滿 10 簣：大功告成！（堅持到底，成功在望）';
+    tip.innerHTML = '🎉 <b>堅持到底就成功了！</b>：孔子用堆土成山比喻求學與做事，只要每天持續前進，就算一開始只是平地倒下一筐土，最終也能堆成高山。';
+  } else if (val === 9) {
+    st.textContent = '⚠️ 停在 9 簣：「未成一簣，止，吾止也」（功虧一簣！）';
+    tip.innerHTML = '⚠️ <b>成語「功虧一簣」的由來！</b>：只差最後一筐土就完成大山了，卻因為自己懶惰而停下來，責任完全在自己身上，非常可惜！';
+  } else {
+    st.textContent = `目前進度：第 ${val} 簣土（雖覆一簣，進，吾往也！）`;
+    tip.innerHTML = '💡 <b>孔子勉勵語</b>：「譬如平地，雖覆一簣，進，吾往也」——就算現在還在平地，只要願意開始倒下第一筐土並持續前進，進步全掌握在自己手中！';
+  }
+}
+
+function setCn5(idx, btn) {
+  toggleActiveBtn(btn);
+  const pts = [
+    { x: 90, y: 145, desc: '階段1：徐州奔喪見父親，家境慘淡 ➔ 悲哀之淚', tip: '😢 <b>第一次流淚（悲哀之淚）</b>：看到祖母去世、父親失業、家中光景慘淡，不禁流下悲傷的眼淚。' },
+    { x: 255, y: 125, desc: '階段2：嫌父親說話迂腐、交代茶房太囉嗦 ➔ 不以為然', tip: '🙄 <b>情感轉折起點</b>：二十歲的作者自以為聰明，心裡暗笑父親迂腐、不放心自己，還未體會父愛的深沉。' },
+    { x: 425, y: 45, desc: '階段3：望見父親胖胖身軀費力攀爬月台買橘子 ➔ 感動之淚', tip: '😭 <b>全篇情感最高峰（感動之淚）</b>：父親穿著青布棉袍黑布馬褂，蹣跚走過鐵道、雙手攀著月台縮腳爬上的背影，讓作者瞬間明白父親無私的愛！' },
+    { x: 590, y: 65, desc: '階段4：讀父親家書說「大去之期不遠」 ➔ 思念與愧疚之淚', tip: '💌 <b>第四次流淚（思念愧疚之淚）</b>：多年後在晶瑩的淚光中，又看見那肥胖的背影，表達對年邁父親深切的思念與當年不懂事的愧疚。' }
+  ];
+  const nodes = document.getElementById('cn5-nodes');
+  let s = '';
+  pts.forEach((p, i) => {
+    const active = i === idx;
+    s += `<circle cx="${p.x}" cy="${p.y}" r="${active ? 10 : 6}" fill="${active ? '#E53935' : '#1976D2'}"/>`;
+  });
+  nodes.innerHTML = s;
+  document.getElementById('cn5-desc').textContent = pts[idx].desc;
+  document.getElementById('cn5-tip').innerHTML = pts[idx].tip;
+}
+
+function setCn6(mode, btn) {
+  toggleActiveBtn(btn);
+  const box = document.getElementById('cn6-box');
+  const who = document.getElementById('cn6-who');
+  const body = document.getElementById('cn6-body');
+  const verd = document.getElementById('cn6-verdict');
+  const tip = document.getElementById('cn6-tip');
+  if (mode === 0) {
+    box.setAttribute('fill', '#FFEBEE'); box.setAttribute('stroke', '#C62828');
+    who.setAttribute('fill', '#B71C1C'); who.textContent = '角色一：四肢健全卻自我放棄的年輕人';
+    body.textContent = '身體狀態：健康無缺 ｜ 心靈狀態：自怨自艾、畫地自限';
+    verd.setAttribute('fill', '#D84315'); verd.textContent = '結果：為自己打造無形牢籠 ➔ 真正的「心囚」！';
+    tip.innerHTML = '🔒 <b>什麼是「心囚」？</b>：比喻把自己的心靈關在悲觀、抱怨的牢籠裡，即使身體健康，人生也失去了自由與希望。';
+  } else {
+    box.setAttribute('fill', '#E8F5E9'); box.setAttribute('stroke', '#2E7D32');
+    who.setAttribute('fill', '#1B5E20'); who.textContent = '角色二：罹患重病卻樂觀助人的病友（與作者杏林子）';
+    body.textContent = '身體狀態：關節損壞、行動不便 ｜ 心靈狀態：積極寫作、熱愛生命';
+    verd.setAttribute('fill', '#2E7D32'); verd.textContent = '結果：衝破身體限制，擁有最寬廣自由的心靈！';
+    tip.innerHTML = '🕊️ <b>對比手法</b>：杏林子透過這組強烈對比告訴我們：人無法選擇身體的病痛，但永遠可以選擇心靈要當「囚犯」還是「自由人」。';
+  }
+}
+
+function setCnc2(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { t: '步驟一：瀏覽（Skimming）', h: '做法：先看大標題、小標題、首尾段與圖表名稱', g: '目的：在 30 秒內快速掌握整篇文章的主旨大意！', tip: '👀 <b>瀏覽時機</b>：剛拿到一篇長文或閱讀測驗時，先花半分鐘瀏覽架構，不要一開始就逐字硬啃。' },
+    { t: '步驟二：掃描（Scanning）', h: '做法：帶著題目中的關鍵字（人名、年代、數字）快速搜尋', g: '目的：精準定位答案所在的段落，節省考試時間！', tip: '🔍 <b>掃描時機</b>：題目問「哪一年發生什麼事」或「統計數據是多少」時，用眼睛像雷達一樣掃描數字或專有名詞。' },
+    { t: '步驟三：精讀分析', h: '做法：仔細推敲上下文邏輯，區分「事實」與「個人意見」', g: '目的：看懂作者背後的弦外之音與真正立場！', tip: '🧠 <b>段考常見考法</b>：題目會列出四句話，問哪一句是「客觀事實（有數據根據）」、哪一句是「主觀意見（包含『我覺得、應該、可能』）」。' }
+  ];
+  const a = arr[mode];
+  document.getElementById('cnc2-title').textContent = a.t;
+  document.getElementById('cnc2-how').textContent = a.h;
+  document.getElementById('cnc2-goal').textContent = a.g;
+  document.getElementById('cnc2-tip').innerHTML = a.tip;
+}
+
+function setCn7(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { r: '蚊帳裡的幾隻蚊子', rs: '（一般人覺得很煩）', i: '群鶴舞空、鶴唳雲端！', is: '（看得脖子都僵硬還樂在其中）', tip: '🦩 <b>第一件趣事（觀蚊如鶴）</b>：作者把蚊子想成白鶴，又吐煙讓蚊子在煙霧中飛舞，想像成「鶴唳雲端」的仙境景象！' },
+    { r: '牆角草叢、土塊與小蟲', rs: '（平凡無奇的泥土地）', i: '高山深谷、森林野獸！', is: '（精神悠遊在壯麗山水之間）', tip: '⛰️ <b>第二件趣事（神遊山林）</b>：蹲在花台邊定神細看，把小草當森林、蟲蟻當野獸、凸土當山丘、凹土當山谷，這就是「物外之趣」。' },
+    { r: '一隻癩蝦蟆走過來吃蟲', rs: '（突然出現的蟾蜍）', i: '龐然大物拔山倒樹而來！', is: '（嚇一跳後抓起來鞭打幾十下趕走）', tip: '🐸 <b>第三件趣事（鞭打蛤蟆）</b>：因為當時正沉浸在「神遊山林」的縮小世界裡，所以一隻小蛤蟆在眼中就變成了「拔山倒樹的龐然大物」！' }
+  ];
+  const a = arr[mode];
+  document.getElementById('cn7-real').textContent = a.r;
+  document.getElementById('cn7-realSub').textContent = a.rs;
+  document.getElementById('cn7-imag').textContent = a.i;
+  document.getElementById('cn7-imagSub').textContent = a.is;
+  document.getElementById('cn7-tip').innerHTML = a.tip;
+}
+
+function setCn8(mode, btn) {
+  toggleActiveBtn(btn);
+  const arr = [
+    { t: '孔子益者三友之一：【友直】', m: '意思：結交「正直、敢直接指出你缺點」的朋友', e: '生活例子：你犯錯或偷懶時，敢當面勸阻你改過的人。', tip: '🧭 <b>友直</b>：「直」是正直不阿諛奉承，有這樣的朋友才不會走偏路。' },
+    { t: '孔子益者三友之二：【友諒】', m: '意思：結交「誠信守諾、懂得體諒包容」的朋友', e: '生活例子：答應你的事一定做到，且能設身處地體諒你難處的人。', tip: '🤝 <b>友諒</b>：「諒」在這裡是誠實守信、寬厚體諒的意思（不是原諒而已喔！）。' },
+    { t: '孔子益者三友之三：【友多聞】', m: '意思：結交「見識廣博、學問豐富」的朋友', e: '生活例子：常看書、懂很多知識，跟你聊天總能讓你學到新東西的人。', tip: '📚 <b>友多聞</b>：和見識廣博的朋友相處，能開拓自己的眼界，不會孤陋寡聞。' },
+    { t: '交友名言：【君子之交淡如水】', m: '意思：君子之間的友情不建立在金錢利益上，像白開水一樣平淡卻長久', e: '對比句：「小人之交甘若醴」（小人為了利益聚在一起，像甜酒一樣容易變質）。', tip: '💧 <b>必考名言對比</b>：真正的好朋友平常不用天天吃喝玩樂，但在你遇到困難時一定會伸出援手。' }
+  ];
+  const a = arr[mode];
+  document.getElementById('cn8-term').textContent = a.t;
+  document.getElementById('cn8-mean').textContent = a.m;
+  document.getElementById('cn8-ex').textContent = a.e;
+  document.getElementById('cn8-tip').innerHTML = a.tip;
+}
+
+function setCn9(mode, btn) {
+  toggleActiveBtn(btn);
+  if (mode === 0) {
+    document.getElementById('cn9-sub1').textContent = '水下 99% 看不見的苦練：';
+    document.getElementById('cn9-sub2').textContent = '鋼琴大師魯賓斯坦：一天不練琴自己知道，三天不練聽眾知道！';
+    document.getElementById('cn9-tip').innerHTML = '🎹 <b>魯賓斯坦的啟示</b>：連世界級鋼琴大師都不敢一天偷懶，說明真正的專業來自「每天不間斷的紀律與練習」。';
+  } else {
+    document.getElementById('cn9-sub1').textContent = '從挫折中站起來的苦練：';
+    document.getElementById('cn9-sub2').textContent = '職籃巨星喬丹：高中曾被校隊刷掉，每天最早到球場苦練數百次投籃！';
+    document.getElementById('cn9-tip').innerHTML = '🏀 <b>麥可・喬丹的啟示</b>：喬丹並非天生就所向無敵，他把被校隊刷掉的羞辱化為動力，用比別人多幾倍的汗水練成籃球之神。';
+  }
+}
+
+function setCn10(mode, btn) {
+  toggleActiveBtn(btn);
+  if (mode === 0) {
+    document.getElementById('cn10-stage').textContent = '第一幕（懸疑伏筆）：花店裡的奇怪客人';
+    document.getElementById('cn10-detail').textContent = '衣著樸素、神情落寞的老先生，只買「一朵」紅玫瑰卻挑得極為仔細。';
+    document.getElementById('cn10-feel').textContent = '作者猜測：是送給年輕情人的嗎？為什麼神情帶著哀傷？';
+    document.getElementById('cn10-tip').innerHTML = '🔍 <b>寫作技巧「設下伏筆」</b>：作者先故意不說破老先生買花的原因，透過觀察他的穿著與神情製造懸疑，吸引讀者繼續看下去。';
+  } else {
+    document.getElementById('cn10-stage').textContent = '第二幕（真相揭曉）：獻給深愛伴侶的「玫瑰淚」';
+    document.getElementById('cn10-detail').textContent = '原來老先生是為了悼念亡妻（或探望病榻上的老伴），紅玫瑰代表一生不變的深情。';
+    document.getElementById('cn10-feel').textContent = '主旨昇華：外表樸實無華，內心卻擁有最深沉動人的人間真情！';
+    document.getElementById('cn10-tip').innerHTML = '🌹 <b>情感共鳴</b>：一朵紅玫瑰勝過千言萬語，這就是「玫瑰淚」令人感動的原因——最深的愛往往藏在最平凡的舉動裡。';
+  }
+}
+
 const quizBank = [
   // 第1課
   { l: 1, q: '〈夏夜〉一詩中，「撒了滿天的珍珠和一枚又大又亮的銀幣」運用了哪兩種修辭法？', opts: ['譬喻、轉化（擬人）', '誇飾、排比', '設問、借代', '映襯、雙關'], ans: 0, exp: '把星星比喻成「珍珠」、月亮比喻成「銀幣」（譬喻），且用「撒」這個動作賦予夏夜人的行為（轉化/擬人）。' },
@@ -247,7 +861,7 @@ const quizBank = [
   { l: 3, q: '關於胡適〈母親的教誨〉一文，下列敘述何者「錯誤」？', opts: ['母親為了樹立威嚴，常在眾人面前大聲責罵胡適', '母親身兼嚴父與慈母的角色，對胡適管教極嚴', '胡適認為自己待人接物的和氣與寬恕，全得自慈母的身教', '本文選自胡適的自傳《四十自述》'], ans: 0, exp: '胡適的母親從不在別人面前罵他一句，而是等到夜深人靜關上房門才教訓他，極力維護孩子的自尊心。' },
   { l: 3, q: '「如果我學得了一絲一毫的好脾氣……我都得感謝我的慈母。」這段話表現出作者何種情懷？', opts: ['對母親深切的感激與思念', '對童年嚴格管教的抱怨', '對自己成就的驕傲自滿', '對家族長輩的無奈妥協'], ans: 0, exp: '胡適在文章結尾以排比句真摯表達對母親身教與言教的感恩之情。' },
   // 語文常識一
-  { l: 'c1', q: '下列文句中的標點符號，何者使用「完全正確」？', opts: ['公園裡有七八個小朋友正在玩耍。', '公園裡有七、八個小朋友正在玩耍。', '我最喜歡讀《論語》〈學而〉篇。', '老師說：「明天要考國文」，請大家準備。'], ans: 0, exp: '相鄰兩個數字表示「約數」（七八個）時，中間不可加頓號！D選項句號應在引號內：老師說：「明天要考國文。」' },
+  { l: 'c1', q: '下列文句中的標點符號，何者使用「完全正確」？', opts: ['公園裡有七八個小朋友正在玩耍。', '公園裡有七、八個小朋友正在玩耍。', '我最喜歡讀〈論語〉《學而》篇。', '老師說：「明天要考國文」，請大家準備。'], ans: 0, exp: '相鄰兩個數字表示「約數」（七八個）時，中間不可加頓號！D選項句號應在引號內：老師說：「明天要考國文。」' },
   { l: 'c1', q: '在直式或橫式稿紙中，「破折號（——）」和「刪節號（……）」各佔幾格？', opts: ['皆佔兩格', '皆佔一格', '破折號佔兩格，刪節號佔一格', '破折號佔一格，刪節號佔兩格'], ans: 0, exp: '破折號（——）與刪節號（……）在標準標點符號規範中，都是佔「兩格」。' },
   // 第4課
   { l: 4, q: '「學而時習之，不亦說乎？」句中的「說」字，意思為何？', opts: ['通「悅」，喜悅、快樂的意思', '說話、表達意見', '勸說、說服他人', '學說、理論'], ans: 0, exp: '此處「說」為通假字，通「悅」（ㄩㄝˋ），指學習後按時溫習實踐，心中感到非常喜悅。' },
@@ -287,28 +901,28 @@ function initCheckboxes() {
     label.innerHTML = `<input type="checkbox" value="${l.id}" ${checked} onchange="toggleLesson('${l.id}')"> ${l.name}`;
     grid.appendChild(label);
   });
-  renderNotes();
+  renderNotesAndAnims();
 }
 
 function toggleLesson(id) {
   const key = isNaN(id) ? id : Number(id);
   if (selectedLessons.has(key)) selectedLessons.delete(key);
   else selectedLessons.add(key);
-  renderNotes();
+  renderNotesAndAnims();
   if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
 }
 
 function selectRange(arr) {
   selectedLessons = new Set(arr);
   updateCheckboxesUI();
-  renderNotes();
+  renderNotesAndAnims();
   if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
 }
 
 function selectAll(flag) {
   selectedLessons = flag ? new Set(lessons.map(l => l.id)) : new Set();
   updateCheckboxesUI();
-  renderNotes();
+  renderNotesAndAnims();
   if (document.getElementById('sec-quiz').classList.contains('active')) loadNextQuestion();
 }
 
@@ -320,32 +934,65 @@ function updateCheckboxesUI() {
 }
 
 function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b, i) => {
-    b.classList.toggle('active', (tab === 'notes' && i === 0) || (tab === 'quiz' && i === 1));
-  });
+  document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('tab-anim').classList.toggle('active', tab === 'anim');
+  document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
   document.getElementById('sec-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('sec-anim').classList.toggle('active', tab === 'anim');
   document.getElementById('sec-quiz').classList.toggle('active', tab === 'quiz');
   if (tab === 'quiz') loadNextQuestion();
 }
 
-function renderNotes() {
-  const container = document.getElementById('sec-notes');
+function renderNotesAndAnims() {
+  const notesContainer = document.getElementById('sec-notes');
+  const animContainer = document.getElementById('sec-anim');
   if (selectedLessons.size === 0) {
-    container.innerHTML = '<p style="text-align:center; color:#888; padding:30px;">請先在上方勾選至少一個課次範圍喔！</p>';
+    const emptyMsg = '<p style="text-align:center; color:#888; padding:30px;">請先在上方勾選至少一個課次範圍喔！</p>';
+    notesContainer.innerHTML = emptyMsg;
+    animContainer.innerHTML = emptyMsg;
     return;
   }
-  let html = '';
+
+  let notesHtml = '';
+  let animHtml = '';
   lessons.forEach(l => {
-    if (selectedLessons.has(l.id) && notesData[l.id]) {
-      const n = notesData[l.id];
-      const lis = n.points.map(p => `<li>${p}</li>`).join('');
-      html += `<div class="note-card">
-        <div class="note-title"><span>${n.title}</span><span class="note-tag">${n.tag}</span></div>
-        <ul class="note-list">${lis}</ul>
-      </div>`;
+    if (selectedLessons.has(l.id)) {
+      if (notesData[l.id]) {
+        const n = notesData[l.id];
+        const lis = n.points.map(p => `<li>${p}</li>`).join('');
+        notesHtml += `<div class="note-card">
+          <div class="note-title"><span>${n.title}</span><span class="note-tag">${n.tag}</span></div>
+          <ul class="note-list">${lis}</ul>
+        </div>`;
+      }
+      if (animData[l.id]) {
+        const a = animData[l.id];
+        animHtml += `<div class="anim-card">
+          <div class="anim-header">
+            <div class="anim-title">🎬 ${a.title}</div>
+            <span class="anim-badge">${a.badge}</span>
+          </div>
+          ${a.html}
+        </div>`;
+      }
     }
   });
-  container.innerHTML = html;
+  notesContainer.innerHTML = notesHtml;
+  animContainer.innerHTML = animHtml;
+
+  // 重新初始化當前顯示的動畫預設狀態
+  if (selectedLessons.has(1)) setCn1(0, null);
+  if (selectedLessons.has(2)) setCn2(0, null);
+  if (selectedLessons.has(3)) setCn3(0, null);
+  if (selectedLessons.has('c1')) setCnc1(0, null);
+  if (selectedLessons.has(4)) setCn4(1);
+  if (selectedLessons.has(5)) setCn5(0, null);
+  if (selectedLessons.has(6)) setCn6(0, null);
+  if (selectedLessons.has('c2')) setCnc2(0, null);
+  if (selectedLessons.has(7)) setCn7(0, null);
+  if (selectedLessons.has(8)) setCn8(0, null);
+  if (selectedLessons.has(9)) setCn9(0, null);
+  if (selectedLessons.has(10)) setCn10(0, null);
 }
 
 function loadNextQuestion() {
