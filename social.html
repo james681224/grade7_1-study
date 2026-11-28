@@ -3,228 +3,428 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上社會（康軒版）- 段考衝刺網</title>
+<title>國一上自然科學（翰林版）- 段考重點、互動動畫與無限刷題</title>
 <style>
-  :root { --primary: #2E7D32; --geo: #0277BD; --his: #D84315; --civ: #6A1B9A; --bg: #F4F7F6; --text: #333; }
-  body { font-family: -apple-system, 'Microsoft JhengHei', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-  .container { max-width: 960px; margin: 0 auto; background: white; padding: 22px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-  .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 12px; margin-bottom: 18px; }
-  .home-btn { background: #546E7A; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; }
-  h1 { color: var(--primary); margin: 0; font-size: 24px; }
-  .scope-box { background: #E8F5E9; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #A5D6A7; }
-  .quick-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-  .q-btn { background: white; border: 2px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 16px; cursor: pointer; font-weight: bold; font-size: 13px; }
-  .q-btn:hover { background: var(--primary); color: white; }
-  .sub-group { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #A5D6A7; }
-  .sub-label { font-weight: bold; font-size: 14px; margin-bottom: 6px; display: block; }
-  .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px; }
-  .lesson-chk { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 10px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid #C8E6C9; }
-  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-  .tab-btn { padding: 12px 24px; font-size: 16px; border: none; border-radius: 10px; background: #e0e0e0; cursor: pointer; font-weight: bold; }
-  .tab-btn.active { background: var(--primary); color: white; }
+  :root {
+    --primary: #2e7d32;
+    --primary-light: #e8f5e9;
+    --secondary: #00897b;
+    --accent: #f57c00;
+    --bg: #f1f8e9;
+    --text: #263238;
+    --border: #c8e6c9;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 16px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 24px;
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+  }
+  .home-btn {
+    text-decoration: none;
+    background: #eceff1;
+    color: #37474f;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+  .home-btn:hover { background: #cfd8dc; }
+  h1 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 24px;
+  }
+  .scope-box {
+    background: var(--primary-light);
+    border: 2px solid #a5d6a7;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+  .scope-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .scope-title {
+    font-weight: bold;
+    color: #1b5e20;
+    font-size: 16px;
+  }
+  .quick-btns {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .q-btn {
+    background: #fff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 4px 10px;
+    border-radius: 14px;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  .q-btn:hover {
+    background: var(--primary);
+    color: #fff;
+  }
+  .chap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 8px;
+  }
+  .chap-item {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+    cursor: pointer;
+    font-size: 14px;
+    user-select: none;
+  }
+  .chap-item input {
+    margin-right: 8px;
+    width: 17px;
+    height: 17px;
+    accent-color: var(--primary);
+  }
+  .tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    flex: 1;
+    min-width: 180px;
+    padding: 14px 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: #e0e0e0;
+    color: #555;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 3px 10px rgba(46,125,50,0.3);
+  }
   .section { display: none; }
   .section.active { display: block; }
-  .note-card { border: 2px solid #e0e0e0; border-radius: 12px; padding: 18px; margin-bottom: 14px; background: #fafafa; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; color: white; font-weight: bold; margin-right: 8px; }
-  .b-geo { background: var(--geo); } .b-his { background: var(--his); } .b-civ { background: var(--civ); }
-  .note-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
-  .note-list { margin: 0; padding-left: 20px; line-height: 1.7; font-size: 15px; }
-  .quiz-box { background: #FFFDE7; border: 3px solid #FBC02D; border-radius: 16px; padding: 25px 20px; max-width: 700px; margin: 0 auto; text-align: center; }
-  .score-bar { font-size: 17px; font-weight: bold; color: #F57F17; margin-bottom: 15px; }
-  .q-tag { display: inline-block; background: #E0F2F1; color: #00695C; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
-  .q-text { font-size: 20px; font-weight: bold; margin: 15px 0 20px; line-height: 1.5; text-align: left; }
-  .opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .opt-btn { padding: 14px 18px; font-size: 16px; text-align: left; border: 2px solid #ccc; background: white; border-radius: 10px; cursor: pointer; font-weight: 500; }
-  .opt-btn:hover { border-color: var(--primary); background: #F1F8E9; }
-  .opt-btn.correct { background: #C8E6C9; border-color: #2E7D32; color: #1B5E20; font-weight: bold; }
-  .opt-btn.wrong { background: #FFCDD2; border-color: #C62828; color: #B71C1C; }
-  .exp-box { display: none; margin-top: 18px; padding: 15px; background: #E3F2FD; border-left: 5px solid #1976D2; border-radius: 8px; text-align: left; font-size: 15px; line-height: 1.6; }
-  .next-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; font-size: 17px; border-radius: 25px; cursor: pointer; margin-top: 18px; font-weight: bold; display: none; }
+
+  /* 重點整理卡片 */
+  .note-card {
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
+    background: #fafafa;
+  }
+  .note-card h3 {
+    margin: 0 0 10px 0;
+    color: #1b5e20;
+    font-size: 18px;
+    border-left: 5px solid var(--primary);
+    padding-left: 10px;
+  }
+  .note-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+  .note-list li {
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .highlight {
+    background: #fff9c4;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #d84315;
+  }
+  .exp-box {
+    background: #e0f2f1;
+    border-left: 4px solid #00897b;
+    padding: 10px 14px;
+    margin-top: 10px;
+    border-radius: 0 8px 8px 0;
+    font-size: 14px;
+  }
+
+  /* 互動動畫模擬器樣式 */
+  .sim-card {
+    border: 2px solid #80cbc4;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 22px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0,137,123,0.08);
+  }
+  .sim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px dashed #e0f2f1;
+    padding-bottom: 10px;
+  }
+  .sim-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #00695c;
+    margin: 0;
+  }
+  .sim-badge {
+    background: #e0f2f1;
+    color: #00695c;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .sim-stage {
+    background: #f8fafc;
+    border: 1px solid #cfd8dc;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .sim-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .sim-btn {
+    background: #fff;
+    border: 2px solid var(--secondary);
+    color: var(--secondary);
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .sim-btn:hover, .sim-btn.active {
+    background: var(--secondary);
+    color: #fff;
+  }
+  .sim-info {
+    background: #fffde7;
+    border-left: 4px solid #fbc02d;
+    padding: 12px 14px;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+    color: #37474f;
+  }
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -24; }
+  }
+  .flow-line {
+    stroke-dasharray: 8 4;
+    animation: dashFlow 0.8s linear infinite;
+  }
+
+  /* 測驗區 */
+  .quiz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff3e0;
+    border: 2px solid #ffcc80;
+    padding: 12px 18px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .stats {
+    font-weight: bold;
+    font-size: 16px;
+    color: #e65100;
+  }
+  .quiz-card {
+    border: 2px solid #b2dfdb;
+    border-radius: 14px;
+    padding: 24px;
+    background: #fff;
+  }
+  .q-tag {
+    display: inline-block;
+    background: var(--secondary);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 12px;
+  }
+  .q-text {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1a237e;
+  }
+  .options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .opt-btn {
+    text-align: left;
+    padding: 14px 18px;
+    font-size: 17px;
+    border: 2px solid #cfd8dc;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: 0.15s;
+    font-weight: 500;
+  }
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+  .opt-btn.correct {
+    background: #c8e6c9;
+    border-color: #2e7d32;
+    color: #1b5e20;
+    font-weight: bold;
+  }
+  .opt-btn.wrong {
+    background: #ffcdd2;
+    border-color: #c62828;
+    color: #b71c1c;
+  }
+  .explain-box {
+    display: none;
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #fffde7;
+    border: 2px solid #fbc02d;
+    font-size: 16px;
+  }
+  .explain-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .next-btn {
+    margin-top: 18px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 17px;
+    font-weight: bold;
+    border-radius: 24px;
+    cursor: pointer;
+    display: none;
+  }
+  .next-btn:hover { background: #1b5e20; }
+  .empty-warn {
+    text-align: center;
+    padding: 30px;
+    color: #d32f2f;
+    font-weight: bold;
+    font-size: 18px;
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
   <div class="top-bar">
-    <a href="index.html" class="home-btn">🏠 回全科總大廳</a>
-    <h1>🌏 國一上社會（康軒版）</h1>
-    <span style="font-size:14px; color:#666;">地理・歷史・公民</span>
+    <h1>🔬 國一上自然科學（翰林版）</h1>
+    <a href="index.html" class="home-btn">🏠 回全科總目錄</a>
   </div>
 
+  <!-- 範圍勾選器 -->
   <div class="scope-box">
-    <div style="font-weight:bold; margin-bottom:8px;">📌 勾選本次段考範圍（自動篩選重點與題庫）：</div>
-    <div class="quick-btns">
-      <button class="q-btn" onclick="selectPreset([1,2,7,8,13,14])">一段範圍 (各科1~2課)</button>
-      <button class="q-btn" onclick="selectPreset([3,4,9,10,15,16])">二段範圍 (各科3~4課)</button>
-      <button class="q-btn" onclick="selectPreset([5,6,11,12,17,18])">三段範圍 (各科5~6課)</button>
-      <button class="q-btn" onclick="selectPreset([1,2,3,4,5,6])">只考地理</button>
-      <button class="q-btn" onclick="selectPreset([7,8,9,10,11,12])">只考歷史</button>
-      <button class="q-btn" onclick="selectPreset([13,14,15,16,17,18])">只考公民</button>
-      <button class="q-btn" onclick="selectPreset([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18])">全選總複習</button>
+    <div class="scope-header">
+      <span class="scope-title">📌 勾選本次段考範圍（可複選）：</span>
+      <div class="quick-btns">
+        <button class="q-btn" onclick="selectPreset([1,2])">一段 (第1~2章)</button>
+        <button class="q-btn" onclick="selectPreset([3,4])">二段 (第3~4章)</button>
+        <button class="q-btn" onclick="selectPreset([5,6])">三段 (第5~6章)</button>
+        <button class="q-btn" onclick="selectPreset([1,2,3,4,5,6])">全冊總複習</button>
+      </div>
     </div>
-    <div id="checkbox-area"></div>
+    <div class="chap-grid" id="chap-checkboxes"></div>
   </div>
 
+  <!-- 分頁按鈕 -->
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(1)">📖 考前重點速覽</button>
-    <button class="tab-btn" onclick="switchTab(2)">✍️ 範圍無限測驗＋解析</button>
+    <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點與實驗整理</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab('anim')">🎬 互動實驗與觀念動畫</button>
+    <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
   </div>
 
-  <div id="tab1" class="section active"><div id="notes-area"></div></div>
-  <div id="tab2" class="section">
-    <div class="quiz-box">
-      <div class="score-bar">🏆 累計得分：<span id="score">0</span> 分 ｜ 🔥 連續答對：<span id="streak">0</span> 題</div>
-      <div class="q-tag" id="q-lesson-tag">單元標籤</div>
-      <div class="q-text" id="q-text">題目載入中...</div>
-      <div class="opts" id="q-opts"></div>
-      <div class="exp-box" id="q-exp"></div>
-      <button class="next-btn" id="next-btn" onclick="loadQuestion()">下一題 ➡️</button>
+  <!-- 分頁一：重點整理 -->
+  <div id="sec-notes" class="section active"></div>
+
+  <!-- 分頁二：互動動畫模擬器 -->
+  <div id="sec-anim" class="section"></div>
+
+  <!-- 分頁三：無限測驗 -->
+  <div id="sec-quiz" class="section">
+    <div class="quiz-header">
+      <div class="stats">🏆 總得分：<span id="score">0</span> 分 ｜ 🔥 連續答對：<span id="streak">0</span> 題</div>
+      <div style="font-size:14px; color:#555;">💡 題目與選項皆自動隨機變化</div>
     </div>
+    <div id="quiz-area"></div>
   </div>
 </div>
 
 <script>
-const lessons = [
-  { id:1, sub:'地理', cls:'b-geo', name:'地1 位置、地圖與座標', notes:['經線(子午線)連接南北極，本初經線0°劃分東西半球；每差經度15°時差1小時（東加西減）。','緯線平行赤道0°，劃分南北半球與氣候帶；北回歸線(23.5°N)經過嘉義水上、花蓮瑞穗。','比例尺越大（如1:1000），涵蓋範圍越小、地圖內容越詳細。'] },
-  { id:2, sub:'地理', cls:'b-geo', name:'地2 位置對臺灣的影響', notes:['臺灣位於歐亞大陸與太平洋交界、東亞島弧中心，具戰略與航運樞紐地位。','位於歐亞板塊與菲律賓海板塊交界（環太平洋地震帶），多地震、溫泉與高山。','生物多樣性高：冰河時期陸橋相連＋高山垂直氣候變化，保存許多特有種（如櫻花鉤吻鮭）。'] },
-  { id:3, sub:'地理', cls:'b-geo', name:'地3 臺灣的地形', notes:['五大地形：山地、丘陵、台地、盆地、平原；主要山脈呈東北—西南走向，中央山脈為分水嶺。','西部多沖積平原（嘉南平原最大）與台地（林口、桃園）；東部多斷層海岸（清水斷崖）。','等高線越密集代表坡度越陡峭；V字形尖端指向高處為河谷，指向低處為山脊。'] },
-  { id:4, sub:'地理', cls:'b-geo', name:'地4 臺灣的海域', notes:['北部岬灣海岸（基隆港、野柳女王頭）；西部沙岸（潟湖、沙洲、外傘頂洲，利養殖業）；南部珊瑚礁海岸（墾丁）；東部斷層海岸（花蓮港）。','領海為基線向外12浬，經濟海域為200浬。','澎湖群島為火山熔岩（玄武岩）形成；蘭嶼、綠島為海底火山噴發形成；琉球嶼為珊瑚礁島。'] },
-  { id:5, sub:'地理', cls:'b-geo', name:'地5 臺灣的氣候', notes:['北回歸線以南為熱帶季風氣候，以北為副熱帶季風氣候；夏季吹西南季風，冬季吹東北季風。','基隆、宜蘭（竹風蘭雨）冬季位於東北季風迎風面，全年有雨；西南部夏雨冬乾最明顯。','地形雨：迎風坡潮濕多雨，背風坡乾燥炎熱（焚風常發生在臺東）。'] },
-  { id:6, sub:'地理', cls:'b-geo', name:'地6 臺灣的水文', notes:['河川特色：坡陡流急、長度短、含沙量大、流量季節變化大（枯水期與豐水期明顯）。','濁水溪最長，高屏溪流域面積最大，淡水河受潮汐影響最具航運價值。','水資源問題：降雨時間分布不均＋坡陡水難留，需建水庫蓄水；超抽地下水易致地層下陷。'] },
-  { id:7, sub:'歷史', cls:'b-his', name:'歷1 史前文化與原住民', notes:['舊石器時代（長濱文化）：已知用火、打製石器、採集漁獵；新石器時代（大坌坑、卑南、圓山）：磨製石器、製陶、農耕。','金屬器時代（十三行文化）：已知煉鐵，出土瑪瑙珠、中國銅錢，顯示有海外貿易。','原住民依居住地與漢化程度在清代分為平埔族群與高山族群；臺灣是南島語族分布最北端。'] },
-  { id:8, sub:'歷史', cls:'b-his', name:'歷2 大航海時代各方勢力', notes:['1624年荷蘭佔領南部（熱蘭遮城/安平古堡），招募漢人開墾，輸出鹿皮與蔗糖；1626年西班牙佔領北部（聖薩爾瓦多城），1642年被荷蘭驅逐。','1662年鄭成功攻下熱蘭遮城驅逐荷蘭，建立鄭氏政權（漢人政權開端）。','鄭經採陳永華建議，興建全臺首學（臺南孔廟）、推行寓兵於農屯墾制度。'] },
-  { id:9, sub:'歷史', cls:'b-his', name:'歷3 大航海時代族群互動', notes:['荷蘭人引進新港文（羅馬拼音拼寫西拉雅語）傳教，並留下《新港文書》（番仔契）。','1652年郭懷一事件：因荷蘭課徵重稅（人頭稅）引發漢人起事反抗。','鄭氏時期實施軍屯，侵害原住民獵場，引發大肚王國（拍瀑拉族）多次反抗。'] },
-  { id:10, sub:'歷史', cls:'b-his', name:'歷4 清帝國時期行政治理', notes:['1683年施琅攻臺，1684年康熙納臺入版圖，設一府三縣（臺灣府：臺灣、諸羅、鳳山縣），隸屬福建省。','初期採「消極治臺」（渡臺禁令、畫界封山設土牛溝防漢番衝突），後因朱一貴、林爽文民變頻繁而逐步增設廳縣（如噶瑪蘭廳）。','分類械鬥（閩粵械鬥、漳泉械鬥）與民變（三年一小反、五年一大亂）為清初社會動盪主因。'] },
-  { id:11, sub:'歷史', cls:'b-his', name:'歷5 清帝國時期農商發展', notes:['水利興修（八堡圳、瑠公圳、曹公圳）使稻米與蔗糖產量大增，形成「一府二鹿三艋舺」港口市鎮。','郊商（行郊）出現：如北郊、南郊、糖郊，為同業或同地區貿易商人組織，具維持秩序與公益功能。','1860年英法聯軍後開港通商（安平、淡水、打狗、雞籠），茶、糖、樟腦成為外銷主力，經濟重心北移。'] },
-  { id:12, sub:'歷史', cls:'b-his', name:'歷6 清帝國時期社會文化', notes:['早期漢人社會「羅漢腳」（無妻室無產業單身男子）多，移墾社會重祭祀（開漳聖王-漳州、三山國王-客家人、保生大帝-泉州）。','宗族組織分為「唐山祖」（來臺開基祖以前祖先，凝聚同姓力量）與「開臺祖」（有血緣關係）。','1874年牡丹社事件後沈葆楨來臺「開山撫番」；1885年臺灣建省，首任巡撫劉銘傳推動鐵路、電報等自強新政。'] },
-  { id:13, sub:'公民', cls:'b-civ', name:'公1 人性尊嚴與人權保障', notes:['人性尊嚴是與生俱來、不可剝奪的價值；基本人權包含平等權、自由權、受益權、參政權。','《兒童權利公約》(CRC)四大原則：禁止歧視、兒童最佳利益、生存及發展權、尊重兒童表意權。','尊重他人界線與隱私，不隨意散布他人個資或照片，才是真正的自由與法治。'] },
-  { id:14, sub:'公民', cls:'b-civ', name:'公2 性別平等', notes:['「生理性別」是天生染色體與構造；「社會性別」是後天文化期待塑造的氣質與角色。','性別刻板印象（如男主外女主內）容易造成性別偏見與性別歧視。','《性別平等教育法》保障校園免於性騷擾、性霸凌，並尊重多元性別氣質與性傾向。'] },
-  { id:15, sub:'公民', cls:'b-civ', name:'公3 我們都是一家人', notes:['親屬分為配偶、血親（直系如父母子女、旁系如兄弟姊妹叔伯）、姻親（因婚姻產生的親戚）。','親等計算：直系從己身上下數（父母為1親等）；旁系先數到共同祖先再往下數（兄弟姊妹為2親等）。','家庭形態多元：核心家庭（父母＋未婚子女）、折衷/三代家庭、單親家庭、重組家庭、頂客家庭。'] },
-  { id:16, sub:'公民', cls:'b-civ', name:'公4 平權家庭', notes:['家庭功能：生育、經濟、保護與照顧、教育與社會化；隨時代演變，部分功能由政府與托育機構分擔。','平權家庭強調家務分工共同承擔、重大決定共同協商，打破傳統父權單方決定。','家庭暴力包含身體、精神、經濟騷擾控制，遇到家暴可撥打 113 保護專線或聲請保護令。'] },
-  { id:17, sub:'公民', cls:'b-civ', name:'公5 校園生活中的公共參與', notes:['學生自治（班會、學生會）培養民主素養，遵循「少數服從多數，多數尊重少數」原則。','班會程序：主席報告 ➔ 幹部報告 ➔ 討論事項（提案、附議、討論、表決）➔ 臨時動議。','校規訂定應符合正當法律程序，並聽取學生意見，保障學生受教權與申訴權。'] },
-  { id:18, sub:'公民', cls:'b-civ', name:'公6 社區與部落', notes:['社區意識（社區凝聚力）是居民對居住環境產生認同感與歸屬感，主動參與社區營造。','《原住民族基本法》保障原住民族部落自治、傳統領域與文化傳承權。','透過社區巡守隊、長照關懷據點與環境維護，展現公民參與和社會連帶責任。'] }
-];
-
-const qBank = [
-  { lid:1, q:'臺灣本島位於東經120°~122°，若倫敦（0°）現在是上午8點，請問臺灣現在是幾點？', opts:['下午4點','上午0點','下午2點','晚上8點'], ans:0, exp:'東經120°與0°相差120度，120 ÷ 15 = 8小時。臺灣在倫敦東邊（東加西減），8 + 8 = 16點（下午4點）。' },
-  { lid:2, q:'臺灣島上保存了許多冰河時期孑遺生物（如櫻花鉤吻鮭），主要原因為何？', opts:['冰河時期與大陸相連，且島內高山林立垂直氣候變化大','四面環海終年高溫多雨','位於太平洋板塊與印度洋板塊交界','四周洋流終年只有暖流經過'], ans:0, exp:'冰河時期海平面下降使臺灣海峽變成陸橋，生物遷入後因氣候暖化與高山垂直氣候得以避難保存。' },
-  { lid:3, q:'在等高線地形圖上，若等高線呈V字形且尖端指向海拔較高處，代表該地形為何？', opts:['河谷','山脊','盆地','台地'], ans:0, exp:'口訣「高谷低脊」：V字尖端指向高處為河谷（集水線），指向低處為山脊。' },
-  { lid:4, q:'臺灣西部海岸多沙洲與潟湖，最適合發展下列哪一種產業？', opts:['淺海養殖漁業與曬鹽','深水大型國際商港','珊瑚礁潛水觀光','玄武岩地質公園'], ans:0, exp:'西部為沙岸，海水較淺且風浪平緩，利於養殖蚵仔、文蛤及曬鹽，但港口易淤積。' },
-  { lid:5, q:'宜蘭有「竹風蘭雨」之稱，冬天經常陰雨綿綿，主要是受到哪一種因素影響？', opts:['位於東北季風的迎風面產生地形雨','位於西南季風的背風面產生焚風','熱帶氣旋頻繁登陸','盆地地形熱對流旺盛'], ans:0, exp:'冬季盛行東北季風，吹過太平洋帶來水氣，在宜蘭與基隆遇山抬升形成地形雨。' },
-  { lid:6, q:'臺灣河川普遍「坡陡流急、長度短」，這對水資源利用造成什麼影響？', opts:['降雨迅速流入大海不易蓄存，需興建水庫調節','全年水量穩定適合大型內河航運','河口三角洲面積廣大且無泥沙淤積','冬季河川結冰無法取水'], ans:0, exp:'因中央山脈高聳且東西狹窄，河川短促，豐水期雨水很快入海，必須靠水庫蓄水度過枯水期。' },
-  { lid:7, q:'新北市八里區的「十三行文化」出土了煉鐵作坊與中國銅錢，代表當時已進入哪個時代？', opts:['金屬器時代','舊石器時代','新石器時代早期','清帝國時期'], ans:0, exp:'十三行文化是臺灣北部代表性的金屬器時代文化，已知煉鐵並與外地有貿易往來。' },
-  { lid:8, q:'1624年荷蘭人在臺南建立熱蘭遮城，當時他們經營臺灣的主要經濟目的為何？', opts:['作為轉口貿易據點並輸出鹿皮與蔗糖','開採豐富的金礦與煤礦','推廣儒家科舉制度','建立漢人農業屯墾區'], ans:0, exp:'荷蘭東印度公司看重臺灣位於東亞航線中心，將臺灣作為對中國、日本貿易的轉運站，並出口鹿皮與蔗糖。' },
-  { lid:9, q:'荷蘭統治時期為了向西拉雅族傳教，用羅馬字母拼寫原住民語言，這套文字稱為什麼？', opts:['新港文','八思巴文','甲骨文','漢文隸書'], ans:0, exp:'荷蘭傳教士在新港社用羅馬拼音拼寫西拉雅語，稱新港文，後來原住民與漢人簽契約也使用（俗稱番仔契）。' },
-  { lid:10, q:'清領初期朝廷對臺灣採取消極治臺政策，頒布「渡臺禁令」，其主要目的為何？', opts:['防止臺灣成為反清復明基地及漢人與原住民衝突','鼓勵大陸沿海居民全家移居臺灣','推動臺灣與日本自由通商','在臺灣全面推廣普及教育'], ans:0, exp:'清廷擔心臺灣再次成為動亂基地，限制單身男子渡臺且不准攜眷，造成早期「羅漢腳」增多。' },
-  { lid:11, q:'1860年臺灣開港通商後，下列哪三項商品成為出口大宗，帶動北部經濟崛起？', opts:['茶、糖、樟腦','稻米、鹿皮、硫磺','煤礦、黃金、木材','蔗糖、香蕉、鳳梨'], ans:0, exp:'開港通商後，北部的茶葉與樟腦外銷激增，使經濟與政治重心逐漸從臺南轉移至臺北（大稻埕）。' },
-  { lid:12, q:'清代臺灣漢人社會中，由同姓氏族人共同集資祭拜「大陸原鄉某一祖先」，藉以凝聚同姓力量的組織稱為？', opts:['唐山祖','開臺祖','郊商','羅漢腳'], ans:0, exp:'唐山祖是沒有直接血緣關係、但同姓的移民共同祭拜原鄉祖先，藉以在異鄉互相照應；有血緣關係的則稱開臺祖。' },
-  { lid:13, q:'學校在訂定服裝儀容規定前，先舉辦公聽會讓學生代表發表意見，這最符合《兒童權利公約》的哪項原則？', opts:['尊重兒童表意權','禁止歧視原則','生存及發展權','保密與隱私權'], ans:0, exp:'讓兒少對影響自身的事務表達意見並受到重視，正是《兒童權利公約》(CRC)的核心精神「表意權」。' },
-  { lid:14, q:'「男生應該勇敢不哭泣，女生應該溫柔細心」，這種對男女特質的固定看法稱為什麼？', opts:['性別刻板印象','生理性別差異','性別平權意識','多元性別認同'], ans:0, exp:'社會文化對男性或女性抱持固定、僵化的角色期待，就是性別刻板印象。' },
-  { lid:15, q:'小華與他的親表哥（舅舅的兒子）之間，在法律上的親屬關係與親等為何？', opts:['旁系血親四親等','直系血親二親等','旁系血親二親等','旁系姻親三親等'], ans:0, exp:'計算方式：小華 ➔ 媽媽(1) ➔ 外祖父母(2) ➔ 舅舅(3) ➔ 表哥(4)，同源而出且非直系，故為旁系血親四親等。' },
-  { lid:16, q:'面對家人發生言語暴力或肢體衝突時，下列哪一種求助管道最正確？', opts:['撥打113保護專線或110報警尋求協助','為了家醜不外揚默默忍受不說','離家出走並拒絕上學','在網路上公開對方個資報復'], ans:0, exp:'遇到家庭暴力應立即尋求專業協助，撥打113婦幼保護專線（24小時免付費）或110報案。' },
-  { lid:17, q:'在班會討論事項中，當一位同學提出「運動會班服顏色提案」後，必須經過什麼程序才能進入討論？', opts:['另一位同學附議','主席直接宣布通過','導師舉手同意','全班立刻投票表決'], ans:0, exp:'議事規則中，提案必須有其他人「附議」（表示贊同討論），才能正式成為討論議題，避免浪費時間。' },
-  { lid:18, q:'社區居民自主組成巡守隊維護治安、共同整理社區公園，這展現了哪一種素養？', opts:['社區意識與公共參與','政府強制力執行','營利企業社會責任','個人主義優先'], ans:0, exp:'居民對社區產生認同並自發性投入公共事務，即是社區意識與公民參與的具體表現。' }
-];
-
-let score = 0, streak = 0, currQ = null, answered = false;
-
-function init() {
-  const area = document.getElementById('checkbox-area');
-  const groups = [
-    { title:'🌍 地理（第一單元）', items: lessons.filter(l => l.sub==='地理') },
-    { title:'📜 歷史（第二單元）', items: lessons.filter(l => l.sub==='歷史') },
-    { title:'⚖️ 公民（第三單元）', items: lessons.filter(l => l.sub==='公民') }
-  ];
-  groups.forEach(g => {
-    let html = `<div class="sub-group"><span class="sub-label">${g.title}</span><div class="lessons-grid">`;
-    g.items.forEach(l => {
-      html += `<label class="lesson-chk"><input type="checkbox" class="l-chk" value="${l.id}" checked onchange="updateView()"> ${l.name}</label>`;
-    });
-    html += `</div></div>`;
-    area.innerHTML += html;
-  });
-  updateView();
-}
-
-function selectPreset(ids) {
-  document.querySelectorAll('.l-chk').forEach(c => c.checked = ids.includes(parseInt(c.value)));
-  updateView();
-}
-
-function getSelectedIds() {
-  return Array.from(document.querySelectorAll('.l-chk:checked')).map(c => parseInt(c.value));
-}
-
-function updateView() {
-  const ids = getSelectedIds();
-  const nArea = document.getElementById('notes-area');
-  nArea.innerHTML = '';
-  if (ids.length === 0) {
-    nArea.innerHTML = '<p style="text-align:center;color:#888;">請至少勾選一課！</p>';
-    return;
-  }
-  lessons.filter(l => ids.includes(l.id)).forEach(l => {
-    nArea.innerHTML += `<div class="note-card"><div class="note-title"><span class="badge ${l.cls}">${l.sub}</span>${l.name}</div>
-      <ul class="note-list">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>`;
-  });
-  if (document.getElementById('tab2').classList.contains('active')) loadQuestion();
-}
-
-function switchTab(num) {
-  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i+1===num));
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i+1===num));
-  if (num === 2) loadQuestion();
-}
-
-function loadQuestion() {
-  const ids = getSelectedIds();
-  const pool = qBank.filter(q => ids.includes(q.lid));
-  if (pool.length === 0) {
-    document.getElementById('q-text').innerText = '請先在上方勾選至少一課範圍！';
-    document.getElementById('q-opts').innerHTML = '';
-    return;
-  }
-  answered = false;
-  document.getElementById('q-exp').style.display = 'none';
-  document.getElementById('next-btn').style.display = 'none';
-  let next;
-  do { next = pool[Math.floor(Math.random() * pool.length)]; } while (pool.length > 1 && currQ && next.q === currQ.q);
-  currQ = next;
-  const lessonObj = lessons.find(l => l.id === currQ.lid);
-  document.getElementById('q-lesson-tag').innerText = `${lessonObj.sub}｜${lessonObj.name}`;
-  document.getElementById('q-text').innerText = currQ.q;
-
-  const indices = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
-  const oDiv = document.getElementById('q-opts');
-  oDiv.innerHTML = '';
-  indices.forEach((idx, pos) => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.innerText = `${['A','B','C','D'][pos]}. ${currQ.opts[idx]}`;
-    btn.onclick = () => checkAns(btn, idx);
-    oDiv.appendChild(btn);
-  });
-}
-
-function checkAns(btn, idx) {
-  if (answered) return;
-  answered = true;
-  if (idx === currQ.ans) {
-    btn.classList.add('correct'); score += 10; streak++;
-  } else {
-    btn.classList.add('wrong'); streak = 0;
-    document.querySelectorAll('.opt-btn').forEach(b => {
-      if (b.innerText.includes(currQ.opts[currQ.ans])) b.classList.add('correct');
-    });
-  }
-  document.getElementById('score').innerText = score;
-  document.getElementById('streak').innerText = streak;
-  const exp = document.getElementById('q-exp');
-  exp.innerHTML = `<b>💡 觀念解析：</b>${currQ.exp}`;
-  exp.style.display = 'block';
-  document.getElementById('next-btn').style.display = 'inline-block';
-}
-
-init();
-</script>
-</body>
-</html>
+const chapters = [
+  {
+    id: 1,
+    title: "第1章 生命世界與科學方法",
+    notes: [
+      "<b>生命現象四大特徵</b>：<span class='highlight'>代謝</span>（能量轉換與廢物排出）、<span class='highlight'>生長</span>（細胞分裂與體積增大）、<span class='highlight'>感應</span>（對環境刺激產生反應）、<span class='highlight'>繁殖</span>（產生後代延續生命）。注意：鐘乳石變長、機器人說話「不是」生命現象。",
+      "<b>生物圈範圍</b>：海平面上下各約 <span class='highlight'>10 公里</span>（共約 20 公里），包含水域、低層大氣與地表。",
+      "<b>科學方法步驟</b>：觀察 ➔ 提出問題 ➔ 參考文獻 ➔ <span class='highlight'>提出假說</span> ➔ 設計實驗 ➔ 分析結果 ➔ 提出結論。",
+      "<b>實驗變因口訣</b>：<span class='highlight'>操作變因</span>只能有 1 個（實驗組與對照組唯一不同的條件）；<span class='highlight'>控制變因</span>要全部保持相同；<span class='highlight'>應變變因</span>是實驗觀察測量的結果。"
+    ],
