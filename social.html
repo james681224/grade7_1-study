@@ -3,43 +3,266 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上社會（康軒版）- 段考衝刺網</title>
+<title>國一上社會（康軒版）- 重點、互動圖解與無限刷題</title>
 <style>
-  :root { --primary: #2E7D32; --geo: #0277BD; --his: #D84315; --civ: #6A1B9A; --bg: #F4F7F6; --text: #333; }
-  body { font-family: -apple-system, 'Microsoft JhengHei', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 15px; }
-  .container { max-width: 960px; margin: 0 auto; background: white; padding: 22px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-  .top-bar { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #eee; padding-bottom: 12px; margin-bottom: 18px; }
-  .home-btn { background: #546E7A; color: white; text-decoration: none; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px; }
+  :root {
+    --primary: #2E7D32;
+    --geo: #0277BD;
+    --his: #D84315;
+    --civ: #6A1B9A;
+    --bg: #F4F7F6;
+    --text: #333;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 15px;
+    line-height: 1.6;
+  }
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+    background: white;
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+  }
+  .home-btn {
+    background: #546E7A;
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+  }
   h1 { color: var(--primary); margin: 0; font-size: 24px; }
-  .scope-box { background: #E8F5E9; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 2px solid #A5D6A7; }
+  .scope-box {
+    background: #E8F5E9;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #A5D6A7;
+  }
   .quick-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-  .q-btn { background: white; border: 2px solid var(--primary); color: var(--primary); padding: 6px 12px; border-radius: 16px; cursor: pointer; font-weight: bold; font-size: 13px; }
+  .q-btn {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+  }
   .q-btn:hover { background: var(--primary); color: white; }
   .sub-group { margin-top: 10px; padding-top: 8px; border-top: 1px dashed #A5D6A7; }
   .sub-label { font-weight: bold; font-size: 14px; margin-bottom: 6px; display: block; }
   .lessons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px; }
-  .lesson-chk { display: flex; align-items: center; gap: 6px; background: white; padding: 6px 10px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid #C8E6C9; }
-  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-  .tab-btn { padding: 12px 24px; font-size: 16px; border: none; border-radius: 10px; background: #e0e0e0; cursor: pointer; font-weight: bold; }
+  .lesson-chk {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #C8E6C9;
+  }
+  .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn {
+    flex: 1;
+    min-width: 160px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    background: #e0e0e0;
+    color: #555;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+  }
   .tab-btn.active { background: var(--primary); color: white; }
+  .tab-btn#tab-anim.active { background: var(--geo); }
   .section { display: none; }
   .section.active { display: block; }
-  .note-card { border: 2px solid #e0e0e0; border-radius: 12px; padding: 18px; margin-bottom: 14px; background: #fafafa; }
-  .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; color: white; font-weight: bold; margin-right: 8px; }
-  .b-geo { background: var(--geo); } .b-his { background: var(--his); } .b-civ { background: var(--civ); }
+
+  .note-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 14px;
+    background: #fafafa;
+  }
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+    margin-right: 8px;
+  }
+  .b-geo { background: var(--geo); }
+  .b-his { background: var(--his); }
+  .b-civ { background: var(--civ); }
   .note-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; }
   .note-list { margin: 0; padding-left: 20px; line-height: 1.7; font-size: 15px; }
-  .quiz-box { background: #FFFDE7; border: 3px solid #FBC02D; border-radius: 16px; padding: 25px 20px; max-width: 700px; margin: 0 auto; text-align: center; }
+
+  /* 互動觀念視覺動畫卡片 */
+  .anim-card {
+    border: 2px solid #b3e5fc;
+    border-left: 6px solid var(--geo);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 18px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+  }
+  .anim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .anim-title { font-size: 18px; font-weight: bold; color: #01579b; }
+  .anim-badge {
+    background: #e1f5fe;
+    color: #0277bd;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .svg-stage {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .svg-stage svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .ctrl-btn {
+    background: #ffffff;
+    border: 2px solid var(--geo);
+    color: #0277bd;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--geo);
+    color: #ffffff;
+  }
+  .concept-callout {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 5px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 15px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+  .concept-callout b { color: #b45309; }
+
+  .quiz-box {
+    background: #FFFDE7;
+    border: 3px solid #FBC02D;
+    border-radius: 16px;
+    padding: 25px 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+  }
   .score-bar { font-size: 17px; font-weight: bold; color: #F57F17; margin-bottom: 15px; }
-  .q-tag { display: inline-block; background: #E0F2F1; color: #00695C; padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: bold; margin-bottom: 10px; }
+  .q-tag {
+    display: inline-block;
+    background: #E0F2F1;
+    color: #00695C;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
   .q-text { font-size: 20px; font-weight: bold; margin: 15px 0 20px; line-height: 1.5; text-align: left; }
   .opts { display: grid; grid-template-columns: 1fr; gap: 10px; }
-  .opt-btn { padding: 14px 18px; font-size: 16px; text-align: left; border: 2px solid #ccc; background: white; border-radius: 10px; cursor: pointer; font-weight: 500; }
+  .opt-btn {
+    padding: 14px 18px;
+    font-size: 16px;
+    text-align: left;
+    border: 2px solid #ccc;
+    background: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 500;
+  }
   .opt-btn:hover { border-color: var(--primary); background: #F1F8E9; }
   .opt-btn.correct { background: #C8E6C9; border-color: #2E7D32; color: #1B5E20; font-weight: bold; }
   .opt-btn.wrong { background: #FFCDD2; border-color: #C62828; color: #B71C1C; }
-  .exp-box { display: none; margin-top: 18px; padding: 15px; background: #E3F2FD; border-left: 5px solid #1976D2; border-radius: 8px; text-align: left; font-size: 15px; line-height: 1.6; }
-  .next-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; font-size: 17px; border-radius: 25px; cursor: pointer; margin-top: 18px; font-weight: bold; display: none; }
+  .exp-box {
+    display: none;
+    margin-top: 18px;
+    padding: 15px;
+    background: #E3F2FD;
+    border-left: 5px solid #1976D2;
+    border-radius: 8px;
+    text-align: left;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .next-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 17px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-top: 18px;
+    font-weight: bold;
+    display: none;
+  }
 </style>
 </head>
 <body>
@@ -51,7 +274,7 @@
   </div>
 
   <div class="scope-box">
-    <div style="font-weight:bold; margin-bottom:8px;">📌 勾選本次段考範圍（自動篩選重點與題庫）：</div>
+    <div style="font-weight:bold; margin-bottom:8px;">📌 勾選本次段考範圍（自動篩選重點、動畫與題庫）：</div>
     <div class="quick-btns">
       <button class="q-btn" onclick="selectPreset([1,2,7,8,13,14])">一段範圍 (各科1~2課)</button>
       <button class="q-btn" onclick="selectPreset([3,4,9,10,15,16])">二段範圍 (各科3~4課)</button>
@@ -65,11 +288,13 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab(1)">📖 考前重點速覽</button>
-    <button class="tab-btn" onclick="switchTab(2)">✍️ 範圍無限測驗＋解析</button>
+    <button class="tab-btn active" id="tab1-btn" onclick="switchTab(1)">📖 考前重點速覽</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab(3)">🎬 互動觀念圖解</button>
+    <button class="tab-btn" id="tab2-btn" onclick="switchTab(2)">✍️ 範圍無限測驗＋解析</button>
   </div>
 
   <div id="tab1" class="section active"><div id="notes-area"></div></div>
+  <div id="tab3" class="section"><div id="anim-area"></div></div>
   <div id="tab2" class="section">
     <div class="quiz-box">
       <div class="score-bar">🏆 累計得分：<span id="score">0</span> 分 ｜ 🔥 連續答對：<span id="streak">0</span> 題</div>
@@ -104,127 +329,18 @@ const lessons = [
   { id:18, sub:'公民', cls:'b-civ', name:'公6 社區與部落', notes:['社區意識（社區凝聚力）是居民對居住環境產生認同感與歸屬感，主動參與社區營造。','《原住民族基本法》保障原住民族部落自治、傳統領域與文化傳承權。','透過社區巡守隊、長照關懷據點與環境維護，展現公民參與和社會連帶責任。'] }
 ];
 
-const qBank = [
-  { lid:1, q:'臺灣本島位於東經120°~122°，若倫敦（0°）現在是上午8點，請問臺灣現在是幾點？', opts:['下午4點','上午0點','下午2點','晚上8點'], ans:0, exp:'東經120°與0°相差120度，120 ÷ 15 = 8小時。臺灣在倫敦東邊（東加西減），8 + 8 = 16點（下午4點）。' },
-  { lid:2, q:'臺灣島上保存了許多冰河時期孑遺生物（如櫻花鉤吻鮭），主要原因為何？', opts:['冰河時期與大陸相連，且島內高山林立垂直氣候變化大','四面環海終年高溫多雨','位於太平洋板塊與印度洋板塊交界','四周洋流終年只有暖流經過'], ans:0, exp:'冰河時期海平面下降使臺灣海峽變成陸橋，生物遷入後因氣候暖化與高山垂直氣候得以避難保存。' },
-  { lid:3, q:'在等高線地形圖上，若等高線呈V字形且尖端指向海拔較高處，代表該地形為何？', opts:['河谷','山脊','盆地','台地'], ans:0, exp:'口訣「高谷低脊」：V字尖端指向高處為河谷（集水線），指向低處為山脊。' },
-  { lid:4, q:'臺灣西部海岸多沙洲與潟湖，最適合發展下列哪一種產業？', opts:['淺海養殖漁業與曬鹽','深水大型國際商港','珊瑚礁潛水觀光','玄武岩地質公園'], ans:0, exp:'西部為沙岸，海水較淺且風浪平緩，利於養殖蚵仔、文蛤及曬鹽，但港口易淤積。' },
-  { lid:5, q:'宜蘭有「竹風蘭雨」之稱，冬天經常陰雨綿綿，主要是受到哪一種因素影響？', opts:['位於東北季風的迎風面產生地形雨','位於西南季風的背風面產生焚風','熱帶氣旋頻繁登陸','盆地地形熱對流旺盛'], ans:0, exp:'冬季盛行東北季風，吹過太平洋帶來水氣，在宜蘭與基隆遇山抬升形成地形雨。' },
-  { lid:6, q:'臺灣河川普遍「坡陡流急、長度短」，這對水資源利用造成什麼影響？', opts:['降雨迅速流入大海不易蓄存，需興建水庫調節','全年水量穩定適合大型內河航運','河口三角洲面積廣大且無泥沙淤積','冬季河川結冰無法取水'], ans:0, exp:'因中央山脈高聳且東西狹窄，河川短促，豐水期雨水很快入海，必須靠水庫蓄水度過枯水期。' },
-  { lid:7, q:'新北市八里區的「十三行文化」出土了煉鐵作坊與中國銅錢，代表當時已進入哪個時代？', opts:['金屬器時代','舊石器時代','新石器時代早期','清帝國時期'], ans:0, exp:'十三行文化是臺灣北部代表性的金屬器時代文化，已知煉鐵並與外地有貿易往來。' },
-  { lid:8, q:'1624年荷蘭人在臺南建立熱蘭遮城，當時他們經營臺灣的主要經濟目的為何？', opts:['作為轉口貿易據點並輸出鹿皮與蔗糖','開採豐富的金礦與煤礦','推廣儒家科舉制度','建立漢人農業屯墾區'], ans:0, exp:'荷蘭東印度公司看重臺灣位於東亞航線中心，將臺灣作為對中國、日本貿易的轉運站，並出口鹿皮與蔗糖。' },
-  { lid:9, q:'荷蘭統治時期為了向西拉雅族傳教，用羅馬字母拼寫原住民語言，這套文字稱為什麼？', opts:['新港文','八思巴文','甲骨文','漢文隸書'], ans:0, exp:'荷蘭傳教士在新港社用羅馬拼音拼寫西拉雅語，稱新港文，後來原住民與漢人簽契約也使用（俗稱番仔契）。' },
-  { lid:10, q:'清領初期朝廷對臺灣採取消極治臺政策，頒布「渡臺禁令」，其主要目的為何？', opts:['防止臺灣成為反清復明基地及漢人與原住民衝突','鼓勵大陸沿海居民全家移居臺灣','推動臺灣與日本自由通商','在臺灣全面推廣普及教育'], ans:0, exp:'清廷擔心臺灣再次成為動亂基地，限制單身男子渡臺且不准攜眷，造成早期「羅漢腳」增多。' },
-  { lid:11, q:'1860年臺灣開港通商後，下列哪三項商品成為出口大宗，帶動北部經濟崛起？', opts:['茶、糖、樟腦','稻米、鹿皮、硫磺','煤礦、黃金、木材','蔗糖、香蕉、鳳梨'], ans:0, exp:'開港通商後，北部的茶葉與樟腦外銷激增，使經濟與政治重心逐漸從臺南轉移至臺北（大稻埕）。' },
-  { lid:12, q:'清代臺灣漢人社會中，由同姓氏族人共同集資祭拜「大陸原鄉某一祖先」，藉以凝聚同姓力量的組織稱為？', opts:['唐山祖','開臺祖','郊商','羅漢腳'], ans:0, exp:'唐山祖是沒有直接血緣關係、但同姓的移民共同祭拜原鄉祖先，藉以在異鄉互相照應；有血緣關係的則稱開臺祖。' },
-  { lid:13, q:'學校在訂定服裝儀容規定前，先舉辦公聽會讓學生代表發表意見，這最符合《兒童權利公約》的哪項原則？', opts:['尊重兒童表意權','禁止歧視原則','生存及發展權','保密與隱私權'], ans:0, exp:'讓兒少對影響自身的事務表達意見並受到重視，正是《兒童權利公約》(CRC)的核心精神「表意權」。' },
-  { lid:14, q:'「男生應該勇敢不哭泣，女生應該溫柔細心」，這種對男女特質的固定看法稱為什麼？', opts:['性別刻板印象','生理性別差異','性別平權意識','多元性別認同'], ans:0, exp:'社會文化對男性或女性抱持固定、僵化的角色期待，就是性別刻板印象。' },
-  { lid:15, q:'小華與他的親表哥（舅舅的兒子）之間，在法律上的親屬關係與親等為何？', opts:['旁系血親四親等','直系血親二親等','旁系血親二親等','旁系姻親三親等'], ans:0, exp:'計算方式：小華 ➔ 媽媽(1) ➔ 外祖父母(2) ➔ 舅舅(3) ➔ 表哥(4)，同源而出且非直系，故為旁系血親四親等。' },
-  { lid:16, q:'面對家人發生言語暴力或肢體衝突時，下列哪一種求助管道最正確？', opts:['撥打113保護專線或110報警尋求協助','為了家醜不外揚默默忍受不說','離家出走並拒絕上學','在網路上公開對方個資報復'], ans:0, exp:'遇到家庭暴力應立即尋求專業協助，撥打113婦幼保護專線（24小時免付費）或110報案。' },
-  { lid:17, q:'在班會討論事項中，當一位同學提出「運動會班服顏色提案」後，必須經過什麼程序才能進入討論？', opts:['另一位同學附議','主席直接宣布通過','導師舉手同意','全班立刻投票表決'], ans:0, exp:'議事規則中，提案必須有其他人「附議」（表示贊同討論），才能正式成為討論議題，避免浪費時間。' },
-  { lid:18, q:'社區居民自主組成巡守隊維護治安、共同整理社區公園，這展現了哪一種素養？', opts:['社區意識與公共參與','政府強制力執行','營利企業社會責任','個人主義優先'], ans:0, exp:'居民對社區產生認同並自發性投入公共事務，即是社區意識與公民參與的具體表現。' }
-];
-
-let score = 0, streak = 0, currQ = null, answered = false;
-
-function init() {
-  const area = document.getElementById('checkbox-area');
-  const groups = [
-    { title:'🌍 地理（第一單元）', items: lessons.filter(l => l.sub==='地理') },
-    { title:'📜 歷史（第二單元）', items: lessons.filter(l => l.sub==='歷史') },
-    { title:'⚖️ 公民（第三單元）', items: lessons.filter(l => l.sub==='公民') }
-  ];
-  groups.forEach(g => {
-    let html = `<div class="sub-group"><span class="sub-label">${g.title}</span><div class="lessons-grid">`;
-    g.items.forEach(l => {
-      html += `<label class="lesson-chk"><input type="checkbox" class="l-chk" value="${l.id}" checked onchange="updateView()"> ${l.name}</label>`;
-    });
-    html += `</div></div>`;
-    area.innerHTML += html;
-  });
-  updateView();
-}
-
-function selectPreset(ids) {
-  document.querySelectorAll('.l-chk').forEach(c => c.checked = ids.includes(parseInt(c.value)));
-  updateView();
-}
-
-function getSelectedIds() {
-  return Array.from(document.querySelectorAll('.l-chk:checked')).map(c => parseInt(c.value));
-}
-
-function updateView() {
-  const ids = getSelectedIds();
-  const nArea = document.getElementById('notes-area');
-  nArea.innerHTML = '';
-  if (ids.length === 0) {
-    nArea.innerHTML = '<p style="text-align:center;color:#888;">請至少勾選一課！</p>';
-    return;
-  }
-  lessons.filter(l => ids.includes(l.id)).forEach(l => {
-    nArea.innerHTML += `<div class="note-card"><div class="note-title"><span class="badge ${l.cls}">${l.sub}</span>${l.name}</div>
-      <ul class="note-list">${l.notes.map(n => `<li>${n}</li>`).join('')}</ul></div>`;
-  });
-  if (document.getElementById('tab2').classList.contains('active')) loadQuestion();
-}
-
-function switchTab(num) {
-  document.querySelectorAll('.section').forEach((s,i) => s.classList.toggle('active', i+1===num));
-  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i+1===num));
-  if (num === 2) loadQuestion();
-}
-
-function loadQuestion() {
-  const ids = getSelectedIds();
-  const pool = qBank.filter(q => ids.includes(q.lid));
-  if (pool.length === 0) {
-    document.getElementById('q-text').innerText = '請先在上方勾選至少一課範圍！';
-    document.getElementById('q-opts').innerHTML = '';
-    return;
-  }
-  answered = false;
-  document.getElementById('q-exp').style.display = 'none';
-  document.getElementById('next-btn').style.display = 'none';
-  let next;
-  do { next = pool[Math.floor(Math.random() * pool.length)]; } while (pool.length > 1 && currQ && next.q === currQ.q);
-  currQ = next;
-  const lessonObj = lessons.find(l => l.id === currQ.lid);
-  document.getElementById('q-lesson-tag').innerText = `${lessonObj.sub}｜${lessonObj.name}`;
-  document.getElementById('q-text').innerText = currQ.q;
-
-  const indices = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
-  const oDiv = document.getElementById('q-opts');
-  oDiv.innerHTML = '';
-  indices.forEach((idx, pos) => {
-    const btn = document.createElement('button');
-    btn.className = 'opt-btn';
-    btn.innerText = `${['A','B','C','D'][pos]}. ${currQ.opts[idx]}`;
-    btn.onclick = () => checkAns(btn, idx);
-    oDiv.appendChild(btn);
-  });
-}
-
-function checkAns(btn, idx) {
-  if (answered) return;
-  answered = true;
-  if (idx === currQ.ans) {
-    btn.classList.add('correct'); score += 10; streak++;
-  } else {
-    btn.classList.add('wrong'); streak = 0;
-    document.querySelectorAll('.opt-btn').forEach(b => {
-      if (b.innerText.includes(currQ.opts[currQ.ans])) b.classList.add('correct');
-    });
-  }
-  document.getElementById('score').innerText = score;
-  document.getElementById('streak').innerText = streak;
-  const exp = document.getElementById('q-exp');
-  exp.innerHTML = `<b>💡 觀念解析：</b>${currQ.exp}`;
-  exp.style.display = 'block';
-  document.getElementById('next-btn').style.display = 'inline-block';
-}
-
-init();
-</script>
-</body>
-</html>
+const animData = {
+  1: {
+    title: '地理 1 經度時差與比例尺互動換算器',
+    badge: '每 15° 差 1 小時',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#f0f9ff"/>
+          <rect x="65" y="25" width="550" height="135" rx="14" fill="#ffffff" stroke="#0277bd" stroke-width="2.5"/>
+          <text id="soc1-top" x="340" y="70" text-anchor="middle" font-size="22" font-weight="bold" fill="#01579b">倫敦 (0°) 08:00 ➔ 臺灣 (120°E) 16:00</text>
+          <text id="soc1-mid" x="340" y="106" text-anchor="middle" font-size="16" font-weight="bold" fill="#d84315">口訣：東加西減｜120° ÷ 15° = 8 小時</text>
+          <text id="soc1-bot" x="340" y="138" text-anchor="middle" font-size="14" fill="#374151">比例尺越大（如 1:1,000）➔ 涵蓋範圍越小、內容越詳細</text>
+        </svg>
+      </div>
+      <div class="
