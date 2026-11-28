@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上自然科學（翰林版）- 段考重點與無限刷題</title>
+<title>國一上自然科學（翰林版）- 重點、互動實驗與無限刷題</title>
 <style>
   :root {
     --primary: #2e7d32;
@@ -122,9 +122,11 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
   .tab-btn {
     flex: 1;
+    min-width: 160px;
     padding: 14px;
     font-size: 17px;
     font-weight: bold;
@@ -139,6 +141,10 @@
     background: var(--primary);
     color: #fff;
     box-shadow: 0 3px 10px rgba(46,125,50,0.3);
+  }
+  .tab-btn#tab-anim.active {
+    background: var(--secondary);
+    box-shadow: 0 3px 10px rgba(0,137,123,0.3);
   }
   .section { display: none; }
   .section.active { display: block; }
@@ -181,6 +187,91 @@
     border-radius: 0 8px 8px 0;
     font-size: 14px;
   }
+
+  /* 互動實驗與觀念動畫卡片 */
+  .anim-card {
+    border: 2px solid #b2dfdb;
+    border-left: 6px solid var(--secondary);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+  }
+  .anim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .anim-title {
+    font-size: 19px;
+    font-weight: bold;
+    color: #00695c;
+  }
+  .anim-badge {
+    background: #e0f2f1;
+    color: #00695c;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .svg-stage {
+    width: 100%;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .svg-stage svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+  .ctrl-btn {
+    background: #ffffff;
+    border: 2px solid var(--secondary);
+    color: #00695c;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--secondary);
+    color: #ffffff;
+  }
+  .concept-callout {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 5px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 15px;
+    color: #78350f;
+    line-height: 1.6;
+  }
+  .concept-callout b { color: #b45309; }
 
   /* 測驗區 */
   .quiz-header {
@@ -314,13 +405,17 @@
   <!-- 分頁按鈕 -->
   <div class="tabs">
     <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點與實驗整理</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab('anim')">🎬 互動實驗與觀念動畫</button>
     <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 範圍無限刷題測驗</button>
   </div>
 
   <!-- 分頁一：重點整理 -->
   <div id="sec-notes" class="section active"></div>
 
-  <!-- 分頁二：無限測驗 -->
+  <!-- 分頁二：互動實驗與觀念動畫 -->
+  <div id="sec-anim" class="section"></div>
+
+  <!-- 分頁三：無限測驗 -->
   <div id="sec-quiz" class="section">
     <div class="quiz-header">
       <div class="stats">🏆 總得分：<span id="score">0</span> 分 ｜ 🔥 連續答對：<span id="streak">0</span> 題</div>
@@ -401,44 +496,316 @@ const chapters = [
   }
 ];
 
-// 題庫資料（含動態計算與觀念題）
+const animData = {
+  1: {
+    title: '實驗 1-1 複式顯微鏡成像與載玻片移動模擬器',
+    badge: '上下顛倒・左右相反',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#f8fafc"/>
+          <rect x="75" y="24" width="220" height="142" rx="12" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2"/>
+          <text x="185" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="#1b5e20">玻片實際位置（實物）</text>
+          <text id="s1-real" x="155" y="108" text-anchor="middle" font-size="36" font-weight="bold" fill="#2e7d32">b</text>
+          <circle cx="185" cy="100" r="36" fill="none" stroke="#81c784" stroke-dasharray="4,4"/>
+          <rect x="385" y="24" width="220" height="142" rx="12" fill="#e0f2f1" stroke="#00897b" stroke-width="2"/>
+          <text x="495" y="50" text-anchor="middle" font-size="14" font-weight="bold" fill="#00695c">顯微鏡視野看到（旋轉180°）</text>
+          <text id="s1-view" x="525" y="108" text-anchor="middle" font-size="36" font-weight="bold" fill="#d84315">q</text>
+          <circle cx="495" cy="100" r="36" fill="none" stroke="#4db6ac" stroke-dasharray="4,4"/>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setS1(0, this)">🔍 字母 b 成像 (➔ q)</button>
+        <button class="ctrl-btn" onclick="setS1(1, this)">🔍 字母 pd 成像 (➔ pd)</button>
+        <button class="ctrl-btn" onclick="setS1(2, this)">🎯 目標在右下方 ➔ 往右下方移</button>
+      </div>
+      <div class="concept-callout" id="s1-tip"></div>
+    `
+  },
+  2: {
+    title: '第2章 滲透作用與紅血球形態變化實驗',
+    badge: '水分子高濃度 ➔ 低濃度',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 190">
+          <rect x="0" y="0" width="680" height="190" fill="#f8fafc"/>
+          <rect x="140" y="25" width="400" height="140" rx="14" fill="#e0f7fa" stroke="#00838f" stroke-width="2.5"/>
+          <ellipse id="s2-rbc" cx="340" cy="95" rx="58" ry="34" fill="#ef5350" stroke="#b71c1c" stroke-width="3"/>
+          <text id="s2-label" x="340" y="101" text-anchor="middle" font-size="16" font-weight="bold" fill="#ffffff">正常紅血球</text>
+          <text id="s2-flow" x="340" y="148" text-anchor="middle" font-size="15" font-weight="bold" fill="#006064">點擊下方按鈕觀察不同溶液環境</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setS2('normal', this)">🩸 等張溶液</button>
+        <button class="ctrl-btn" onclick="setS2('hypo', this)">💧 放清水中（膨脹破裂）</button>
+        <button class="ctrl-btn" onclick="setS2('hyper', this)">🧂 放濃食鹽水（萎縮變皺）</button>
+      </div>
+      <div class="concept-callout" id="s2-tip"></div>
+    `
+  },
+  3: {
+    title: '第3章 酵素活性與溫度曲線互動器',
+    badge: '高溫破壞活性不可逆',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#f8fafc"/>
+          <rect x="75" y="25" width="530" height="135" rx="14" fill="#fff8e1" stroke="#f57c00" stroke-width="2.5"/>
+          <text id="s3-temp" x="340" y="70" text-anchor="middle" font-size="23" font-weight="bold" fill="#e65100">37°C 體溫附近：酵素活性最高！</text>
+          <text id="s3-act" x="340" y="108" text-anchor="middle" font-size="17" font-weight="bold" fill="#2e7d32">澱粉快速分解為葡萄糖（本氏液加熱呈紅/橙色）</text>
+          <text id="s3-sub" x="340" y="138" text-anchor="middle" font-size="14" fill="#4b5563">酵素主要成分為蛋白質，溫度過高會使結構破壞</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn" onclick="setS3('cold', this)">🧊 0°C 低溫（活性低・可恢復）</button>
+        <button class="ctrl-btn active" onclick="setS3('opt', this)">🌡️ 37°C 適溫（活性最強）</button>
+        <button class="ctrl-btn" onclick="setS3('hot', this)">🔥 100°C 沸水（破壞・不可逆）</button>
+      </div>
+      <div class="concept-callout" id="s3-tip"></div>
+    `
+  },
+  4: {
+    title: '第4章 三種血管與植物維管束重點對照',
+    badge: '動脈＞靜脈＞微血管',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#f8fafc"/>
+          <rect x="75" y="25" width="530" height="135" rx="14" fill="#e8f5e9" stroke="#2e7d32" stroke-width="2.5"/>
+          <text id="s4-main" x="340" y="70" text-anchor="middle" font-size="22" font-weight="bold" fill="#1b5e20">血壓高低：動脈 ＞ 微血管 ＞ 靜脈</text>
+          <text id="s4-sub1" x="340" y="106" text-anchor="middle" font-size="17" font-weight="bold" fill="#00695c">血流速度：動脈 ＞ 靜脈 ＞ 微血管（微血管最慢利交換）</text>
+          <text id="s4-sub2" x="340" y="138" text-anchor="middle" font-size="14" fill="#4b5563">靜脈有瓣膜防逆流；微血管僅一層細胞厚</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setS4(0, this)">❤️ 血管血壓與流速</button>
+        <button class="ctrl-btn" onclick="setS4(1, this)">🩸 三種血球特色</button>
+        <button class="ctrl-btn" onclick="setS4(2, this)">🌿 植物木質部與韌皮部</button>
+      </div>
+      <div class="concept-callout" id="s4-tip"></div>
+    `
+  },
+  5: {
+    title: '第5章 反射動作 vs. 意識動作路徑分辨',
+    badge: '脊髓反射 vs. 大腦意識',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#f8fafc"/>
+          <rect x="65" y="25" width="550" height="135" rx="14" fill="#ede7f6" stroke="#5e35b1" stroke-width="2.5"/>
+          <text id="s5-path" x="340" y="72" text-anchor="middle" font-size="19" font-weight="bold" fill="#311b92">受器 ➔ 感覺神經 ➔ 脊髓 ➔ 運動神經 ➔ 動器</text>
+          <text id="s5-type" x="340" y="108" text-anchor="middle" font-size="17" font-weight="bold" fill="#d84315">類型：反射動作（不經大腦，立刻縮手）</text>
+          <text id="s5-note" x="340" y="138" text-anchor="middle" font-size="14" fill="#4b5563">隨後痛覺訊號才傳到大腦，所以先縮手再覺得燙</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setS5(0, this)">🔥 手碰熱鍋縮回（脊髓反射）</button>
+        <button class="ctrl-btn" onclick="setS5(1, this)">📏 接尺測反應時間（大腦意識）</button>
+        <button class="ctrl-btn" onclick="setS5(2, this)">⚖️ 小腦與腦幹分工</button>
+      </div>
+      <div class="concept-callout" id="s5-tip"></div>
+    `
+  },
+  6: {
+    title: '第6章 呼吸中樞刺激因子與血糖恆定',
+    badge: 'CO₂ 濃度升高刺激呼吸',
+    html: `
+      <div class="svg-stage">
+        <svg viewBox="0 0 680 185">
+          <rect x="0" y="0" width="680" height="185" fill="#f8fafc"/>
+          <rect x="65" y="25" width="550" height="135" rx="14" fill="#e0f2f1" stroke="#00897b" stroke-width="2.5"/>
+          <text id="s6-top" x="340" y="72" text-anchor="middle" font-size="21" font-weight="bold" fill="#004d40">血液中「二氧化碳濃度升高」➔ 刺激腦幹加快呼吸</text>
+          <text id="s6-mid" x="340" y="108" text-anchor="middle" font-size="17" font-weight="bold" fill="#b45309">⚠️ 常見迷思：不是氧氣減少刺激呼吸，而是 CO₂ 升高！</text>
+          <text id="s6-bot" x="340" y="138" text-anchor="middle" font-size="14" fill="#374151">飯後血糖高 ➔ 胰島素降血糖、轉肝糖；血糖低 ➔ 升糖素升血糖</text>
+        </svg>
+      </div>
+      <div class="controls-bar">
+        <button class="ctrl-btn active" onclick="setS6(0, this)">🫁 呼吸調節機制</button>
+        <button class="ctrl-btn" onclick="setS6(1, this)">🍬 血糖恆定雙激素</button>
+        <button class="ctrl-btn" onclick="setS6(2, this)">💧 含氮廢物毒性與排泄</button>
+      </div>
+      <div class="concept-callout" id="s6-tip"></div>
+    `
+  }
+};
+
+function toggleActiveBtn(btn) {
+  if (!btn) return;
+  btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function setS1(mode, btn) {
+  toggleActiveBtn(btn);
+  const r = document.getElementById('s1-real');
+  const v = document.getElementById('s1-view');
+  const tip = document.getElementById('s1-tip');
+  if (mode === 0) {
+    r.textContent = 'b'; v.textContent = 'q';
+    r.setAttribute('x', '185'); v.setAttribute('x', '495');
+    tip.innerHTML = '🔍 <b>成像規則</b>：複式顯微鏡看到的是旋轉 180° 的影像，「b」在視野中會變成「q」。';
+  } else if (mode === 1) {
+    r.textContent = 'pd'; v.textContent = 'pd';
+    r.setAttribute('x', '185'); v.setAttribute('x', '495');
+    tip.innerHTML = '🔍 <b>對稱字元</b>：「pd」旋轉 180° 後仍為「pd」，是段考常考的經典題型。';
+  } else {
+    r.textContent = 'b'; v.textContent = 'b';
+    r.setAttribute('x', '155'); v.setAttribute('x', '525');
+    tip.innerHTML = '🎯 <b>移動口訣</b>：視野中目標偏「右下方」，代表實際偏左上方，玻片要往「右下方」移才能移到中央。';
+  }
+}
+
+function setS2(mode, btn) {
+  toggleActiveBtn(btn);
+  const rbc = document.getElementById('s2-rbc');
+  const lbl = document.getElementById('s2-label');
+  const flw = document.getElementById('s2-flow');
+  const tip = document.getElementById('s2-tip');
+  if (mode === 'normal') {
+    rbc.setAttribute('rx', '58'); rbc.setAttribute('ry', '34');
+    lbl.textContent = '正常紅血球';
+    flw.textContent = '水分進出平衡，維持雙凹圓盤狀';
+    tip.innerHTML = '🩸 <b>等張環境</b>：紅血球維持正常形態，內含血紅素負責攜帶氧氣。';
+  } else if (mode === 'hypo') {
+    rbc.setAttribute('rx', '76'); rbc.setAttribute('ry', '52');
+    lbl.textContent = '膨脹破裂！';
+    flw.textContent = '水分子大量流入紅血球內部（清水中水濃度高）';
+    tip.innerHTML = '💧 <b>放清水中</b>：水分子滲透進入紅血球使其膨脹破裂；植物細胞則因有<b>細胞壁</b>支持不會破裂。';
+  } else {
+    rbc.setAttribute('rx', '40'); rbc.setAttribute('ry', '20');
+    lbl.textContent = '萎縮變皺';
+    flw.textContent = '水分子流出紅血球（濃食鹽水濃度高、水分少）';
+    tip.innerHTML = '🧂 <b>放濃食鹽水</b>：細胞內水分向外滲透流失，紅血球會萎縮變皺。';
+  }
+}
+
+function setS3(mode, btn) {
+  toggleActiveBtn(btn);
+  const t = document.getElementById('s3-temp');
+  const a = document.getElementById('s3-act');
+  const s = document.getElementById('s3-sub');
+  const tip = document.getElementById('s3-tip');
+  if (mode === 'cold') {
+    t.textContent = '0°C 低溫環境：酵素活性受抑制';
+    a.textContent = '反應變慢，但酵素結構未被破壞（升溫可恢復）';
+    s.textContent = '低溫保存食物是抑制酵素與細菌活性';
+    tip.innerHTML = '🧊 <b>低溫特性</b>：低溫只會降低活性，不會永久破壞酵素，回到適溫仍可恢復作用。';
+  } else if (mode === 'opt') {
+    t.textContent = '37°C 體溫附近：酵素活性最高！';
+    a.textContent = '澱粉快速分解為葡萄糖（本氏液加熱呈紅/橙色）';
+    s.textContent = '酵素主要成分為蛋白質，具有專一性';
+    tip.innerHTML = '🌡️ <b>最適溫度</b>：人體酵素多在體溫（約 37°C）附近活性最佳；不同酵素也有各自偏好的酸鹼值。';
+  } else {
+    t.textContent = '100°C 高溫沸水：酵素永久失去活性！';
+    a.textContent = '蛋白質結構遭破壞，即使降溫也無法恢復';
+    s.textContent = '唾液煮沸後無法分解澱粉 ➔ 碘液仍變藍黑色';
+    tip.innerHTML = '🔥 <b>高溫破壞</b>：溫度過高會使酵素永久失去活性，且此變化「不可逆」。';
+  }
+}
+
+function setS4(mode, btn) {
+  toggleActiveBtn(btn);
+  const m = document.getElementById('s4-main');
+  const s1 = document.getElementById('s4-sub1');
+  const s2 = document.getElementById('s4-sub2');
+  const tip = document.getElementById('s4-tip');
+  if (mode === 0) {
+    m.textContent = '血壓高低：動脈 ＞ 微血管 ＞ 靜脈';
+    s1.textContent = '血流速度：動脈 ＞ 靜脈 ＞ 微血管（微血管最慢利交換）';
+    s2.textContent = '靜脈有瓣膜防逆流；微血管僅一層細胞厚';
+    tip.innerHTML = '❤️ <b>血管比較</b>：注意「血壓」是動脈 ＞ 微血管 ＞ 靜脈，「管壁厚度與流速」則是動脈 ＞ 靜脈 ＞ 微血管。';
+  } else if (mode === 1) {
+    m.textContent = '紅血球：無核、帶氧 ｜ 白血球：有核、防禦';
+    s1.textContent = '血小板：無核、體積最小、負責血液凝固';
+    s2.textContent = '血漿約 90% 為水，負責運送養分、廢物、抗體與激素';
+    tip.innerHTML = '🩸 <b>血球辨識</b>：成熟紅血球與血小板「沒有細胞核」；白血球體積最大且有細胞核，感染時數量會增加。';
+  } else {
+    m.textContent = '木質部：運輸水分與礦物質（由下往上單向）';
+    s1.textContent = '韌皮部：運輸養分（可雙向運輸）';
+    s2.textContent = '雙子葉植物維管束呈環狀排列且有形成層';
+    tip.innerHTML = '🌿 <b>維管束重點</b>：環狀剝皮會切斷韌皮部，使根部缺乏養分而死亡；水分上升主要靠葉片<b>蒸散作用</b>。';
+  }
+}
+
+function setS5(mode, btn) {
+  toggleActiveBtn(btn);
+  const p = document.getElementById('s5-path');
+  const t = document.getElementById('s5-type');
+  const n = document.getElementById('s5-note');
+  const tip = document.getElementById('s5-tip');
+  if (mode === 0) {
+    p.textContent = '受器 ➔ 感覺神經 ➔ 脊髓 ➔ 運動神經 ➔ 動器';
+    t.textContent = '類型：反射動作（不經大腦，立刻縮手）';
+    n.textContent = '隨後痛覺訊號才傳到大腦，所以先縮手再覺得燙';
+    tip.innerHTML = '🔥 <b>脊髓反射</b>：膝跳反射、手碰熱鍋縮回皆由脊髓直接控制，反應比意識動作更快。';
+  } else if (mode === 1) {
+    p.textContent = '眼(受器) ➔ 感覺神經 ➔ 大腦 ➔ 脊髓 ➔ 運動神經 ➔ 手(動器)';
+    t.textContent = '類型：意識動作（經過大腦判斷）';
+    n.textContent = '尺掉落距離越短，代表反應時間越短、反應越快';
+    tip.innerHTML = '📏 <b>接尺實驗陷阱</b>：接尺需要眼睛看到並經由大腦判斷才伸手，屬於「意識動作」，不是反射！';
+  } else {
+    p.textContent = '大腦：意識、思考、記憶 ｜ 小腦：平衡與肌肉協調';
+    t.textContent = '腦幹：呼吸、心跳、吞嚥等生命中樞';
+    n.textContent = '內分泌腺無導管，激素直接進入血液運輸';
+    tip.innerHTML = '⚖️ <b>中樞與激素</b>：傷及腦幹可能危及生命；胰島素可降低血糖，升糖素與腎上腺素可升高血糖。';
+  }
+}
+
+function setS6(mode, btn) {
+  toggleActiveBtn(btn);
+  const top = document.getElementById('s6-top');
+  const mid = document.getElementById('s6-mid');
+  const bot = document.getElementById('s6-bot');
+  const tip = document.getElementById('s6-tip');
+  if (mode === 0) {
+    top.textContent = '血液中「二氧化碳濃度升高」➔ 刺激腦幹加快呼吸';
+    mid.textContent = '⚠️ 常見迷思：不是氧氣減少刺激呼吸，而是 CO₂ 升高！';
+    bot.textContent = '吸氣時肋骨上舉、橫膈下降，胸腔擴大';
+    tip.innerHTML = '🫁 <b>呼吸恆定</b>：運動後產生的 CO₂ 增加，刺激腦幹加快呼吸頻率以排出多餘 CO₂。';
+  } else if (mode === 1) {
+    top.textContent = '飯後血糖升高 ➔ 胰島素分泌增加（轉為肝糖儲存）';
+    mid.textContent = '血糖降低時 ➔ 升糖素（緊急時加腎上腺素）分泌增加';
+    bot.textContent = '肝糖主要儲存在肝臟與肌肉中';
+    tip.innerHTML = '🍬 <b>血糖恆定</b>：胰島素與升糖素作用相反，共同維持血糖濃度穩定。';
+  } else {
+    top.textContent = '含氮廢物毒性：氨 ＞ 尿素 ＞ 尿酸';
+    mid.textContent = '人類在「肝臟」將氨轉為尿素，由「腎臟」形成尿液';
+    bot.textContent = '鳥類與昆蟲排尿酸，最節省水分';
+    tip.innerHTML = '💧 <b>排泄與恆定</b>：記得區分「肝臟製造尿素」與「腎臟過濾形成尿液」。';
+  }
+}
+
 const staticQuestions = [
-  // 第1章
   { chap: 1, q: "下列哪一種現象屬於生物的「生命現象」？", opts: ["鐘乳石每年慢慢變長", "機器人聽懂指令並開口唱歌", "含羞草被手指觸碰後葉片閉合", "酵母菌放在冰箱裡完全停止活動"], ans: 2, exp: "生命現象包含代謝、生長、感應、繁殖。含羞草受刺激閉合屬於「感應」；鐘乳石與機器人為非生物。" },
   { chap: 1, q: "使用複式顯微鏡觀察載玻片上的「pd」字樣，在視野中看到的影像為何？", opts: ["pd", "bd", "qb", "pq"], ans: 0, exp: "複式顯微鏡成像為「上下顛倒、左右相反」（等同於將紙張旋轉 180 度）。將 pd 旋轉 180 度後，p 變成 d、d 變成 p，所以還是 pd！" },
   { chap: 1, q: "小華用複式顯微鏡觀察細胞時，發現目標物位在視野的「右下方」，他應該將載玻片往哪個方向移動才能移到視野中央？", opts: ["左上方", "右下方", "右上方", "左下方"], ans: 1, exp: "複式顯微鏡影像與實物方向完全相反，看到偏「右下方」，代表實物其實偏左上方，因此口訣是「偏哪邊就往哪邊移」——往右下方移動載玻片即可。" },
   { chap: 1, q: "從低倍物鏡（10X）切換成高倍物鏡（40X）觀察細胞時，視野會發生什麼變化？", opts: ["視野變亮、細胞變大、數目變多", "視野變暗、細胞變大、數目變少", "視野變暗、細胞變小、數目變多", "視野變亮、細胞變小、數目變少"], ans: 1, exp: "放大倍率變高後，能看到的範圍變小（細胞數目變少），進光量減少（視野變暗），單一細胞看起來變大。此時只能轉動「細調節輪」對焦。" },
   { chap: 1, q: "科學家在設計實驗時，實驗組與對照組之間「唯一不同」的那個條件稱為什麼？", opts: ["控制變因", "應變變因", "操作變因", "假說變因"], ans: 2, exp: "「操作變因」是實驗中刻意改變的單一條件（只能有1個）；其他保持不變的條件叫控制變因；最後測量的結果叫應變變因。" },
 
-  // 第2章
   { chap: 2, q: "比較「人的口腔皮膜細胞」與「洋蔥表皮細胞」，兩者共同擁有的構造是哪一項？", opts: ["細胞壁", "葉綠體", "細胞核", "大型液胞"], ans: 2, exp: "動物細胞（口腔皮膜）沒有細胞壁、葉綠體與大型液胞；而洋蔥表皮細胞雖然是植物，但因位於地下無照光，也沒有葉綠體。兩者都有細胞核、細胞質、細胞膜。" },
   { chap: 2, q: "將人類的紅血球放入「濃食鹽水」中，一段時間後在顯微鏡下會觀察到什麼現象？", opts: ["膨脹破裂", "萎縮變皺", "維持原狀不變", "分裂成兩個細胞"], ans: 1, exp: "濃食鹽水濃度高於紅血球內部，水分子會藉由「滲透作用」從紅血球內部流向外部，導致紅血球失水萎縮變皺。" },
   { chap: 2, q: "被稱為「細胞發電廠」，能進行呼吸作用產生能量的細胞構造為何？", opts: ["葉綠體", "粒線體", "液胞", "細胞核"], ans: 1, exp: "粒線體負責進行呼吸作用分解養分產生能量；葉綠體則是植物進行光合作用製造養分的場所。" },
   { chap: 2, q: "下列關於「植物體組成層次」的敘述，何者正確？", opts: ["一顆蘋果屬於器官層次", "一片葉子的下表皮屬於器官層次", "植物體具有完整消化系統與運輸系統", "保衛細胞屬於組織層次"], ans: 0, exp: "植物組成層次為「細胞 ➔ 組織 ➔ 器官 ➔ 植物體」（植物沒有系統層次）。根、莖、葉、花、果實（如蘋果）、種子皆屬於植物的「器官」。" },
   { chap: 2, q: "氧氣和二氧化碳等氣體分子，主要是透過哪一種方式進出細胞膜？", opts: ["靠特殊蛋白質通道協助", "直接通過細胞膜的擴散作用", "由細胞核主動吞噬", "靠細胞壁過濾"], ans: 1, exp: "氣體分子（氧氣、二氧化碳）體積非常小，可以直接穿過細胞膜，由高濃度往低濃度進行「擴散作用」。" },
 
-  // 第3章
   { chap: 3, q: "食物中的養分，哪三種經人體消化吸收後可以產生能量？", opts: ["醣類、蛋白質、脂質", "醣類、維生素、礦物質", "蛋白質、脂質、水", "維生素、礦物質、水"], ans: 0, exp: "三大產能養分為：醣類（4大卡/克）、蛋白質（4大卡/克）、脂質（9大卡/克）。水、礦物質、維生素不提供熱量。" },
   { chap: 3, q: "小明將唾液與澱粉液混合後，放進 100°C 的沸水中煮 10 分鐘，冷卻後加入碘液與本氏液測試，結果為何？", opts: ["碘液變藍黑色；本氏液維持淡藍色", "碘液維持黃褐色；本氏液變紅色", "兩者皆維持原色", "兩者皆變色"], ans: 0, exp: "唾液澱粉酶的主要成分是「蛋白質」，經過 100°C 高溫煮沸後會永久破壞失去活性，無法分解澱粉。因此澱粉還在（碘液變藍黑色），沒有產生葡萄糖（本氏液不變色，維持淡藍色）。" },
   { chap: 3, q: "人體消化系統中，分泌「膽汁」的器官以及膽汁的功能，下列何者正確？", opts: ["膽囊分泌；含酵素可分解脂質", "肝臟分泌；不含酵素可乳化脂質", "胰臟分泌；含酵素可分解澱粉", "小腸分泌；可分解蛋白質"], ans: 1, exp: "重要陷阱題！膽汁是由「肝臟」製造分泌、儲存在膽囊，且膽汁「不含任何消化酵素」，只能物理性地將大油滴乳化成小油滴。" },
   { chap: 3, q: "植物進行「光合作用」時，所釋放出的氧氣是來自於哪一種原料的分解？", opts: ["二氧化碳", "葡萄糖", "水", "葉綠素"], ans: 2, exp: "光合作用的光反應階段，葉綠體吸收太陽能將「水」分解，產生氧氣釋放到大氣中。" },
   { chap: 3, q: "檢測食物中是否含有「葡萄糖」時，使用本氏液必須配合哪一個關鍵步驟才會變色？", opts: ["加入酒精", "隔水加熱", "放入冰箱冷卻", "在黑暗中靜置"], ans: 1, exp: "本氏液測葡萄糖必須經過「隔水加熱」才會出現綠、黃、橙、紅的顏色變化；碘液測澱粉則不需加熱。" },
 
-  // 第4章
   { chap: 4, q: "把一棵多年生木本植物（如榕樹）的樹皮環狀剝皮後，整棵樹最後會死亡，其最根本的原因為何？", opts: ["根部無法獲得葉片製造的養分而死亡", "葉片無法獲得根部吸收的水分而枯死", "形成層被破壞無法行光合作用", "木質部被切斷無法向下運送養分"], ans: 0, exp: "樹皮外側包含「韌皮部」，環狀剝皮切斷了韌皮部，使葉片光合作用製造的養分無法向下運送到根部。根部細胞餓死後，植物才無法吸水而整棵死亡。" },
   { chap: 4, q: "能將水分從數十公尺高的樹根一路拉到樹梢葉片，最主要的動力來源是什麼？", opts: ["根部的呼吸作用", "葉片的蒸散作用", "莖部的光合作用", "形成層的細胞分裂"], ans: 1, exp: "水分從葉片氣孔蒸發散失的「蒸散作用」，會在導管內產生強大的向上拉力，是水分上升的最主要動力。" },
   { chap: 4, q: "人體血液中的三種血球，哪一種「沒有細胞核」，且負責攜帶氧氣？", opts: ["紅血球", "白血球", "血小板", "淋巴球"], ans: 0, exp: "成熟紅血球無細胞核、呈雙凹圓盤狀，內含血紅素負責運載氧氣；白血球有細胞核且體積最大；血小板無細胞核且體積最小。" },
   { chap: 4, q: "比較人體內的動脈、靜脈與微血管，下列哪一項排列順序完全正確？", opts: ["管壁厚度：靜脈 ＞ 動脈 ＞ 微血管", "血壓大小：動脈 ＞ 微血管 ＞ 靜脈", "血流速度：動脈 ＞ 微血管 ＞ 靜脈", "物質交換效率：動脈 ＞ 靜脈 ＞ 微血管"], ans: 1, exp: "血壓由高到低依序為「動脈 ＞ 微血管 ＞ 靜脈」；血流速度則是「動脈 ＞ 靜脈 ＞ 微血管」（微血管最慢，才有利物質交換）。" },
   { chap: 4, q: "護士幫病人抽血或打點滴時，通常會找手臂上的哪一種血管？", opts: ["動脈", "靜脈", "微血管", "淋巴管"], ans: 1, exp: "靜脈分布位置較淺（手背或手臂上青紫色的血管），且血壓較低、管壁較薄，抽血後較容易止血。" },
 
-  // 第5章
   { chap: 5, q: "騎腳踏車時能保持身體平衡、動作協調不會跌倒，主要是依靠哪一個神經中樞的運作？", opts: ["大腦", "小腦", "腦幹", "脊髓"], ans: 1, exp: "小腦負責協調全身肌肉活動與維持身體平衡（鳥類的小腦特別發達）。" },
   { chap: 5, q: "手不小心碰到剛煮沸的熱水壺，立刻縮回並大叫「好燙！」。關於此過程的敘述何者正確？", opts: ["「手立刻縮回」是由大腦控制的反射", "「感覺好燙」是在脊髓產生的感覺", "「手立刻縮回」不經過大腦，由脊髓控制", "整個過程完全沒有經過神經傳導"], ans: 2, exp: "手碰燙物立刻縮回屬於「脊髓控制的反射動作」，不經大腦以爭取時間保護身體；訊息隨後傳到「大腦」才會感覺到痛。" },
   { chap: 5, q: "在實驗室進行「接尺測反應時間」實驗時，神經傳導的正確途徑為何？", opts: ["受器 ➔ 感覺神經 ➔ 脊髓 ➔ 運動神經 ➔ 動器", "受器 ➔ 感覺神經 ➔ 大腦 ➔ 脊髓 ➔ 運動神經 ➔ 動器", "受器 ➔ 運動神經 ➔ 大腦 ➔ 感覺神經 ➔ 動器", "受器 ➔ 感覺神經 ➔ 小腦 ➔ 運動神經 ➔ 動器"], ans: 1, exp: "接尺必須用「眼睛」看到尺掉落再決定伸手去接，這是經過「大腦」判斷的意識動作，路徑為：眼(受器) ➔ 感覺神經 ➔ 大腦 ➔ 脊髓 ➔ 運動神經 ➔ 手(動器)。" },
   { chap: 5, q: "當遇到火災或猛犬追趕時，體內哪一種激素會大量分泌，使心跳加快、血壓上升、肌肉產生強大爆發力？", opts: ["胰島素", "生長激素", "腎上腺素", "甲狀腺素"], ans: 2, exp: "腎上腺素能應付緊急狀況，使心跳加快、呼吸急促、肝糖分解增加血糖，讓身體發揮最大潛能。" },
   { chap: 5, q: "窗台邊的盆栽植物會朝向陽光的方向彎曲生長（向光性），造成這種現象的原因為何？", opts: ["向光側的生長素較多，細胞生長較快", "背光側的生長素較多，細胞生長較快", "葉片膨壓瞬間改變所致", "根部向地性拉扯所致"], ans: 1, exp: "植物的生長素具有「避光性」，會往背光側移動集中，導致背光側細胞生長比向光側快，莖就會朝向光源彎曲。" },
 
-  // 第6章
   { chap: 6, q: "人在劇烈運動後呼吸會變得急促，主要是因為血液中的哪一種物質濃度升高，刺激腦幹加快呼吸？", opts: ["氧氣濃度升高", "二氧化碳濃度升高", "尿素濃度升高", "血糖濃度升高"], ans: 1, exp: "超級必考題！刺激腦幹呼吸中樞加快呼吸的訊號，是血液中「二氧化碳濃度升高」（而非氧氣減少）。" },
   { chap: 6, q: "人體細胞代謝蛋白質後會產生有毒的「氨」，人體會先在哪一個器官將氨轉變為毒性較小的「尿素」？", opts: ["腎臟", "肝臟", "膀胱", "小腸"], ans: 1, exp: "「肝臟」負責解毒，將高毒性的氨轉變為尿素；「腎臟」則是過濾血液，將尿素與多餘水分形成尿液排出。" },
   { chap: 6, q: "鳥類與昆蟲為了適應陸地乾燥環境、減少水分散失，它們排出的含氮廢物主要形式為何？", opts: ["氨", "尿素", "尿酸", "胺基酸"], ans: 2, exp: "毒性大小：氨 ＞ 尿素 ＞ 尿酸。鳥類和昆蟲將含氮廢物轉成不溶於水的「尿酸」，混在糞便中排出，最節省水分。" },
@@ -446,10 +813,8 @@ const staticQuestions = [
   { chap: 6, q: "將剛萌芽的綠豆放入錐形瓶中密封 30 分鐘，再將瓶內氣體通入澄清石灰水中，會觀察到什麼現象？", opts: ["澄清石灰水變成白色混濁", "澄清石灰水變成粉紅色", "澄清石灰水變成藍黑色", "完全沒有任何變化"], ans: 0, exp: "萌芽綠豆呼吸作用旺盛，會釋放大量「二氧化碳」，二氧化碳通入澄清石灰水會產生白色碳酸鈣沉澱（變混濁）。" }
 ];
 
-// 動態計算題生成器（顯微鏡倍率計算、熱量計算）
 function generateDynamicQuestions() {
   const dyn = [];
-  // 第1章：顯微鏡倍率計算
   const eyeList = [5, 10, 15];
   const objList = [4, 10, 40, 60];
   const eye = eyeList[Math.floor(Math.random() * eyeList.length)];
@@ -458,19 +823,17 @@ function generateDynamicQuestions() {
   const wrong1 = eye + obj;
   const wrong2 = total * 10;
   const wrong3 = Math.max(10, total / 2);
-  const opts1 = [`${total} 倍`, `${wrong1} 倍`, `${wrong2} 倍`, `${wrong3} 倍`];
   dyn.push({
     chap: 1,
     q: `【計算題】小美使用複式顯微鏡觀察水蘊草葉片，若目鏡標示為 ${eye}X，物鏡標示為 ${obj}X，則此時細胞被放大的總倍率為多少倍？`,
-    opts: opts1,
+    opts: [`${total} 倍`, `${wrong1} 倍`, `${wrong2} 倍`, `${wrong3} 倍`],
     ans: 0,
     exp: `顯微鏡總放大倍率公式 ＝「目鏡倍率 × 物鏡倍率」。因此 ${eye} × ${obj} ＝ ${total} 倍（注意是用乘的，不是用加的喔！）。`
   });
 
-  // 第3章：食物熱量計算
-  const carb = (Math.floor(Math.random() * 5) + 2) * 5; // 10~30g
-  const prot = (Math.floor(Math.random() * 4) + 1) * 5; // 5~20g
-  const fat = (Math.floor(Math.random() * 3) + 1) * 2;  // 2~6g
+  const carb = (Math.floor(Math.random() * 5) + 2) * 5;
+  const prot = (Math.floor(Math.random() * 4) + 1) * 5;
+  const fat = (Math.floor(Math.random() * 3) + 1) * 2;
   const kcal = carb * 4 + prot * 4 + fat * 9;
   const w1 = (carb + prot + fat) * 4;
   const w2 = carb * 9 + prot * 4 + fat * 4;
@@ -491,7 +854,6 @@ let streak = 0;
 let currentQ = null;
 let answered = false;
 
-// 初始化章節勾選
 function initCheckboxes() {
   const container = document.getElementById("chap-checkboxes");
   chapters.forEach(c => {
@@ -503,8 +865,7 @@ function initCheckboxes() {
 }
 
 function getSelectedChaps() {
-  const checked = Array.from(document.querySelectorAll("#chap-checkboxes input:checked")).map(cb => Number(cb.value));
-  return checked;
+  return Array.from(document.querySelectorAll("#chap-checkboxes input:checked")).map(cb => Number(cb.value));
 }
 
 function selectPreset(ids) {
@@ -515,7 +876,7 @@ function selectPreset(ids) {
 }
 
 function onScopeChange() {
-  renderNotes();
+  renderNotesAndAnims();
   if (document.getElementById("sec-quiz").classList.contains("active")) {
     loadNextQuestion();
   }
@@ -523,33 +884,61 @@ function onScopeChange() {
 
 function switchTab(tab) {
   document.getElementById("tab-notes").classList.toggle("active", tab === "notes");
+  document.getElementById("tab-anim").classList.toggle("active", tab === "anim");
   document.getElementById("tab-quiz").classList.toggle("active", tab === "quiz");
   document.getElementById("sec-notes").classList.toggle("active", tab === "notes");
+  document.getElementById("sec-anim").classList.toggle("active", tab === "anim");
   document.getElementById("sec-quiz").classList.toggle("active", tab === "quiz");
   if (tab === "quiz") {
     loadNextQuestion();
   }
 }
 
-function renderNotes() {
+function renderNotesAndAnims() {
   const selected = getSelectedChaps();
-  const container = document.getElementById("sec-notes");
+  const notesContainer = document.getElementById("sec-notes");
+  const animContainer = document.getElementById("sec-anim");
   if (selected.length === 0) {
-    container.innerHTML = `<div class="empty-warn">⚠️ 請先在上方勾選至少一個章節範圍喔！</div>`;
+    const warn = `<div class="empty-warn">⚠️ 請先在上方勾選至少一個章節範圍喔！</div>`;
+    notesContainer.innerHTML = warn;
+    animContainer.innerHTML = warn;
     return;
   }
-  container.innerHTML = "";
+
+  let notesHtml = "";
+  let animHtml = "";
   chapters.filter(c => selected.includes(c.id)).forEach(c => {
-    const card = document.createElement("div");
-    card.className = "note-card";
     const listItems = c.notes.map(n => `<li>${n}</li>`).join("");
-    card.innerHTML = `
-      <h3>${c.title}</h3>
-      <ul class="note-list">${listItems}</ul>
-      <div class="exp-box">${c.exp}</div>
+    notesHtml += `
+      <div class="note-card">
+        <h3>${c.title}</h3>
+        <ul class="note-list">${listItems}</ul>
+        <div class="exp-box">${c.exp}</div>
+      </div>
     `;
-    container.appendChild(card);
+
+    if (animData[c.id]) {
+      const a = animData[c.id];
+      animHtml += `
+        <div class="anim-card">
+          <div class="anim-header">
+            <div class="anim-title">🎬 ${a.title}</div>
+            <span class="anim-badge">${a.badge}</span>
+          </div>
+          ${a.html}
+        </div>
+      `;
+    }
   });
+  notesContainer.innerHTML = notesHtml;
+  animContainer.innerHTML = animHtml;
+
+  if (selected.includes(1)) setS1(0, null);
+  if (selected.includes(2)) setS2('normal', null);
+  if (selected.includes(3)) setS3('opt', null);
+  if (selected.includes(4)) setS4(0, null);
+  if (selected.includes(5)) setS5(0, null);
+  if (selected.includes(6)) setS6(0, null);
 }
 
 function loadNextQuestion() {
@@ -562,7 +951,7 @@ function loadNextQuestion() {
 
   answered = false;
   const pool = [...staticQuestions, ...generateDynamicQuestions()].filter(q => selected.includes(q.chap));
-  
+
   let chosen;
   do {
     chosen = pool[Math.floor(Math.random() * pool.length)];
@@ -571,13 +960,11 @@ function loadNextQuestion() {
 
   const chapObj = chapters.find(c => c.id === chosen.chap);
   const correctText = chosen.opts[chosen.ans];
-
-  // 打亂選項順序
   const shuffledOpts = [...chosen.opts].sort(() => Math.random() - 0.5);
 
   const optsHtml = shuffledOpts.map((optText, idx) => {
     const isCorrect = (optText === correctText);
-    return `<button class="opt-btn" onclick="checkAnswer(this, ${isCorrect}, '${correctText.replace(/'/g, "\'")}')">${["A", "B", "C", "D"][idx]}. ${optText}</button>`;
+    return `<button class="opt-btn" onclick="checkAnswer(this, ${isCorrect}, '${correctText.replace(/'/g, "\\'")}')">${["A", "B", "C", "D"][idx]}. ${optText}</button>`;
   }).join("");
 
   area.innerHTML = `
@@ -625,7 +1012,7 @@ function checkAnswer(btn, isCorrect, correctText) {
 }
 
 initCheckboxes();
-renderNotes();
+renderNotesAndAnims();
 </script>
 </body>
 </html>
