@@ -925,4 +925,233 @@ const staticQuestions = [
   { u: 5, q: "A: ______ is the date today?  B: It's October tenth.", speak: "What is the date today? It's October tenth.", opts: ["What", "When", "Who", "How"], ans: "What", exp: "詢問日期的固定句型是「What is the date today?」（今天是幾月幾號？）。" },
   { u: 5, q: "Teacher's Day in Taiwan is ______ September 28.", speak: "Teacher's Day in Taiwan is on September twenty-eighth.", opts: ["on", "in", "at", "for"], ans: "on", exp: "只要明確寫出「幾月幾號」（特定某一天），時間介系詞就要用 on！只有單獨寫月份（in September）才用 in。" },
   { u: 5, q: "Mother's Day is ______ the second Sunday ______ May.", speak: "Mother's Day is on the second Sunday of May.", opts: ["on; of", "in; on", "at; in", "on; at"], ans: "on; of", exp: "特定的某個星期日（the second Sunday）用 on；五月的第二個星期日，所屬關係用 of。" },
-  { u: 5, q: "選出序數「第十二 (12th)」的正確拼法：", speak: "twelfth", opts: ["twelfth", "twelveth", "twentyth", "twelve
+  { u: 5, q: "選出序數「第十二 (12th)」的正確拼法：", speak: "twelfth", opts: ["twelfth", "twelveth", "twentyth", "twelve"], ans: "twelfth", exp: "twelve 變序數時，要把字尾的 ve 改成 f，再加上 th → twelfth（第五 fifth 也是同樣規則）。" },
+  { u: 5, q: "選出序數「第九 (9th)」的正確拼法：", speak: "ninth", opts: ["ninth", "nineth", "nine", "ninety"], ans: "ninth", exp: "nine 變序數時，要「去掉字尾不發音的 e」再加 th → ninth。" },
+
+  { u: 6, q: "______ some elephants and a lion over there.", speak: "There are some elephants and a lion over there.", opts: ["There are", "There is", "They are", "Have"], ans: "There are", exp: "There is/are 採取「就近原則」，離空格最近的名詞是 some elephants（複數），所以要用 There are！" },
+  { u: 6, q: "Are there ______ zebras in the zoo?", speak: "Are there any zebras in the zoo?", opts: ["any", "some", "a", "an"], ans: "any", exp: "在「疑問句」和「否定句」中表示「一些」，要用 any；some 通常只用在肯定句。" },
+  { u: 6, q: "There ______ any water in the bottle.", speak: "There isn't any water in the bottle.", opts: ["isn't", "aren't", "is", "are"], ans: "isn't", exp: "water（水）是不可數名詞，視為單數；加上後面有 any（否定句線索），因此選 isn't。" },
+  { u: 6, q: "選出單字「長頸鹿」的正確英文：", speak: "giraffe", opts: ["giraffe", "zebra", "hippo", "elephant"], ans: "giraffe", exp: "giraffe 是長頸鹿；zebra 是斑馬；hippo 是河馬；elephant 是大象。" }
+];
+
+let selectedUnits = [0, 1, 2, 3, 4, 5, 6];
+let qCount = 0, qCorrect = 0, qStreak = 0;
+let currentQObj = null;
+let answered = false;
+
+function speak(text) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = 0.9;
+  window.speechSynthesis.speak(u);
+}
+
+function initCheckboxes() {
+  const box = document.getElementById('unit-checkboxes');
+  box.innerHTML = '';
+  unitsData.forEach(u => {
+    const checked = selectedUnits.includes(u.id) ? 'checked' : '';
+    box.innerHTML += `
+      <label class="check-label">
+        <input type="checkbox" value="${u.id}" ${checked} onchange="onScopeChange()">
+        <span>${u.code}</span>
+      </label>
+    `;
+  });
+}
+
+function selectPreset(ids) {
+  selectedUnits = [...ids];
+  initCheckboxes();
+  renderNotesAndAnims();
+  if (document.getElementById('panel-quiz').classList.contains('active')) {
+    generateQuestion();
+  }
+}
+
+function selectAll(flag) {
+  selectedUnits = flag ? unitsData.map(u => u.id) : [];
+  initCheckboxes();
+  renderNotesAndAnims();
+  if (flag && document.getElementById('panel-quiz').classList.contains('active')) {
+    generateQuestion();
+  }
+}
+
+function onScopeChange() {
+  const inputs = document.querySelectorAll('#unit-checkboxes input:checked');
+  selectedUnits = Array.from(inputs).map(el => parseInt(el.value));
+  renderNotesAndAnims();
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('tab-anim').classList.toggle('active', tab === 'anim');
+  document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
+  document.getElementById('panel-notes').classList.toggle('active', tab === 'notes');
+  document.getElementById('panel-anim').classList.toggle('active', tab === 'anim');
+  document.getElementById('panel-quiz').classList.toggle('active', tab === 'quiz');
+  if (tab === 'quiz') {
+    generateQuestion();
+  }
+}
+
+function renderNotesAndAnims() {
+  const notesContainer = document.getElementById('panel-notes');
+  const animContainer = document.getElementById('panel-anim');
+  if (selectedUnits.length === 0) {
+    const emptyMsg = '<div class="note-card">請在上方至少勾選一個單元喔！</div>';
+    notesContainer.innerHTML = emptyMsg;
+    animContainer.innerHTML = emptyMsg;
+    return;
+  }
+
+  let notesHtml = '';
+  let animHtml = '';
+  unitsData.filter(u => selectedUnits.includes(u.id)).forEach(u => {
+    const grammarHtml = u.grammar.map(g => `<li>${g}</li>`).join('');
+    const vocabHtml = u.vocab.map(v => `
+      <div class="vocab-chip" onclick="speak('${v.en.replace(/'/g, "\\'")}')">
+        <span>🔊</span>
+        <span class="vocab-en">${v.en}</span>
+        <span class="vocab-kk">${v.kk}</span>
+        <span class="vocab-zh">${v.zh}</span>
+      </div>
+    `).join('');
+    notesHtml += `
+      <div class="note-card">
+        <div class="note-unit-title">${u.title}</div>
+        <div style="font-weight:bold; color:#374151; margin-bottom:6px;">📌 必考文法與句型重點：</div>
+        <ul class="grammar-list">${grammarHtml}</ul>
+        <div style="font-weight:bold; color:#374151; margin-top:10px;">🔤 核心單字（點擊可聽發音）：</div>
+        <div class="vocab-grid">${vocabHtml}</div>
+      </div>
+    `;
+
+    if (animData[u.id]) {
+      const a = animData[u.id];
+      animHtml += `
+        <div class="anim-card">
+          <div class="anim-header">
+            <div class="anim-title">🎬 ${a.title}</div>
+            <span class="anim-badge">${a.badge}</span>
+          </div>
+          ${a.html}
+        </div>
+      `;
+    }
+  });
+  notesContainer.innerHTML = notesHtml;
+  animContainer.innerHTML = animHtml;
+
+  const origSpeak = window.speechSynthesis ? window.speechSynthesis.speak.bind(window.speechSynthesis) : null;
+  if (origSpeak) window.speechSynthesis.speak = () => {};
+  if (selectedUnits.includes(0)) setEn0(0, null);
+  if (selectedUnits.includes(1)) setEn1(0, null);
+  if (selectedUnits.includes(2)) setEn2('on', null);
+  if (selectedUnits.includes(3)) setEn3(0, null);
+  if (selectedUnits.includes(4)) setEn4(0, null);
+  if (selectedUnits.includes(5)) setEn5('on', null);
+  if (selectedUnits.includes(6)) setEn6(0, null);
+  if (origSpeak) window.speechSynthesis.speak = origSpeak;
+}
+
+function buildQuestionPool() {
+  let pool = staticQuestions.filter(q => selectedUnits.includes(q.u));
+  const activeUnits = unitsData.filter(u => selectedUnits.includes(u.id));
+  const allVocab = unitsData.flatMap(u => u.vocab);
+
+  activeUnits.forEach(u => {
+    u.vocab.forEach(v => {
+      const otherZh = allVocab.filter(x => x.en !== v.en).sort(() => Math.random() - 0.5).slice(0, 3).map(x => x.zh);
+      pool.push({
+        u: u.id,
+        q: `單字測驗：請問「${v.en}」的中文意思是？`,
+        speak: v.en,
+        opts: [v.zh, ...otherZh],
+        ans: v.zh,
+        exp: `單字「${v.en}」${v.kk} 的意思是「${v.zh}」（出自 ${u.code}）。`
+      });
+    });
+  });
+  return pool;
+}
+
+function generateQuestion() {
+  if (selectedUnits.length === 0) {
+    document.getElementById('q-question').innerText = '請先在上方勾選至少一個複習單元！';
+    document.getElementById('q-options').innerHTML = '';
+    document.getElementById('q-explain').style.display = 'none';
+    document.getElementById('q-next-btn').style.display = 'none';
+    return;
+  }
+  const pool = buildQuestionPool();
+  let nextQ;
+  do {
+    nextQ = pool[Math.floor(Math.random() * pool.length)];
+  } while (currentQObj && pool.length > 1 && nextQ.q === currentQObj.q);
+
+  currentQObj = nextQ;
+  answered = false;
+
+  const uInfo = unitsData.find(u => u.id === currentQObj.u);
+  document.getElementById('q-unit-tag').innerText = uInfo ? uInfo.code : '綜合題';
+  document.getElementById('q-question').innerText = currentQObj.q;
+  document.getElementById('q-explain').style.display = 'none';
+  document.getElementById('q-next-btn').style.display = 'none';
+
+  const shuffledOpts = [...currentQObj.opts].sort(() => Math.random() - 0.5);
+  const optBox = document.getElementById('q-options');
+  optBox.innerHTML = '';
+  shuffledOpts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt);
+    optBox.appendChild(btn);
+  });
+}
+
+function speakCurrentQ() {
+  if (currentQObj && currentQObj.speak) {
+    speak(currentQObj.speak);
+  }
+}
+
+function checkAnswer(btn, chosen) {
+  if (answered) return;
+  answered = true;
+  qCount++;
+
+  const allBtns = document.querySelectorAll('.opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+
+  const expBox = document.getElementById('q-explain');
+  if (chosen === currentQObj.ans) {
+    btn.classList.add('correct');
+    qCorrect++;
+    qStreak++;
+    expBox.innerHTML = `✅ <b>答對了！</b><br>${currentQObj.exp}`;
+  } else {
+    btn.classList.add('wrong');
+    qStreak = 0;
+    allBtns.forEach(b => {
+      if (b.innerText === currentQObj.ans) b.classList.add('correct');
+    });
+    expBox.innerHTML = `❌ <b>答錯囉！正確答案是「${currentQObj.ans}」</b><br>💡 <b>觀念解析：</b>${currentQObj.exp}`;
+  }
+
+  document.getElementById('q-count').innerText = qCount;
+  document.getElementById('q-correct').innerText = qCorrect;
+  document.getElementById('q-streak').innerText = qStreak;
+  expBox.style.display = 'block';
+  document.getElementById('q-next-btn').style.display = 'block';
+}
+
+initCheckboxes();
+renderNotesAndAnims();
+</script>
+</body>
+</html>
