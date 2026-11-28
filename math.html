@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>國一上數學（康軒版）－重點與無限出題測驗</title>
+<title>國一上數學（康軒版）－重點、動畫圖解與無限測驗</title>
 <style>
   :root {
     --primary: #1976D2;
     --secondary: #FF9800;
+    --accent: #00897B;
     --success: #2E7D32;
     --danger: #C62828;
     --bg: #F0F4F8;
@@ -118,11 +119,13 @@
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
   .tab-btn {
     flex: 1;
-    padding: 14px;
-    font-size: 18px;
+    min-width: 150px;
+    padding: 14px 10px;
+    font-size: 17px;
     font-weight: bold;
     border: none;
     border-radius: 10px;
@@ -135,6 +138,10 @@
     background: var(--primary);
     color: #fff;
     box-shadow: 0 3px 10px rgba(25,118,210,0.3);
+  }
+  .tab-btn#tab-anim.active {
+    background: var(--accent);
+    box-shadow: 0 3px 10px rgba(0,137,123,0.3);
   }
   .section { display: none; }
   .section.active { display: block; }
@@ -173,6 +180,112 @@
     margin: 6px 0;
     color: #1B5E20;
     font-weight: bold;
+  }
+
+  /* 互動動畫區樣式 */
+  .anim-card {
+    border: 2px solid #B2DFDB;
+    border-left: 6px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 22px;
+    background: #FFFFFF;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+  }
+  .anim-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .anim-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #00695C;
+  }
+  .anim-badge {
+    background: #E0F2F1;
+    color: #00695C;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: bold;
+  }
+  .svg-stage {
+    width: 100%;
+    background: #F8FAFC;
+    border: 1px solid #CFD8DC;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  .svg-stage svg {
+    width: 100%;
+    max-width: 680px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+  .controls-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    background: #ECEFF1;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    color: #37474F;
+  }
+  .ctrl-group input[type="range"] {
+    width: 120px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .ctrl-btn {
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: #00695C;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .ctrl-btn:hover, .ctrl-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .concept-callout {
+    background: #FFF8E1;
+    border: 1px solid #FFE082;
+    border-left: 5px solid #FFA000;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 15.5px;
+    color: #4E342E;
+    line-height: 1.6;
+  }
+  .concept-callout b { color: #E65100; }
+
+  @keyframes pulseGlow {
+    0%, 100% { r: 7; opacity: 0.95; }
+    50% { r: 12; opacity: 0.45; }
+  }
+  .pulse-dot {
+    animation: pulseGlow 1.5s infinite ease-in-out;
   }
 
   /* 測驗區 */
@@ -300,13 +413,17 @@
   <!-- 分頁按鈕 -->
   <div class="tabs">
     <button class="tab-btn active" id="tab-notes" onclick="switchTab('notes')">📖 考前重點公式整理</button>
+    <button class="tab-btn" id="tab-anim" onclick="switchTab('anim')">🎬 互動式視覺教學動畫</button>
     <button class="tab-btn" id="tab-quiz" onclick="switchTab('quiz')">✍️ 無限隨機出題測驗</button>
   </div>
 
   <!-- 分頁一：重點整理 -->
   <div id="sec-notes" class="section active"></div>
 
-  <!-- 分頁二：無限出題 -->
+  <!-- 分頁二：互動動畫 -->
+  <div id="sec-anim" class="section"></div>
+
+  <!-- 分頁三：無限出題 -->
   <div id="sec-quiz" class="section">
     <div class="quiz-container">
       <div class="stats-bar">
@@ -444,6 +561,828 @@
     `;
   });
 
+  /* =========================================================
+     11 個章節純前端 SVG 互動式教學動畫模組
+  ========================================================= */
+  const animContainer = document.getElementById('sec-anim');
+  const animTemplates = [
+    // 0: 1-1 負數與數線
+    {
+      id: 0, title: '1-1 負數、絕對值與數線距離', badge: '互動拉桿',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-0" viewBox="0 0 680 210">
+            <rect x="0" y="0" width="680" height="210" fill="#F8FAFC"/>
+            <!-- 距離高亮弧線 -->
+            <path id="a0-arc" d="M 180 110 Q 340 40 500 110" fill="none" stroke="#FF9800" stroke-width="4" stroke-dasharray="6,4"/>
+            <rect id="a0-dist-bg" x="265" y="42" width="150" height="30" rx="15" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+            <text id="a0-dist-txt" x="340" y="62" text-anchor="middle" font-size="16" font-weight="bold" fill="#E65100">距離 |A - B| = 8</text>
+            <!-- 數線主軸 -->
+            <line x1="30" y1="120" x2="650" y2="120" stroke="#37474F" stroke-width="3"/>
+            <polygon points="655,120 643,113 643,127" fill="#37474F"/>
+            <polygon points="25,120 37,113 37,127" fill="#37474F"/>
+            <g id="a0-ticks"></g>
+            <!-- A 點與 B 點 -->
+            <circle id="a0-dotA" cx="220" cy="120" r="9" fill="#E53935"/>
+            <circle id="a0-glowA" cx="220" cy="120" r="9" fill="#E53935" class="pulse-dot"/>
+            <text id="a0-lblA" x="220" y="168" text-anchor="middle" font-size="16" font-weight="bold" fill="#C62828">A(-3)</text>
+            <text id="a0-absA" x="220" y="190" text-anchor="middle" font-size="14" fill="#546E7A">到原點距離 |-3|=3</text>
+
+            <circle id="a0-dotB" cx="490" cy="120" r="9" fill="#1E88E5"/>
+            <circle id="a0-glowB" cx="490" cy="120" r="9" fill="#1E88E5" class="pulse-dot"/>
+            <text id="a0-lblB" x="490" y="168" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565C0">B(5)</text>
+            <text id="a0-absB" x="490" y="190" text-anchor="middle" font-size="14" fill="#546E7A">到原點距離 |5|=5</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <div class="ctrl-group">🔴 移動 A 點：<input type="range" id="a0-inA" min="-8" max="8" value="-3" oninput="updateAnim0()"> <span id="a0-valA">-3</span></div>
+          <div class="ctrl-group">🔵 移動 B 點：<input type="range" id="a0-inB" min="-8" max="8" value="5" oninput="updateAnim0()"> <span id="a0-valB">5</span></div>
+        </div>
+        <div class="concept-callout" id="a0-tip"></div>
+      `
+    },
+    // 1: 1-2 整數的加減
+    {
+      id: 1, title: '1-2 整數加減法：數線走步與負負得正', badge: '情境切換 + 步進',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-1" viewBox="0 0 680 210">
+            <rect x="0" y="0" width="680" height="210" fill="#F8FAFC"/>
+            <text id="a1-eq" x="340" y="34" text-anchor="middle" font-size="22" font-weight="bold" fill="#0D47A1">算式：(-2) - (-5) ＝ (-2) + 5 ＝ 3</text>
+            <!-- 第一步箭頭 -->
+            <path id="a1-step1" d="M 340 125 L 280 125" stroke="#1E88E5" stroke-width="5" marker-end="url(#arrowBlue)"/>
+            <text id="a1-s1txt" x="310" y="112" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565C0">起點 -2</text>
+            <!-- 第二步箭頭 -->
+            <path id="a1-step2" d="M 280 92 Q 355 52 430 92" fill="none" stroke="#FF9800" stroke-width="4" stroke-dasharray="5,3"/>
+            <text id="a1-s2txt" x="355" y="65" text-anchor="middle" font-size="15" font-weight="bold" fill="#E65100">減去負數 ＝ 轉身向右走 5 步！</text>
+            <!-- 數線 -->
+            <line x1="40" y1="140" x2="640" y2="140" stroke="#37474F" stroke-width="3"/>
+            <g id="a1-ticks"></g>
+            <!-- 小人物光點 -->
+            <circle id="a1-pos" cx="430" cy="140" r="10" fill="#2E7D32"/>
+            <circle id="a1-glow" cx="430" cy="140" r="10" fill="#2E7D32" class="pulse-dot"/>
+            <text id="a1-res" x="430" y="188" text-anchor="middle" font-size="16" font-weight="bold" fill="#1B5E20">終點：3</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <button class="ctrl-btn active" onclick="setAnim1(0, this)">情境1：(-2) - (-5) 負負得正</button>
+          <button class="ctrl-btn" onclick="setAnim1(1, this)">情境2：(-4) + (-3) 同號相加</button>
+          <button class="ctrl-btn" onclick="setAnim1(2, this)">情境3：3 + (-7) 異號抵銷</button>
+          <button class="ctrl-btn" onclick="setAnim1(3, this)">情境4：2 - 6 變 2 + (-6)</button>
+        </div>
+        <div class="concept-callout" id="a1-tip"></div>
+      `
+    },
+    // 2: 1-3 整數的乘除與四則運算
+    {
+      id: 2, title: '1-3 連乘正負號判斷機（奇負偶正）', badge: '互動按鈕',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-2" viewBox="0 0 680 200">
+            <rect x="0" y="0" width="680" height="200" fill="#F8FAFC"/>
+            <text x="340" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#37474F">點擊下方數字切換正負號，觀察「負號總數」如何決定答案正負！</text>
+            <g id="a2-boxes"></g>
+            <rect id="a2-resBox" x="150" y="132" width="380" height="48" rx="24" fill="#C8E6C9" stroke="#2E7D32" stroke-width="2"/>
+            <text id="a2-resTxt" x="340" y="162" text-anchor="middle" font-size="19" font-weight="bold" fill="#1B5E20">共有 2 個負號（偶數）➔ 結果為 正 (+24)</text>
+          </svg>
+        </div>
+        <div class="controls-bar" id="a2-btns">
+          <button class="ctrl-btn" onclick="toggleAnim2(0)">切換第1數 (-2)</button>
+          <button class="ctrl-btn" onclick="toggleAnim2(1)">切換第2數 (+3)</button>
+          <button class="ctrl-btn" onclick="toggleAnim2(2)">切換第3數 (-1)</button>
+          <button class="ctrl-btn" onclick="toggleAnim2(3)">切換第4數 (+4)</button>
+        </div>
+        <div class="concept-callout" id="a2-tip"></div>
+      `
+    },
+    // 3: 1-4 指數記法與科學記號
+    {
+      id: 3, title: '1-4 括號次方大對決 (-a)ⁿ vs -aⁿ ＆ 科學記號', badge: '雙模式互動',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-3" viewBox="0 0 680 220">
+            <rect x="0" y="0" width="680" height="220" fill="#F8FAFC"/>
+            <!-- 左側卡片：有括號 -->
+            <rect x="30" y="20" width="295" height="180" rx="14" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2.5"/>
+            <text id="a3-Ltitle" x="177" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="#1B5E20">(-2)⁴ ＝ +16</text>
+            <text id="a3-Lsub" x="177" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#2E7D32">括號包住負號 ➔ 連負號一起乘 4 次</text>
+            <text id="a3-Lexp" x="177" y="122" text-anchor="middle" font-size="15" fill="#37474F">(-2)×(-2)×(-2)×(-2)</text>
+            <rect x="77" y="142" width="200" height="36" rx="18" fill="#4CAF50"/>
+            <text id="a3-Lbadge" x="177" y="166" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">偶數個負號 ➔ 正數！</text>
+
+            <!-- 右側卡片：沒括號 -->
+            <rect x="355" y="20" width="295" height="180" rx="14" fill="#FFEBEE" stroke="#E53935" stroke-width="2.5"/>
+            <text id="a3-Rtitle" x="502" y="55" text-anchor="middle" font-size="24" font-weight="bold" fill="#B71C1C">-2⁴ ＝ -16</text>
+            <text id="a3-Rsub" x="502" y="88" text-anchor="middle" font-size="15" font-weight="bold" fill="#C62828">沒有括號 ➔ 負號在外面等！</text>
+            <text id="a3-Rexp" x="502" y="122" text-anchor="middle" font-size="15" fill="#37474F">- ( 2 × 2 × 2 × 2 )</text>
+            <rect x="402" y="142" width="200" height="36" rx="18" fill="#E53935"/>
+            <text id="a3-Rbadge" x="502" y="166" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">永遠只乘一次負號 ➔ 負數！</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <div class="ctrl-group">選擇次方 n：<input type="range" id="a3-exp" min="1" max="5" value="4" oninput="updateAnim3()"> <span id="a3-expVal">4</span> 次方</div>
+        </div>
+        <div class="concept-callout" id="a3-tip"></div>
+      `
+    },
+    // 4: 2-1 因數與倍數
+    {
+      id: 4, title: '2-1 矩形排法看「因數與質數」', badge: '互動拼圖',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-4" viewBox="0 0 680 220">
+            <rect x="0" y="0" width="680" height="220" fill="#F8FAFC"/>
+            <text id="a4-title" x="340" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0D47A1">數字 12 的正方形排法（因數：1, 2, 3, 4, 6, 12）</text>
+            <g id="a4-grid"></g>
+            <text id="a4-status" x="340" y="202" text-anchor="middle" font-size="16" font-weight="bold" fill="#00695C">排成 3 列 × 4 行 ＝ 12（可排成長方形 ➔ 合數）</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <div class="ctrl-group">選擇總方塊數 N：<input type="range" id="a4-num" min="2" max="16" value="12" oninput="updateAnim4(1)"> <span id="a4-numVal">12</span></div>
+          <div id="a4-rowBtns" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+        </div>
+        <div class="concept-callout" id="a4-tip"></div>
+      `
+    },
+    // 5: 2-2 最大公因數與最小公倍數
+    {
+      id: 5, title: '2-2 雙齒輪轉動看「最小公倍數 [a, b]」', badge: '轉動步進',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-5" viewBox="0 0 680 220">
+            <rect x="0" y="0" width="680" height="220" fill="#F8FAFC"/>
+            <!-- 左齒輪 (4齒) -->
+            <g id="a5-gearA" transform="translate(230, 115)">
+              <circle cx="0" cy="0" r="65" fill="#E3F2FD" stroke="#1976D2" stroke-width="5"/>
+              <line x1="0" y1="-65" x2="0" y2="65" stroke="#90CAF9" stroke-width="2"/>
+              <line x1="-65" y1="0" x2="65" y2="0" stroke="#90CAF9" stroke-width="2"/>
+              <circle cx="0" cy="-52" r="9" fill="#E53935"/>
+              <text x="0" y="-25" text-anchor="middle" font-size="13" font-weight="bold" fill="#C62828">紅點起點</text>
+            </g>
+            <text x="230" y="202" text-anchor="middle" font-size="16" font-weight="bold" fill="#1565C0">甲齒輪：每 4 格轉 1 圈</text>
+
+            <!-- 右齒輪 (6齒) -->
+            <g id="a5-gearB" transform="translate(450, 115)">
+              <circle cx="0" cy="0" r="78" fill="#FFF3E0" stroke="#FF9800" stroke-width="5"/>
+              <line x1="0" y1="-78" x2="0" y2="78" stroke="#FFE082" stroke-width="2"/>
+              <line x1="-67" y1="-39" x2="67" y2="39" stroke="#FFE082" stroke-width="2"/>
+              <line x1="-67" y1="39" x2="67" y2="-39" stroke="#FFE082" stroke-width="2"/>
+              <circle cx="0" cy="-64" r="9" fill="#E53935"/>
+              <text x="0" y="-36" text-anchor="middle" font-size="13" font-weight="bold" fill="#C62828">紅點起點</text>
+            </g>
+            <text x="450" y="202" text-anchor="middle" font-size="16" font-weight="bold" fill="#E65100">乙齒輪：每 6 格轉 1 圈</text>
+
+            <!-- 頂部狀態標籤 -->
+            <rect id="a5-banner" x="190" y="10" width="300" height="32" rx="16" fill="#ECEFF1" stroke="#90A4AE" stroke-width="2"/>
+            <text id="a5-stepTxt" x="340" y="31" text-anchor="middle" font-size="16" font-weight="bold" fill="#37474F">目前推進：0 格（起點對齊！）</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <button class="ctrl-btn" onclick="stepAnim5(-1)">⬅️ 退後 1 格</button>
+          <button class="ctrl-btn active" onclick="stepAnim5(1)">➡️ 前進 1 格</button>
+          <button class="ctrl-btn" onclick="resetAnim5()">🔄 回到起點 (0格)</button>
+        </div>
+        <div class="concept-callout" id="a5-tip"></div>
+      `
+    },
+    // 6: 2-3 分數的四則運算
+    {
+      id: 6, title: '2-3 負帶分數拆解與通分視覺化', badge: '互動拆解',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-6" viewBox="0 0 680 210">
+            <rect x="0" y="0" width="680" height="210" fill="#F8FAFC"/>
+            <text x="340" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0D47A1">看懂大陷阱：-2 又 1/3 到底是「-2 - 1/3」還是「-2 + 1/3」？</text>
+            <!-- 數線 -->
+            <line x1="60" y1="120" x2="620" y2="120" stroke="#37474F" stroke-width="3"/>
+            <g id="a6-ticks"></g>
+            <!-- 跳躍弧線1: 0 到 -2 -->
+            <path d="M 520 120 Q 400 65 280 120" fill="none" stroke="#1976D2" stroke-width="4"/>
+            <text x="400" y="82" text-anchor="middle" font-size="15" font-weight="bold" fill="#1565C0">先往左走 2 格 (-2)</text>
+            <!-- 跳躍弧線2: -2 再往左 1/3 -->
+            <path id="a6-arc2" d="M 280 120 Q 260 80 240 120" fill="none" stroke="#E53935" stroke-width="4"/>
+            <text id="a6-txt2" x="210" y="75" text-anchor="middle" font-size="15" font-weight="bold" fill="#C62828">繼續往左走 1/3 格 (-1/3)</text>
+            <circle id="a6-dot" cx="240" cy="120" r="9" fill="#E53935"/>
+            <circle id="a6-glow" cx="240" cy="120" r="9" fill="#E53935" class="pulse-dot"/>
+            <text id="a6-res" x="240" y="175" text-anchor="middle" font-size="17" font-weight="bold" fill="#B71C1C">正確位置：-2 - 1/3 ＝ -7/3</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <button class="ctrl-btn active" onclick="setAnim6(true, this)">✅ 正確觀念：-2 - 1/3（繼續往負方向走）</button>
+          <button class="ctrl-btn" onclick="setAnim6(false, this)">❌ 常見錯誤：-2 + 1/3（往右走就錯了！）</button>
+        </div>
+        <div class="concept-callout" id="a6-tip"></div>
+      `
+    },
+    // 7: 2-4 指數律
+    {
+      id: 7, title: '2-4 指數律展開機：為什麼 2³ × 2² ＝ 2⁵？', badge: '互動拉桿',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-7" viewBox="0 0 680 210">
+            <rect x="0" y="0" width="680" height="210" fill="#F8FAFC"/>
+            <text id="a7-formula" x="340" y="38" text-anchor="middle" font-size="24" font-weight="bold" fill="#00695C">2³ × 2² ＝ 2⁽³⁺²⁾ ＝ 2⁵</text>
+            <g id="a7-blocks"></g>
+            <text id="a7-summary" x="340" y="185" text-anchor="middle" font-size="16" font-weight="bold" fill="#37474F">左邊 3 個 2 連乘，加上右邊 2 個 2 連乘，總共 5 個 2 連乘！</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <div class="ctrl-group">左邊次方 m：<input type="range" id="a7-m" min="1" max="4" value="3" oninput="updateAnim7()"> <span id="a7-mVal">3</span></div>
+          <div class="ctrl-group">右邊次方 n：<input type="range" id="a7-n" min="1" max="4" value="2" oninput="updateAnim7()"> <span id="a7-nVal">2</span></div>
+        </div>
+        <div class="concept-callout" id="a7-tip"></div>
+      `
+    },
+    // 8: 3-1 代數式的化簡
+    {
+      id: 8, title: '3-1 同類項合併積木：為什麼 3x + 2 不能變成 5x？', badge: '互動合併',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-8" viewBox="0 0 680 215">
+            <rect x="0" y="0" width="680" height="215" fill="#F8FAFC"/>
+            <text x="340" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#0D47A1">題目化簡：(3x + 2) + (2x - 1) ➔ 只有形狀相同的積木才能合併！</text>
+            <!-- X 積木區 -->
+            <rect x="30" y="50" width="360" height="115" rx="12" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+            <text x="210" y="74" text-anchor="middle" font-size="15" font-weight="bold" fill="#1565C0">【x 家族長條積木】</text>
+            <g id="a8-xzone"></g>
+            <!-- 數字積木區 -->
+            <rect x="410" y="50" width="240" height="115" rx="12" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+            <text x="530" y="74" text-anchor="middle" font-size="15" font-weight="bold" fill="#E65100">【純數字小方塊】</text>
+            <g id="a8-nzone"></g>
+
+            <text id="a8-res" x="340" y="196" text-anchor="middle" font-size="19" font-weight="bold" fill="#1B5E20">目前狀態：尚未合併 ➔ 3x + 2 + 2x - 1</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <button class="ctrl-btn active" onclick="setAnim8(false, this)">1️⃣ 展開排列（同類分區）</button>
+          <button class="ctrl-btn" onclick="setAnim8(true, this)">2️⃣ 點擊合併同類項！</button>
+        </div>
+        <div class="concept-callout" id="a8-tip"></div>
+      `
+    },
+    // 9: 3-2 一元一次方程式
+    {
+      id: 9, title: '3-2 一元一次方程式「等量公理天平」', badge: '互動解方程',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-9" viewBox="0 0 680 245">
+            <rect x="0" y="0" width="680" height="245" fill="#F8FAFC"/>
+            <text id="a9-eqTitle" x="340" y="32" text-anchor="middle" font-size="22" font-weight="bold" fill="#0D47A1">方程式：2x + 3 ＝ 9</text>
+            <!-- 天平底座 -->
+            <polygon points="340,145 310,220 370,220" fill="#546E7A"/>
+            <rect x="270" y="220" width="140" height="12" rx="6" fill="#37474F"/>
+            <!-- 旋轉橫桿群組 -->
+            <g id="a9-beam" transform="translate(340, 145) rotate(0)">
+              <line x1="-190" y1="0" x2="190" y2="0" stroke="#263238" stroke-width="6" stroke-linecap="round"/>
+              <!-- 左盤 -->
+              <line x1="-160" y1="0" x2="-160" y2="25" stroke="#78909C" stroke-width="3"/>
+              <rect x="-235" y="25" width="150" height="10" rx="5" fill="#1976D2"/>
+              <g id="a9-leftItems"></g>
+              <!-- 右盤 -->
+              <line x1="160" y1="0" x2="160" y2="25" stroke="#78909C" stroke-width="3"/>
+              <rect x="85" y="25" width="150" height="10" rx="5" fill="#FF9800"/>
+              <g id="a9-rightItems"></g>
+            </g>
+            <circle cx="340" cy="145" r="8" fill="#FFB300" stroke="#263238" stroke-width="2"/>
+            <rect id="a9-statusPill" x="235" y="45" width="210" height="28" rx="14" fill="#C8E6C9" stroke="#2E7D32" stroke-width="2"/>
+            <text id="a9-statusTxt" x="340" y="64" text-anchor="middle" font-size="14" font-weight="bold" fill="#1B5E20">⚖️ 兩邊重量相等，天平平衡！</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <button class="ctrl-btn active" onclick="setAnim9(0, this)">步驟1：原題 2x + 3 = 9</button>
+          <button class="ctrl-btn" onclick="setAnim9(1, this)">步驟2：兩邊同時減 3（移項）</button>
+          <button class="ctrl-btn" onclick="setAnim9(2, this)">步驟3：兩邊同時除以 2（求 x）</button>
+          <button class="ctrl-btn" onclick="setAnim9(3, this)">⚠️ 測試：只減左邊會怎樣？</button>
+        </div>
+        <div class="concept-callout" id="a9-tip"></div>
+      `
+    },
+    // 10: 3-3 應用問題
+    {
+      id: 10, title: '3-3 年齡應用問題時間軸：年齡差永遠不變！', badge: '時間推進器',
+      html: `
+        <div class="svg-stage">
+          <svg id="svg-10" viewBox="0 0 680 220">
+            <rect x="0" y="0" width="680" height="220" fill="#F8FAFC"/>
+            <text id="a10-yearTitle" x="340" y="32" text-anchor="middle" font-size="20" font-weight="bold" fill="#0D47A1">時間點：今年（經過 0 年）</text>
+            <!-- 爸爸年齡條 -->
+            <text x="45" y="82" font-size="16" font-weight="bold" fill="#1565C0">👨 爸爸：</text>
+            <rect id="a10-dadBar" x="120" y="60" width="380" height="32" rx="8" fill="#1976D2"/>
+            <text id="a10-dadTxt" x="510" y="82" font-size="16" font-weight="bold" fill="#1565C0">38 歲</text>
+
+            <!-- 兒子年齡條 -->
+            <text x="45" y="135" font-size="16" font-weight="bold" fill="#00695C">👦 兒子：</text>
+            <rect id="a10-sonBar" x="120" y="113" width="100" height="32" rx="8" fill="#00897B"/>
+            <text id="a10-sonTxt" x="230" y="135" font-size="16" font-weight="bold" fill="#00695C">10 歲</text>
+
+            <!-- 年齡差標示線 -->
+            <line id="a10-diffL1" x1="220" y1="152" x2="220" y2="178" stroke="#E53935" stroke-width="2" stroke-dasharray="4,3"/>
+            <line id="a10-diffL2" x1="500" y1="96" x2="500" y2="178" stroke="#E53935" stroke-width="2" stroke-dasharray="4,3"/>
+            <line id="a10-diffSpan" x1="220" y1="170" x2="500" y2="170" stroke="#E53935" stroke-width="3"/>
+            <rect id="a10-diffBg" x="275" y="155" width="170" height="28" rx="14" fill="#FFEBEE" stroke="#E53935" stroke-width="2"/>
+            <text id="a10-diffTxt" x="360" y="174" text-anchor="middle" font-size="14" font-weight="bold" fill="#C62828">年齡差永遠 ＝ 28 歲！</text>
+          </svg>
+        </div>
+        <div class="controls-bar">
+          <div class="ctrl-group">⏩ 往後推算幾年 (x)：<input type="range" id="a10-yr" min="0" max="10" value="0" oninput="updateAnim10()"> <span id="a10-yrVal">0</span> 年後</div>
+        </div>
+        <div class="concept-callout" id="a10-tip"></div>
+      `
+    }
+  ];
+
+  animTemplates.forEach(a => {
+    animContainer.innerHTML += `
+      <div class="anim-card" id="anim-card-${a.id}">
+        <div class="anim-header">
+          <div class="anim-title">🎬 ${a.title}</div>
+          <span class="anim-badge">${a.badge}</span>
+        </div>
+        ${a.html}
+      </div>
+    `;
+  });
+
+  /* --- 動畫 0 初始化與更新 (1-1 負數與數線) --- */
+  function initAnim0() {
+    const ticks = document.getElementById('a0-ticks');
+    let s = '';
+    for (let i = -8; i <= 8; i++) {
+      const x = 340 + i * 35;
+      const isZero = i === 0;
+      s += `<line x1="${x}" y1="${isZero ? 108 : 114}" x2="${x}" y2="${isZero ? 132 : 126}" stroke="${isZero ? '#D84315' : '#546E7A'}" stroke-width="${isZero ? 3 : 2}"/>`;
+      s += `<text x="${x}" y="146" text-anchor="middle" font-size="${isZero ? 15 : 13}" font-weight="${isZero ? 'bold' : 'normal'}" fill="${isZero ? '#D84315' : '#37474F'}">${i}</text>`;
+    }
+    ticks.innerHTML = s;
+    updateAnim0();
+  }
+  function updateAnim0() {
+    const a = parseInt(document.getElementById('a0-inA').value);
+    const b = parseInt(document.getElementById('a0-inB').value);
+    document.getElementById('a0-valA').innerText = a;
+    document.getElementById('a0-valB').innerText = b;
+    const xA = 340 + a * 35;
+    const xB = 340 + b * 35;
+    const midX = (xA + xB) / 2;
+    const dist = Math.abs(a - b);
+
+    document.getElementById('a0-dotA').setAttribute('cx', xA);
+    document.getElementById('a0-glowA').setAttribute('cx', xA);
+    document.getElementById('a0-lblA').setAttribute('x', xA);
+    document.getElementById('a0-lblA').textContent = `A(${a})`;
+    document.getElementById('a0-absA').setAttribute('x', xA);
+    document.getElementById('a0-absA').textContent = `|${a}|=${Math.abs(a)}`;
+
+    document.getElementById('a0-dotB').setAttribute('cx', xB);
+    document.getElementById('a0-glowB').setAttribute('cx', xB);
+    document.getElementById('a0-lblB').setAttribute('x', xB);
+    document.getElementById('a0-lblB').textContent = `B(${b})`;
+    document.getElementById('a0-absB').setAttribute('x', xB);
+    document.getElementById('a0-absB').textContent = `|${b}|=${Math.abs(b)}`;
+
+    document.getElementById('a0-arc').setAttribute('d', `M ${xA} 112 Q ${midX} 45 ${xB} 112`);
+    document.getElementById('a0-dist-bg').setAttribute('x', midX - 75);
+    document.getElementById('a0-dist-txt').setAttribute('x', midX);
+    document.getElementById('a0-dist-txt').textContent = `距離 |A - B| = ${dist}`;
+
+    const big = Math.max(a, b), small = Math.min(a, b);
+    document.getElementById('a0-tip').innerHTML = `💡 <b>白話原理</b>：越右邊的數越大！目前 <b>${big}</b> 在 <b>${small}</b> 的右邊，所以 ${big} ≥ ${small}。兩點距離就是「大數減小數」：<b>${big} − (${small}) ＝ ${dist}</b>（距離永遠不可能是負數）。`;
+  }
+
+  /* --- 動畫 1 初始化與更新 (1-2 整數的加減) --- */
+  function initAnim1() {
+    const ticks = document.getElementById('a1-ticks');
+    let s = '';
+    for (let i = -8; i <= 8; i++) {
+      const x = 340 + i * 34;
+      s += `<line x1="${x}" y1="134" x2="${x}" y2="146" stroke="#546E7A" stroke-width="2"/>`;
+      s += `<text x="${x}" y="164" text-anchor="middle" font-size="13" fill="#37474F">${i}</text>`;
+    }
+    ticks.innerHTML = s;
+    setAnim1(0, null);
+  }
+  function setAnim1(mode, btn) {
+    if (btn) {
+      btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const scenarios = [
+      { eq: '算式：(-2) - (-5) ＝ (-2) + 5 ＝ 3', start: -2, end: 3, s1: '起點 -2', s2: '減去負數 ＝ 轉身向右走 5 步！', tip: '💡 <b>負負得正口訣</b>：本來面朝左邊（負方向），遇到「減號」要向後轉，就變成面朝右邊（正方向）走 5 步，所以 <b>-(-5) ＝ +5</b>！' },
+      { eq: '算式：(-4) + (-3) ＝ -7', start: -4, end: -7, s1: '起點 -4', s2: '加上負數 ＝ 繼續向左走 3 步！', tip: '💡 <b>同號相加</b>：欠別人 4 元，又再欠 3 元，總共欠 7 元！方向相同直接把數字加起來，掛上負號得到 <b>-7</b>。' },
+      { eq: '算式：3 + (-7) ＝ -4', start: 3, end: -4, s1: '起點 +3', s2: '加上負數 ＝ 往左走 7 步！', tip: '💡 <b>異號相加</b>：先往右走 3 步，再往左走 7 步，抵銷後還多往左 4 步！看誰數字大就跟誰同號，再用「大減小」：7 - 3 = 4，掛負號得 <b>-4</b>。' },
+      { eq: '算式：2 - 6 ＝ 2 + (-6) ＝ -4', start: 2, end: -4, s1: '起點 +2', s2: '減去正數 ＝ 往左走 6 步！', tip: '💡 <b>減法變加法</b>：「減去一個正數」就等於「加上它的相反數」，從 2 往左退 6 格，最後停在 <b>-4</b>。' }
+    ];
+    const sc = scenarios[mode];
+    const x0 = 340;
+    const x1 = 340 + sc.start * 34;
+    const x2 = 340 + sc.end * 34;
+    const mid1 = (x0 + x1) / 2;
+    const mid2 = (x1 + x2) / 2;
+
+    document.getElementById('a1-eq').textContent = sc.eq;
+    document.getElementById('a1-step1').setAttribute('d', `M ${x0} 130 L ${x1} 130`);
+    document.getElementById('a1-s1txt').setAttribute('x', mid1);
+    document.getElementById('a1-s1txt').textContent = sc.s1;
+
+    document.getElementById('a1-step2').setAttribute('d', `M ${x1} 118 Q ${mid2} 65 ${x2} 118`);
+    document.getElementById('a1-s2txt').setAttribute('x', mid2);
+    document.getElementById('a1-s2txt').textContent = sc.s2;
+
+    document.getElementById('a1-pos').setAttribute('cx', x2);
+    document.getElementById('a1-glow').setAttribute('cx', x2);
+    document.getElementById('a1-res').setAttribute('x', x2);
+    document.getElementById('a1-res').textContent = `終點：${sc.end}`;
+    document.getElementById('a1-tip').innerHTML = sc.tip;
+  }
+
+  /* --- 動畫 2 初始化與更新 (1-3 整數乘除奇負偶正) --- */
+  let anim2Vals = [-2, 3, -1, 4];
+  function renderAnim2() {
+    const boxes = document.getElementById('a2-boxes');
+    let s = '';
+    let negCount = 0;
+    let prod = 1;
+    anim2Vals.forEach((v, idx) => {
+      if (v < 0) negCount++;
+      prod *= v;
+      const x = 90 + idx * 140;
+      const isNeg = v < 0;
+      s += `<rect x="${x}" y="52" width="100" height="56" rx="12" fill="${isNeg ? '#FFCDD2' : '#BBDEFB'}" stroke="${isNeg ? '#E53935' : '#1976D2'}" stroke-width="2.5"/>`;
+      s += `<text x="${x + 50}" y="88" text-anchor="middle" font-size="22" font-weight="bold" fill="${isNeg ? '#B71C1C' : '#0D47A1'}">${v > 0 ? '+' + v : v}</text>`;
+      if (idx < 3) {
+        s += `<text x="${x + 120}" y="88" text-anchor="middle" font-size="22" font-weight="bold" fill="#37474F">×</text>`;
+      }
+    });
+    boxes.innerHTML = s;
+    const isEven = negCount % 2 === 0;
+    const resBox = document.getElementById('a2-resBox');
+    const resTxt = document.getElementById('a2-resTxt');
+    resBox.setAttribute('fill', isEven ? '#C8E6C9' : '#FFEBEE');
+    resBox.setAttribute('stroke', isEven ? '#2E7D32' : '#C62828');
+    resTxt.setAttribute('fill', isEven ? '#1B5E20' : '#B71C1C');
+    resTxt.textContent = `共有 ${negCount} 個負號（${isEven ? '偶數' : '奇數'}）➔ 結果為 ${isEven ? '正 (+24)' : '負 (-24)'}`;
+    document.getElementById('a2-tip').innerHTML = `💡 <b>連乘秘訣</b>：先不管正負號，把數字全乘起來（2×3×1×4 = 24）。接著只要數有幾個負號：目前有 <b>${negCount} 個負號</b>，因為兩個負號會「負負得正」互相抵銷，所以${isEven ? '全部抵銷完變成正數' : '最後會多出一個負號變成負數'}！`;
+  }
+  function toggleAnim2(idx) {
+    anim2Vals[idx] = -anim2Vals[idx];
+    const btns = document.getElementById('a2-btns').querySelectorAll('.ctrl-btn');
+    const v = anim2Vals[idx];
+    btns[idx].innerText = `切換第${idx+1}數 (${v > 0 ? '+' + v : v})`;
+    renderAnim2();
+  }
+
+  /* --- 動畫 3 更新 (1-4 括號次方對決) --- */
+  function updateAnim3() {
+    const n = parseInt(document.getElementById('a3-exp').value);
+    document.getElementById('a3-expVal').innerText = n;
+    const val = Math.pow(2, n);
+    const isEven = n % 2 === 0;
+    const leftVal = isEven ? `+${val}` : `-${val}`;
+    const rightVal = `-${val}`;
+
+    document.getElementById('a3-Ltitle').textContent = `(-2)^${n} ＝ ${leftVal}`;
+    document.getElementById('a3-Lsub').textContent = `括號包住負號 ➔ (-2) 連乘 ${n} 次`;
+    document.getElementById('a3-Lexp').textContent = Array(n).fill('(-2)').join('×');
+    document.getElementById('a3-Lbadge').textContent = isEven ? '偶數個負號 ➔ 變正數！' : '奇數個負號 ➔ 還是負數！';
+
+    document.getElementById('a3-Rtitle').textContent = `-2^${n} ＝ ${rightVal}`;
+    document.getElementById('a3-Rsub').textContent = `沒有括號 ➔ 負號在外面等！`;
+    document.getElementById('a3-Rexp').textContent = `-( ${Array(n).fill('2').join(' × ')} )`;
+
+    document.getElementById('a3-tip').innerHTML = isEven
+      ? `⚠️ <b>段考最高頻陷阱</b>：在 <b>${n} 次方（偶數次方）</b>時，有括號的 (-2)^${n} 會負負得正變成 <b>+${val}</b>；但沒括號的 -2^${n} 負號沒有被次方到，所以永遠是 <b>-${val}</b>，兩者一正一負相加剛好等於 0！`
+      : `💡 <b>觀察重點</b>：當次方是 <b>${n}（奇數）</b>時，(-2)^${n} 有奇數個負號所以是 <b>-${val}</b>，而 -2^${n} 也是 <b>-${val}</b>，奇數次方時兩者算出來的結果剛好相等！`;
+  }
+
+  /* --- 動畫 4 更新 (2-1 因數與質數矩形) --- */
+  function updateAnim4(selectedRows) {
+    const N = parseInt(document.getElementById('a4-num').value);
+    document.getElementById('a4-numVal').innerText = N;
+    const factors = [];
+    for (let i = 1; i <= N; i++) {
+      if (N % i === 0) factors.push(i);
+    }
+    if (!factors.includes(selectedRows)) selectedRows = 1;
+    const cols = N / selectedRows;
+
+    const btnBox = document.getElementById('a4-rowBtns');
+    btnBox.innerHTML = factors.map(f =>
+      `<button class="ctrl-btn ${f === selectedRows ? 'active' : ''}" onclick="updateAnim4(${f})">${f} 列 × ${N/f} 行</button>`
+    ).join('');
+
+    const grid = document.getElementById('a4-grid');
+    let s = '';
+    const size = Math.min(26, Math.floor(130 / selectedRows));
+    const startX = 340 - (cols * (size + 4)) / 2;
+    const startY = 112 - (selectedRows * (size + 4)) / 2;
+    for (let r = 0; r < selectedRows; r++) {
+      for (let c = 0; c < cols; c++) {
+        s += `<rect x="${startX + c*(size+4)}" y="${startY + r*(size+4)}" width="${size}" height="${size}" rx="4" fill="#26A69A" stroke="#00695C" stroke-width="1.5"/>`;
+      }
+    }
+    grid.innerHTML = s;
+
+    const isPrime = factors.length === 2;
+    document.getElementById('a4-title').textContent = `數字 ${N} 的所有因數：${factors.join(', ')}（共 ${factors.length} 個）`;
+    document.getElementById('a4-status').textContent = isPrime
+      ? `排成 ${selectedRows} 列 × ${cols} 行（只能排成單一條線 ➔ ${N} 是質數！）`
+      : `排成 ${selectedRows} 列 × ${cols} 行 ＝ ${N}（可排成長方形 ➔ ${N} 是合數！）`;
+    document.getElementById('a4-tip').innerHTML = isPrime
+      ? `🌟 <b>發現質數 ${N}！</b>：不管怎麼排，${N} 個方塊只能排成「1 × ${N}」的一直線，無法排成多列長方形，代表它的因數只有 1 和自己，這就是<b>質數</b>的幾何意義！`
+      : `💡 <b>合數的意義</b>：${N} 可以排成多種長方形（共有 <b>${factors.length} 個因數</b>），每種排法的「列數」和「行數」就是 ${N} 的一對因數！`;
+  }
+
+  /* --- 動畫 5 更新 (2-2 雙齒輪最小公倍數) --- */
+  let gearSteps = 0;
+  function stepAnim5(delta) {
+    gearSteps = Math.max(0, gearSteps + delta);
+    renderAnim5();
+  }
+  function resetAnim5() {
+    gearSteps = 0;
+    renderAnim5();
+  }
+  function renderAnim5() {
+    const rotA = (gearSteps % 4) * 90;
+    const rotB = (gearSteps % 6) * 60;
+    document.getElementById('a5-gearA').setAttribute('transform', `translate(230, 115) rotate(${rotA})`);
+    document.getElementById('a5-gearB').setAttribute('transform', `translate(450, 115) rotate(${rotB})`);
+
+    const aligned = gearSteps > 0 && gearSteps % 12 === 0;
+    const banner = document.getElementById('a5-banner');
+    const txt = document.getElementById('a5-stepTxt');
+    if (gearSteps === 0) {
+      banner.setAttribute('fill', '#ECEFF1');
+      banner.setAttribute('stroke', '#90A4AE');
+      txt.setAttribute('fill', '#37474F');
+      txt.textContent = '目前推進：0 格（起點對齊！）';
+    } else if (aligned) {
+      banner.setAttribute('fill', '#C8E6C9');
+      banner.setAttribute('stroke', '#2E7D32');
+      txt.setAttribute('fill', '#1B5E20');
+      txt.textContent = `🎉 推進 ${gearSteps} 格：兩顆紅點再次同時對齊！`;
+    } else {
+      banner.setAttribute('fill', '#FFF3E0');
+      banner.setAttribute('stroke', '#FF9800');
+      txt.setAttribute('fill', '#E65100');
+      txt.textContent = `目前推進：${gearSteps} 格（紅點還沒同時回頂端）`;
+    }
+    document.getElementById('a5-tip').innerHTML = aligned
+      ? `🎉 <b>找到最小公倍數了！</b>：甲齒輪轉了 <b>${gearSteps/4} 圈</b>，乙齒輪轉了 <b>${gearSteps/6} 圈</b>，在第 <b>${gearSteps} 格</b>時兩顆紅點同時回到正上方！所以 [4, 6] ＝ 12。`
+      : `💡 <b>動手按「前進 1 格」</b>：甲齒輪每 4 格轉一圈，乙齒輪每 6 格轉一圈。觀察要推進幾格，兩個紅點才會「同時」回到正上方對齊？`;
+  }
+
+  /* --- 動畫 6 初始化與更新 (2-3 負帶分數) --- */
+  function initAnim6() {
+    const ticks = document.getElementById('a6-ticks');
+    let s = '';
+    for (let i = -3; i <= 1; i++) {
+      const x = 520 + i * 120;
+      s += `<line x1="${x}" y1="110" x2="${x}" y2="130" stroke="#37474F" stroke-width="3"/>`;
+      s += `<text x="${x}" y="150" text-anchor="middle" font-size="16" font-weight="bold" fill="#263238">${i}</text>`;
+      if (i < 1) {
+        for (let k = 1; k <= 2; k++) {
+          const sx = x + k * 40;
+          s += `<line x1="${sx}" y1="115" x2="${sx}" y2="125" stroke="#90A4AE" stroke-width="1.5"/>`;
+        }
+      }
+    }
+    ticks.innerHTML = s;
+    setAnim6(true, null);
+  }
+  function setAnim6(isCorrect, btn) {
+    if (btn) {
+      btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    if (isCorrect) {
+      document.getElementById('a6-arc2').setAttribute('d', 'M 280 120 Q 260 80 240 120');
+      document.getElementById('a6-arc2').setAttribute('stroke', '#2E7D32');
+      document.getElementById('a6-txt2').setAttribute('x', '210');
+      document.getElementById('a6-txt2').setAttribute('fill', '#1B5E20');
+      document.getElementById('a6-txt2').textContent = '繼續往左走 1/3 格 (-1/3)';
+      document.getElementById('a6-dot').setAttribute('cx', '240');
+      document.getElementById('a6-dot').setAttribute('fill', '#2E7D32');
+      document.getElementById('a6-glow').setAttribute('cx', '240');
+      document.getElementById('a6-glow').setAttribute('fill', '#2E7D32');
+      document.getElementById('a6-res').setAttribute('x', '240');
+      document.getElementById('a6-res').setAttribute('fill', '#1B5E20');
+      document.getElementById('a6-res').textContent = '✅ 正確位置：-2 - 1/3 ＝ -7/3';
+      document.getElementById('a6-tip').innerHTML = `✅ <b>觀念完全正確！</b>：負帶分數 <b>-2又1/3</b> 的負號是屬於整個數字的，所以代表「先欠 2 個，再欠 1/3 個」，在數線上要從 -2 <b>繼續往左邊（更負的方向）</b>走 1/3 格，落在 -2 和 -3 之間！`;
+    } else {
+      document.getElementById('a6-arc2').setAttribute('d', 'M 280 120 Q 300 80 320 120');
+      document.getElementById('a6-arc2').setAttribute('stroke', '#C62828');
+      document.getElementById('a6-txt2').setAttribute('x', '340');
+      document.getElementById('a6-txt2').setAttribute('fill', '#C62828');
+      document.getElementById('a6-txt2').textContent = '❌ 錯誤：往右走變 +1/3';
+      document.getElementById('a6-dot').setAttribute('cx', '320');
+      document.getElementById('a6-dot').setAttribute('fill', '#C62828');
+      document.getElementById('a6-glow').setAttribute('cx', '320');
+      document.getElementById('a6-glow').setAttribute('fill', '#C62828');
+      document.getElementById('a6-res').setAttribute('x', '320');
+      document.getElementById('a6-res').setAttribute('fill', '#C62828');
+      document.getElementById('a6-res').textContent = '❌ 錯算成 -2 + 1/3 ＝ -5/3';
+      document.getElementById('a6-tip').innerHTML = `⚠️ <b>千萬別踩雷！</b>：很多同學看到 -2又1/3 會誤以為是「-2 + 1/3」，這樣會往右邊退回 -1又2/3，完全算錯！記得化成假分數時，整數和分數都要一起負。`;
+    }
+  }
+
+  /* --- 動畫 7 更新 (2-4 指數律) --- */
+  function updateAnim7() {
+    const m = parseInt(document.getElementById('a7-m').value);
+    const n = parseInt(document.getElementById('a7-n').value);
+    document.getElementById('a7-mVal').innerText = m;
+    document.getElementById('a7-nVal').innerText = n;
+    const total = m + n;
+
+    document.getElementById('a7-formula').textContent = `2^${m} × 2^${n} ＝ 2^(${m}+${n}) ＝ 2^${total}`;
+    const blocks = document.getElementById('a7-blocks');
+    let s = '';
+    const boxW = 52;
+    const totalW = total * (boxW + 14) + 20;
+    let curX = 340 - totalW / 2;
+
+    for (let i = 0; i < m; i++) {
+      s += `<rect x="${curX}" y="75" width="${boxW}" height="52" rx="10" fill="#BBDEFB" stroke="#1976D2" stroke-width="2.5"/>`;
+      s += `<text x="${curX + boxW/2}" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#0D47A1">2</text>`;
+      curX += boxW + 14;
+      if (i < m - 1) s += `<text x="${curX - 7}" y="108" text-anchor="middle" font-size="18" font-weight="bold" fill="#546E7A">×</text>`;
+    }
+    s += `<text x="${curX + 3}" y="108" text-anchor="middle" font-size="22" font-weight="bold" fill="#E65100">×</text>`;
+    curX += 20;
+    for (let j = 0; j < n; j++) {
+      s += `<rect x="${curX}" y="75" width="${boxW}" height="52" rx="10" fill="#FFE0B2" stroke="#F57C00" stroke-width="2.5"/>`;
+      s += `<text x="${curX + boxW/2}" y="108" text-anchor="middle" font-size="20" font-weight="bold" fill="#E65100">2</text>`;
+      curX += boxW + 14;
+      if (j < n - 1) s += `<text x="${curX - 7}" y="108" text-anchor="middle" font-size="18" font-weight="bold" fill="#546E7A">×</text>`;
+    }
+    blocks.innerHTML = s;
+    document.getElementById('a7-summary').textContent = `藍色有 ${m} 個 2，橘色有 ${n} 個 2，全部連乘起來共有 ${total} 個 2！`;
+    document.getElementById('a7-tip').innerHTML = `💡 <b>為什麼指數是「相加」而不是相乘？</b>：把次方展開成積木就一目了然！左邊 <b>${m} 個 2</b> 連乘，再乘上右邊 <b>${n} 個 2</b> 連乘，數一數總共就是 <b>${m} + ${n} ＝ ${total} 個 2</b> 連乘，所以 2^${m} × 2^${n} ＝ 2^${total}。`;
+  }
+
+  /* --- 動畫 8 更新 (3-1 代數式化簡) --- */
+  function setAnim8(merged, btn) {
+    if (btn) {
+      btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const xz = document.getElementById('a8-xzone');
+    const nz = document.getElementById('a8-nzone');
+    if (!merged) {
+      let xs = '';
+      for (let i = 0; i < 3; i++) {
+        xs += `<rect x="${50 + i*50}" y="92" width="40" height="55" rx="6" fill="#42A5F5"/><text x="${70 + i*50}" y="125" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>`;
+      }
+      xs += `<text x="215" y="125" font-size="20" font-weight="bold" fill="#1565C0">+</text>`;
+      for (let j = 0; j < 2; j++) {
+        xs += `<rect x="${240 + j*50}" y="92" width="40" height="55" rx="6" fill="#1E88E5"/><text x="${260 + j*50}" y="125" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>`;
+      }
+      xz.innerHTML = xs;
+
+      nz.innerHTML = `
+        <rect x="430" y="102" width="36" height="36" rx="6" fill="#FFA726"/><text x="448" y="126" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">+1</text>
+        <rect x="474" y="102" width="36" height="36" rx="6" fill="#FFA726"/><text x="492" y="126" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">+1</text>
+        <text x="530" y="126" text-anchor="middle" font-size="18" font-weight="bold" fill="#E65100">抵銷</text>
+        <rect x="560" y="102" width="36" height="36" rx="6" fill="#EF5350"/><text x="578" y="126" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">-1</text>
+      `;
+      document.getElementById('a8-res').textContent = '目前狀態：尚未合併 ➔ (3x + 2) + (2x - 1)';
+      document.getElementById('a8-tip').innerHTML = `💡 <b>分類整理</b>：把長條形的 <b>x 積木</b>放左邊，正方形的 <b>數字積木</b>放右邊，點擊「合併同類項」看看會發生什麼事！`;
+    } else {
+      let xs = '';
+      for (let i = 0; i < 5; i++) {
+        xs += `<rect x="${65 + i*48}" y="92" width="40" height="55" rx="6" fill="#1565C0"/><text x="${85 + i*48}" y="125" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>`;
+      }
+      xs += `<text x="345" y="126" text-anchor="middle" font-size="18" font-weight="bold" fill="#0D47A1">＝ 5x</text>`;
+      xz.innerHTML = xs;
+
+      nz.innerHTML = `
+        <rect x="475" y="102" width="42" height="36" rx="6" fill="#F57C00"/><text x="496" y="126" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">+1</text>
+        <text x="565" y="126" text-anchor="middle" font-size="18" font-weight="bold" fill="#E65100">＝ +1</text>
+      `;
+      document.getElementById('a8-res').textContent = '✅ 化簡完成：5x + 1（到此為止，不能再合成 6x！）';
+      document.getElementById('a8-tip').innerHTML = `✅ <b>化簡完成：5x + 1</b>！因為左邊是「5 根長條 x」，右邊是「1 顆小方塊」，形狀不同絕對不能硬加在一起變成 6x 喔！`;
+    }
+  }
+
+  /* --- 動畫 9 更新 (3-2 一元一次方程式天平) --- */
+  function setAnim9(step, btn) {
+    if (btn) {
+      btn.parentElement.querySelectorAll('.ctrl-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    const beam = document.getElementById('a9-beam');
+    const L = document.getElementById('a9-leftItems');
+    const R = document.getElementById('a9-rightItems');
+    const pill = document.getElementById('a9-statusPill');
+    const stxt = document.getElementById('a9-statusTxt');
+    const eqTitle = document.getElementById('a9-eqTitle');
+
+    if (step === 0) {
+      beam.setAttribute('transform', 'translate(340, 145) rotate(0)');
+      eqTitle.textContent = '方程式：2x + 3 ＝ 9';
+      L.innerHTML = `
+        <rect x="-220" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-201" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+        <rect x="-176" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-157" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+        <circle cx="-112" cy="8" r="16" fill="#FFB300"/><text x="-112" y="13" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">3</text>
+      `;
+      R.innerHTML = `
+        <circle cx="135" cy="5" r="19" fill="#FF7043"/><text x="135" y="11" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">6</text>
+        <circle cx="185" cy="8" r="16" fill="#FFB300"/><text x="185" y="13" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">3</text>
+      `;
+      pill.setAttribute('fill', '#C8E6C9'); pill.setAttribute('stroke', '#2E7D32');
+      stxt.setAttribute('fill', '#1B5E20'); stxt.textContent = '⚖️ 兩邊重量相等，天平平衡！';
+      document.getElementById('a9-tip').innerHTML = `⚖️ <b>天平原理</b>：等號「＝」就像天平的支點！左盤放了「2 個未知箱子 x 和 3 公斤砝碼」，右盤放了「9 公斤砝碼（拆成 6 + 3）」，兩邊一樣重。`;
+    } else if (step === 1) {
+      beam.setAttribute('transform', 'translate(340, 145) rotate(0)');
+      eqTitle.textContent = '等量減法：2x + 3 - 3 ＝ 9 - 3 ➔ 2x ＝ 6';
+      L.innerHTML = `
+        <rect x="-205" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-186" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+        <rect x="-155" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-136" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+      `;
+      R.innerHTML = `
+        <circle cx="160" cy="5" r="20" fill="#FF7043"/><text x="160" y="11" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">6</text>
+      `;
+      pill.setAttribute('fill', '#C8E6C9'); pill.setAttribute('stroke', '#2E7D32');
+      stxt.setAttribute('fill', '#1B5E20'); stxt.textContent = '⚖️ 兩邊同時拿走 3，依然平衡！';
+      document.getElementById('a9-tip').innerHTML = `💡 <b>這就是「移項變號」的真相！</b>：左盤和右盤<b>同時拿走 3 公斤</b>，天平依然保持水平！這就像把左邊的「+3」移到右邊變成「-3」，得到 <b>2x ＝ 6</b>。`;
+    } else if (step === 2) {
+      beam.setAttribute('transform', 'translate(340, 145) rotate(0)');
+      eqTitle.textContent = '等量除法：2x ÷ 2 ＝ 6 ÷ 2 ➔ x ＝ 3';
+      L.innerHTML = `
+        <rect x="-180" y="-22" width="42" height="45" rx="6" fill="#2E7D32"/><text x="-159" y="6" text-anchor="middle" font-size="18" font-weight="bold" fill="#fff">x</text>
+      `;
+      R.innerHTML = `
+        <circle cx="160" cy="7" r="18" fill="#2E7D32"/><text x="160" y="13" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">3</text>
+      `;
+      pill.setAttribute('fill', '#C8E6C9'); pill.setAttribute('stroke', '#2E7D32');
+      stxt.setAttribute('fill', '#1B5E20'); stxt.textContent = '🎉 兩邊各留一半，解出 x ＝ 3！';
+      document.getElementById('a9-tip').innerHTML = `🎉 <b>成功解出 x ＝ 3！</b>：2 個 x 等於 6，那左右兩盤<b>同時除以 2（各留一半）</b>，1 個 x 就剛好等於 <b>3</b>！`;
+    } else {
+      beam.setAttribute('transform', 'translate(340, 145) rotate(13)');
+      eqTitle.textContent = '⚠️ 錯誤示範：只把左邊減 3，右邊忘記減 3！';
+      L.innerHTML = `
+        <rect x="-205" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-186" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+        <rect x="-155" y="-22" width="38" height="45" rx="6" fill="#1976D2"/><text x="-136" y="6" text-anchor="middle" font-size="16" font-weight="bold" fill="#fff">x</text>
+      `;
+      R.innerHTML = `
+        <circle cx="135" cy="5" r="19" fill="#FF7043"/><text x="135" y="11" text-anchor="middle" font-size="15" font-weight="bold" fill="#fff">6</text>
+        <circle cx="185" cy="8" r="16" fill="#FFB300"/><text x="185" y="13" text-anchor="middle" font-size="14" font-weight="bold" fill="#fff">3</text>
+      `;
+      pill.setAttribute('fill', '#FFCDD2'); pill.setAttribute('stroke', '#C62828');
+      stxt.setAttribute('fill', '#B71C1C'); stxt.textContent = '⚠️ 右邊比較重，天平傾斜了！';
+      document.getElementById('a9-tip').innerHTML = `⚠️ <b>為什麼移項一定要變號？</b>：如果只拿走左邊的 3，右邊沒跟著減 3，天平就會往右邊傾斜、等號就不成立了！所以左邊做什麼動作，右邊一定要做一模一樣的動作。`;
+    }
+  }
+
+  /* --- 動畫 10 更新 (3-3 年齡應用問題) --- */
+  function updateAnim10() {
+    const yr = parseInt(document.getElementById('a10-yr').value);
+    document.getElementById('a10-yrVal').innerText = yr;
+    const dad = 38 + yr;
+    const son = 10 + yr;
+    const dadW = dad * 10;
+    const sonW = son * 10;
+    const sonEnd = 120 + sonW;
+    const dadEnd = 120 + dadW;
+    const midDiff = (sonEnd + dadEnd) / 2;
+
+    document.getElementById('a10-yearTitle').textContent = `時間點：${yr === 0 ? '今年（經過 0 年）' : yr + ' 年後（兩人同時長大 ' + yr + ' 歲）'}`;
+    document.getElementById('a10-dadBar').setAttribute('width', dadW);
+    document.getElementById('a10-dadTxt').setAttribute('x', dadEnd + 10);
+    document.getElementById('a10-dadTxt').textContent = `${dad} 歲`;
+
+    document.getElementById('a10-sonBar').setAttribute('width', sonW);
+    document.getElementById('a10-sonTxt').setAttribute('x', sonEnd + 10);
+    document.getElementById('a10-sonTxt').textContent = `${son} 歲`;
+
+    document.getElementById('a10-diffL1').setAttribute('x1', sonEnd);
+    document.getElementById('a10-diffL1').setAttribute('x2', sonEnd);
+    document.getElementById('a10-diffL2').setAttribute('x1', dadEnd);
+    document.getElementById('a10-diffL2').setAttribute('x2', dadEnd);
+    document.getElementById('a10-diffSpan').setAttribute('x1', sonEnd);
+    document.getElementById('a10-diffSpan').setAttribute('x2', dadEnd);
+    document.getElementById('a10-diffBg').setAttribute('x', midDiff - 85);
+    document.getElementById('a10-diffTxt').setAttribute('x', midDiff);
+
+    const isTriple = dad === son * 3;
+    document.getElementById('a10-tip').innerHTML = isTriple
+      ? `🎉 <b>找到答案了（4 年後）！</b>：4 年後爸爸 <b>42 歲</b>、兒子 <b>14 歲</b>，剛好 42 ＝ 14 × 3（爸爸是兒子的 3 倍），而且兩人的年齡差依然是 42 − 14 ＝ <b>28 歲</b>！`
+      : `💡 <b>年齡問題黃金法則</b>：拉動滑桿看看！不管過了幾年，爸爸和兒子的長條都「同時往右邊伸長一樣的長度」，所以紅線標示的<b>年齡差永遠固定是 28 歲</b>！試著拉到「4 年後」看看倍數變化！`;
+  }
+
+  // 啟動所有動畫初始狀態
+  initAnim0();
+  initAnim1();
+  renderAnim2();
+  updateAnim3();
+  updateAnim4(3);
+  renderAnim5();
+  initAnim6();
+  updateAnim7();
+  setAnim8(false, null);
+  setAnim9(0, null);
+  updateAnim10();
+
   function getSelectedIds() {
     return Array.from(document.querySelectorAll('.unit-chk:checked')).map(cb => parseInt(cb.value));
   }
@@ -465,6 +1404,8 @@
     units.forEach(u => {
       const card = document.getElementById(`note-${u.id}`);
       card.style.display = selected.includes(u.id) ? 'block' : 'none';
+      const animCard = document.getElementById(`anim-card-${u.id}`);
+      if (animCard) animCard.style.display = selected.includes(u.id) ? 'block' : 'none';
     });
     if (document.getElementById('sec-quiz').classList.contains('active')) {
       generateQuestion();
@@ -473,8 +1414,10 @@
 
   function switchTab(tab) {
     document.getElementById('tab-notes').classList.toggle('active', tab === 'notes');
+    document.getElementById('tab-anim').classList.toggle('active', tab === 'anim');
     document.getElementById('tab-quiz').classList.toggle('active', tab === 'quiz');
     document.getElementById('sec-notes').classList.toggle('active', tab === 'notes');
+    document.getElementById('sec-anim').classList.toggle('active', tab === 'anim');
     document.getElementById('sec-quiz').classList.toggle('active', tab === 'quiz');
     if (tab === 'quiz') generateQuestion();
   }
@@ -533,10 +1476,7 @@
     2: () => { // 1-3 整數的四則運算
       const a = rand(-6, -2);
       const b = rand(3, 8);
-      const c = rand(-12, -2);
       const d = rand(2, 4);
-      const ans = a * b - c / d;
-      // 確保 c 能被 d 整除
       const cFixed = -d * rand(2, 6);
       const ansFixed = a * b - (cFixed / d);
       return {
@@ -570,10 +1510,9 @@
       const d1 = rand(1, 8);
       const d2 = rand(1, 9);
       const d4 = rand(1, 9);
-      // 找一個數字 x 讓 (d1 + d2 + x + d4) 是 9 的倍數
       const sumOthers = d1 + d2 + d4;
       let ans = (9 - (sumOthers % 9)) % 9;
-      if (ans === 0) ans = 9; // 避免 0 與 9 雙解，讓題目問「最小正整數」或限定非0
+      if (ans === 0) ans = 9;
       return {
         unit: '2-1 因數與倍數',
         q: `若四位數 ${d1}${d2}□${d4} 是 9 的倍數，且 □ 為 1 到 9 的數字，請問 □ 應該填入多少？`,
@@ -611,14 +1550,12 @@
       const num = 1;
       const den = rand(2, 4);
       const addVal = rand(1, 3);
-      // 計算 (-whole又1/den) + addVal
-      // = -(whole*den + 1)/den + (addVal*den)/den
       const top = -(whole * den + 1) + addVal * den;
       const g = gcd(top, den);
       const fTop = top / g;
       const fDen = den / g;
       const ansStr = fDen === 1 ? `${fTop}` : `${fTop}/${fDen}`;
-      const wrongTop = -(whole * den - 1) + addVal * den; // 常見錯誤：算成 -whole + 1/den
+      const wrongTop = -(whole * den - 1) + addVal * den;
       return {
         unit: '2-3 分數的四則運算',
         q: `計算 (-${whole}又${num}/${den}) ＋ ${addVal} 的結果（以最簡分數表示）為何？`,
@@ -651,13 +1588,12 @@
       const b = rand(1, 6);
       const c = rand(2, 4);
       const d = rand(1, 5);
-      // a(x + b) - c(x - d) = (a-c)x + (ab + cd)
       const coefX = a - c;
       const constTerm = a * b + c * d;
       const xStr = coefX === 0 ? '' : (coefX === 1 ? 'x' : (coefX === -1 ? '-x' : `${coefX}x`));
       const cStr = constTerm >= 0 ? (xStr ? ` + ${constTerm}` : `${constTerm}`) : ` - ${Math.abs(constTerm)}`;
       const ans = `${xStr}${cStr}`;
-      const wrongConst = a * b - c * d; // 忘記負負得正
+      const wrongConst = a * b - c * d;
       return {
         unit: '3-1 代數式的化簡',
         q: `化簡代數式 ${a}(x + ${b}) − ${c}(x − ${d}) 的結果為何？`,
@@ -674,7 +1610,6 @@
       const a = rand(3, 7);
       const c = rand(1, 2);
       const b = rand(-8, 8);
-      // 設計方程式: a*x + b = c*x + d  => d = (a-c)*xAns + b
       const d = (a - c) * xAns + b;
       const bStr = b >= 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
       const dStr = d >= 0 ? `+ ${d}` : `- ${Math.abs(d)}`;
@@ -691,12 +1626,7 @@
       };
     },
     10: () => { // 3-3 應用問題
-      const diff = rand(22, 32);
       const mult = rand(3, 5);
-      const sonAge = rand(8, 14);
-      // 爸爸今年 sonAge + diff 歲，幾年後爸爸是兒子的 mult 倍？
-      // (sonAge + diff + x) = mult * (sonAge + x) => diff = (mult-1)*sonAge + (mult-1)*x
-      // 反向設計：先決定幾年後的兒子年齡 targetSon，反推今年兒子年齡
       const yearsLater = rand(2, 6);
       const targetSon = rand(12, 16);
       const dadTarget = targetSon * mult;
@@ -723,7 +1653,6 @@
 
   function generateQuestion() {
     const selected = getSelectedIds();
-    const qBox = document.getElementById('quiz-body');
     if (selected.length === 0) {
       document.getElementById('q-question').innerText = '⚠️ 請先在上方勾選至少一個要練習的單元喔！';
       document.getElementById('q-options').innerHTML = '';
@@ -742,7 +1671,6 @@
     document.getElementById('q-unit').innerText = currentQ.unit;
     document.getElementById('q-question').innerText = currentQ.q;
 
-    // 組合正確答案與干擾選項並去重
     let opts = [currentQ.ans, ...currentQ.distractors];
     opts = [...new Set(opts)];
     while (opts.length < 4) {
